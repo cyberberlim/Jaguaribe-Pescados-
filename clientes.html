@@ -561,5 +561,37 @@
       lucide.createIcons();
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8a2c6eb386bd9e',t:'MTc3NTU3Njg3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8a2c6eb386bd9e',t:'MTc3NTU3Njg3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+ </script>
+  <script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = "https://lnsldxhulsidvncfjyfu.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxuc2xkeGh1bHNpZHZuY2ZqeWZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2ODY2ODYsImV4cCI6MjA5MTI2MjY4Nn0.W418TpH315WuN2v1pEKpFaCazWoOyiyMSDbCbb7oV_c"; // coloca a sua aqui
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// TESTE DE INSERÇÃO
+async function salvarCliente() {
+  const { data, error } = await supabase
+    .from('clientes')
+    .insert([
+      {
+        nome: "Cliente Teste",
+        telefone: "85999999999",
+        historico: "Teste funcionando"
+      }
+    ]);
+
+  if (error) {
+    console.log("Erro:", error);
+  } else {
+    console.log("Sucesso:", data);
+    alert("Cliente salvo!");
+  }
+}
+
+window.salvarCliente = salvarCliente;
+  </script>
+ </body>
 </html>
