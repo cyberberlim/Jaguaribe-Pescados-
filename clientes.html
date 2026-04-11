@@ -538,11 +538,15 @@ async function saveCliente(e) {
    }
 
     function toggleSidebar() {
-      const s = document.getElementById('sidebar');
-      const isHidden = s.style.transform === 'translateX(-100%)' || !s.style.transform;
-      s.style.transform = isHidden ? 'translateX(0)' : 'translateX(-100%)';
+      const sidebar = document.getElementById('sidebar');
+      const isHidden = sidebar.style.transform === 'translateX(-100%)' || !s.style.transform;
+      sidebar.style.transform = isHidden ? 'translateX(0)' : 'translateX(-100%)';
     }
-
+function closeSidebarMobile() {
+    if (window.innerWidth < 1024) {
+      document.getElementById('sidebar').style.transform = 'translateX(-100%)';
+    }
+   }
     function logout() {
       showToast('Logout realizado!', '#ffc837');
     }
