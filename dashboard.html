@@ -67,24 +67,36 @@ input:focus,select:focus,textarea:focus{border-color:#00e6c8;background:rgba(255
      </div>
     </div>
     <nav class="flex-1 p-4 space-y-1 overflow-auto">
-     <div class="sidebar-link active" data-page="dashboard" onclick="navigateTo('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>Dashboard
-     </div>
-     <div class="sidebar-link" data-page="clientes" onclick="navigateTo('clientes')"><i data-lucide="users" style="width:18px;height:18px"></i>Clientes
-     </div>
-     <div class="sidebar-link" data-page="funcionarios" onclick="navigateTo('funcionarios')"><i data-lucide="briefcase" style="width:18px;height:18px"></i>Funcionários
-     </div>
-     <div class="sidebar-link" data-page="financeiro" onclick="navigateTo('financeiro')"><i data-lucide="credit-card" style="width:18px;height:18px"></i>Financeiro
-     </div>
-     <div class="sidebar-link" data-page="estoque" onclick="navigateTo('estoque')"><i data-lucide="package" style="width:18px;height:18px"></i>Estoque
-     </div>
-     <div class="sidebar-link" data-page="estoque-geral" onclick="navigateTo('estoque-geral')"><i data-lucide="boxes" style="width:18px;height:18px"></i>Estoque Geral
-     </div>
-     <div class="sidebar-link" data-page="producao" onclick="navigateTo('producao')"><i data-lucide="factory" style="width:18px;height:18px"></i>Produção
-     </div>
-     <div class="sidebar-link" data-page="relatorios" onclick="navigateTo('relatorios')"><i data-lucide="bar-chart-3" style="width:18px;height:18px"></i>Relatórios
-     </div>
-     <div class="sidebar-link" data-page="configuracoes" onclick="navigateTo('configuracoes')"><i data-lucide="settings" style="width:18px;height:18px"></i>Configurações
-     </div>
+     <a class="sidebar-link active" href="dashboard.html">
+  <i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>Dashboard
+</a>
+
+<a class="sidebar-link" href="clientes.html">
+  <i data-lucide="users" style="width:18px;height:18px"></i>Clientes
+</a>
+
+<a class="sidebar-link" href="funcionarios.html">
+  <i data-lucide="briefcase" style="width:18px;height:18px"></i>Funcionários
+</a>
+
+<a class="sidebar-link" href="financeiro.html">
+  <i data-lucide="credit-card" style="width:18px;height:18px"></i>Financeiro
+</a>
+
+<a class="sidebar-link" href="estoque.html">
+  <i data-lucide="package" style="width:18px;height:18px"></i>Estoque
+</a>
+
+<a class="sidebar-link" href="estoque-geral.html">
+  <i data-lucide="boxes" style="width:18px;height:18px"></i>Estoque Geral
+</a>
+
+<a class="sidebar-link" href="producao.html">
+  <i data-lucide="factory" style="width:18px;height:18px"></i>Produção
+</a>
+
+<a class="sidebar-link" href="relatorios.html">
+  <i data-lucide="bar-chart-3" style="width:18px; h
     </nav>
     <div class="p-4 border-t" style="border-color:rgba(255,255,255,0.06)">
      <div class="sidebar-link" onclick="logout()"><i data-lucide="log-out" style="width:18px;height:18px"></i>Sair
