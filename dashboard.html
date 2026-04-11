@@ -622,7 +622,10 @@ function logout() {
 
 // ===== INIT =====
 window.addEventListener('load', () => {
-  // renderDashboard();  ← DESATIVA ISSO
+  if (typeof renderDashboard === "function") {
+    renderDashboard();
+  }
+
   applyConfig(defaultConfig);
   lucide.createIcons();
 });
