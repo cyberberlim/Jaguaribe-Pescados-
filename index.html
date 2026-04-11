@@ -494,9 +494,7 @@ if(window.elementSdk){
 
 // ===== LOGIN =====
 function doLogin(){
-  document.getElementById('loginPage').style.display='none';
-  document.getElementById('appShell').style.display='';
-  renderAll();
+  window.location.href = "dashboard.html";
 }
 function doLogout(){
   document.getElementById('appShell').style.display='none';
