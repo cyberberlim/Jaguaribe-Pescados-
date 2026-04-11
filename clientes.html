@@ -83,10 +83,10 @@
   <i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>Dashboard
 </div>
 
-<div class="sidebar-link active" onclick="window.location.href='clientes.html'">
-  <i data-lucide="users" style="width:18px;height:18px"></i>Clientes
-</div>
-
+ <div class="sidebar-link active" onclick="window.location.href='clientes.html'">
+<i data-lucide="users" style="width:18px;height:18px"></i>Clientes
+ </div>
+     
 <div class="sidebar-link" onclick="window.location.href='funcionarios.html'">
   <i data-lucide="briefcase" style="width:18px;height:18px"></i>Funcionários
 </div>
@@ -137,7 +137,7 @@
      </div>
     </header><!-- PAGE CONTENT -->
     <main id="mainContent" class="flex-1 overflow-auto p-6"><!-- DASHBOARD PAGE -->
-     <div id="page-dashboard" class="page-content fade-in">
+    <div id="page-dashboard" class="page-content fade-in hidden">
       <div class="mb-6">
        <h2 class="font-heading text-2xl font-bold">Dashboard</h2>
        <p class="text-sm" style="color:rgba(255,255,255,0.4)">Visão geral do seu negócio</p>
@@ -534,14 +534,7 @@ async function saveCliente(e) {
         document.getElementById('sidebar').style.transform = 'translateX(-100%)';
       }
     }
-   function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-
-  if (!sidebar.style.transform || sidebar.style.transform === 'translateX(-100%)') {
-    sidebar.style.transform = 'translateX(0)';
-  } else {
-    sidebar.style.transform = 'translateX(-100%)';
-  }
+   
    }
 
     function toggleSidebar() {
