@@ -574,7 +574,10 @@ function navigateTo(page) {
     relatorios: 'Relatórios',
     configuracoes: 'Configurações'
   };
-  document.getElementById('pageTitle').textContent = titles[page] || page;
+  const titleEl = document.getElementById('pageTitle');
+if (titleEl) {
+  titleEl.textContent = titles[page] || page;
+   }
 
   if (page === 'dashboard') renderDashboard();
 
