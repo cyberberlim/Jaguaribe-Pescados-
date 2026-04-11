@@ -96,7 +96,12 @@ input:focus,select:focus,textarea:focus{border-color:#00e6c8;background:rgba(255
 </a>
 
 <a class="sidebar-link" href="relatorios.html">
-  <i data-lucide="bar-chart-3" style="width:18px; h
+  <i data-lucide="bar-chart-3" style="width:18px;height:18px"></i>Relatórios
+</a>
+
+<a class="sidebar-link" href="configuracoes.html">
+  <i data-lucide="settings" style="width:18px;height:18px"></i>Configurações
+</a>
     </nav>
     <div class="p-4 border-t" style="border-color:rgba(255,255,255,0.06)">
      <div class="sidebar-link" onclick="logout()"><i data-lucide="log-out" style="width:18px;height:18px"></i>Sair
@@ -579,7 +584,9 @@ if (titleEl) {
   titleEl.textContent = titles[page] || page;
    }
 
-  if (page === 'dashboard') renderDashboard();
+  if (page === 'dashboard' && typeof renderDashboard === "function") {
+  renderDashboard();
+   }
 
   if (window.innerWidth < 1024) document.getElementById('sidebar').style.transform = 'translateX(-100%)';
 }
