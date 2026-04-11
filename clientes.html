@@ -79,24 +79,41 @@
      </div>
     </div>
     <nav class="flex-1 p-4 space-y-1 overflow-auto">
-     <div class="sidebar-link" data-page="dashboard" onclick="navigateTo('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>Dashboard
-     </div>
-     <div class="sidebar-link" data-page="clientes" onclick="navigateTo('clientes')"><i data-lucide="users" style="width:18px;height:18px"></i>Clientes
-     </div>
-     <div class="sidebar-link" data-page="funcionarios" onclick="navigateTo('funcionarios')"><i data-lucide="briefcase" style="width:18px;height:18px"></i>Funcionários
-     </div>
-     <div class="sidebar-link" data-page="financeiro" onclick="navigateTo('financeiro')"><i data-lucide="credit-card" style="width:18px;height:18px"></i>Financeiro
-     </div>
-     <div class="sidebar-link" data-page="estoque" onclick="navigateTo('estoque')"><i data-lucide="package" style="width:18px;height:18px"></i>Estoque
-     </div>
-     <div class="sidebar-link" data-page="estoque-geral" onclick="navigateTo('estoque-geral')"><i data-lucide="warehouse" style="width:18px;height:18px"></i>Estoque Geral
-     </div>
-     <div class="sidebar-link" data-page="producao" onclick="navigateTo('producao')"><i data-lucide="factory" style="width:18px;height:18px"></i>Produção
-     </div>
-     <div class="sidebar-link" data-page="relatorios" onclick="navigateTo('relatorios')"><i data-lucide="bar-chart-3" style="width:18px;height:18px"></i>Relatórios
-     </div>
-     <div class="sidebar-link" data-page="configuracoes" onclick="navigateTo('configuracoes')"><i data-lucide="settings" style="width:18px;height:18px"></i>Configurações
-     </div>
+<div class="sidebar-link" onclick="window.location.href='dashboard.html'">
+  <i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>Dashboard
+</div>
+
+<div class="sidebar-link active" onclick="window.location.href='clientes.html'">
+  <i data-lucide="users" style="width:18px;height:18px"></i>Clientes
+</div>
+
+<div class="sidebar-link" onclick="window.location.href='funcionarios.html'">
+  <i data-lucide="briefcase" style="width:18px;height:18px"></i>Funcionários
+</div>
+
+<div class="sidebar-link" onclick="window.location.href='financeiro.html'">
+  <i data-lucide="credit-card" style="width:18px;height:18px"></i>Financeiro
+</div>
+
+<div class="sidebar-link" onclick="window.location.href='estoque.html'">
+  <i data-lucide="package" style="width:18px;height:18px"></i>Estoque
+</div>
+
+<div class="sidebar-link" onclick="window.location.href='estoque-geral.html'">
+  <i data-lucide="warehouse" style="width:18px;height:18px"></i>Estoque Geral
+</div>
+
+<div class="sidebar-link" onclick="window.location.href='producao.html'">
+  <i data-lucide="factory" style="width:18px;height:18px"></i>Produção
+</div>
+
+<div class="sidebar-link" onclick="window.location.href='relatorios.html'">
+  <i data-lucide="bar-chart-3" style="width:18px;height:18px"></i>Relatórios
+</div>
+
+<div class="sidebar-link" onclick="window.location.href='configuracoes.html'">
+  <i data-lucide="settings" style="width:18px;height:18px"></i>Configurações
+</div>
     </nav>
     <div class="p-4 border-t" style="border-color:rgba(255,255,255,0.06)">
      <div class="sidebar-link" onclick="logout()"><i data-lucide="log-out" style="width:18px;height:18px"></i>Sair
@@ -506,18 +523,7 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    function navigateTo(page) {
-      document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-      const target = document.getElementById('page-' + page);
-      if (target) {
-        target.classList.remove('hidden');
-        target.classList.remove('fade-in');
-        void target.offsetWidth;
-        target.classList.add('fade-in');
-      }
-      document.querySelectorAll('.sidebar-link[data-page]').forEach(l => {
-        l.classList.toggle('active', l.dataset.page === page);
-      });
+    
 
       if (window.innerWidth < 1024) {
         document.getElementById('sidebar').style.transform = 'translateX(-100%)';
@@ -555,11 +561,10 @@
 
     // ===== INIT =====
     window.addEventListener('load', () => {
-      applyConfig(defaultConfig);
-      initDataSdk();
-      navigateTo('clientes');
-      lucide.createIcons();
-    });
+  applyConfig(defaultConfig);
+
+  lucide.createIcons();
+});
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8a2c6eb386bd9e',t:'MTc3NTU3Njg3NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
  </script>
