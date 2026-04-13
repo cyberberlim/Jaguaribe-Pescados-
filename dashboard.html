@@ -3,632 +3,640 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jaguaribe Pescados - Dashboard</title>
+  <title>Jaguaribe Pescados - Sistema de Gestão</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <script>
-tailwind.config={theme:{extend:{colors:{navy:'#0a1628','navy-light':'#111d35','navy-mid':'#162240',teal:'#00e6c8','teal-dim':'#00b89e',cyan:'#00d4ff','glass':'rgba(255,255,255,0.05)','glass-border':'rgba(255,255,255,0.08)'},fontFamily:{heading:['Space Grotesk','sans-serif'],body:['DM Sans','sans-serif']}}}}
-  </script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Poppins:wght@600;700;800&amp;display=swap" rel="stylesheet">
   <style>
-html,body{height:100%;margin:0;font-family:'DM Sans',sans-serif;background:#0a1628;color:#fff;overflow:hidden}
-*{box-sizing:border-box}
-.glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(12px)}
-.glass-strong{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(16px)}
-.glow{box-shadow:0 0 30px rgba(0,230,200,0.08)}
-.btn-primary{background:linear-gradient(135deg,#00e6c8,#00b89e);color:#0a1628;font-weight:600;border:none;cursor:pointer;transition:all .2s;border-radius:10px;padding:10px 16px;font-size:14px}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,230,200,0.3)}
-.sidebar-link{display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:10px;cursor:pointer;transition:all .15s;color:rgba(255,255,255,0.5);font-size:14px;position:relative}
-.sidebar-link:hover,.sidebar-link.active{background:rgba(0,230,200,0.08);color:#00e6c8}
-.sidebar-link.active{border-left:3px solid #00e6c8;padding-left:13px}
-.stat-card{transition:transform .2s,box-shadow .2s;border-radius:14px;background:linear-gradient(135deg,rgba(0,230,200,0.05),rgba(0,212,255,0.03));border:1px solid rgba(0,230,200,0.1)}
-.stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,230,200,0.15)}
-.stat-value{font-size:28px;font-weight:700;background:linear-gradient(135deg,#00e6c8,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-input[type="text"],input[type="email"],input[type="password"],input[type="number"],input[type="date"],select,textarea{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:10px 14px;width:100%;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;transition:border .2s}
-input:focus,select:focus,textarea:focus{border-color:#00e6c8;background:rgba(255,255,255,0.08)}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
-.fade-in{animation:fadeIn .4s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(0,230,200,0.1)}50%{box-shadow:0 0 40px rgba(0,230,200,0.2)}}
-@keyframes floatIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.chart-container{position:relative;height:320px;margin:20px 0;perspective:1200px}
-.chart-wrapper{transform:rotateX(5deg) rotateY(-2deg);transform-style:preserve-3d;transition:transform .3s}
-.chart-wrapper:hover{transform:rotateX(8deg) rotateY(-3deg)}
-.table-row:hover{background:rgba(255,255,255,0.03)}
-.toast{position:fixed;top:20px;right:20px;padding:14px 20px;border-radius:12px;z-index:9999;animation:slideIn .3s ease}
-@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}
-.chart-pill{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500}
-.stat-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,230,200,0.1)}
-.transaction-item{padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);border-left:3px solid #00e6c8;transition:all .2s}
-.transaction-item:hover{background:rgba(255,255,255,0.04);transform:translateX(4px)}
+    * { box-sizing: border-box; }
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);
+      color: #fff; 
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body { 
+      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a2644 100%);
+      position: relative;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(0, 230, 200, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    #appContainer { position: relative; z-index: 1; }
+    
+    .glass { 
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 230, 200, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .glass-hover:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(0, 230, 200, 0.2);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #00e6c8 0%, #00d4ff 100%);
+      color: #0a1628;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 230, 200, 0.25);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn-danger {
+      background: rgba(255, 107, 107, 0.1);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    
+    .btn-danger:hover {
+      background: rgba(255, 107, 107, 0.2);
+    }
+    
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      position: relative;
+    }
+    
+    .sidebar-link:hover {
+      background: rgba(0, 230, 200, 0.08);
+      color: #00e6c8;
+    }
+    
+    .sidebar-link.active {
+      background: rgba(0, 230, 200, 0.12);
+      color: #00e6c8;
+      border-left: 3px solid #00e6c8;
+      padding-left: 13px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="file"],
+    select,
+    textarea {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #00e6c8;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(0, 230, 200, 0.1);
+    }
+    
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 230, 200, 0.2);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 230, 200, 0.3);
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+    }
+    
+    .modal-overlay.hidden {
+      display: none;
+    }
+    
+    .table-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+      backdrop-filter: blur(12px);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-ativo {
+      background: rgba(0, 230, 200, 0.2);
+      color: #00e6c8;
+    }
+    
+    .badge-inativo {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+    }
+    
+    .badge-pendente {
+      background: rgba(255, 200, 55, 0.2);
+      color: #ffc837;
+    }
+    
+    .badge-pago {
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+    }
+    
+    .card-stat {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 230, 200, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+    
+    .card-stat:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(0, 230, 200, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .shrimp-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(0, 230, 200, 0.2), rgba(0, 212, 255, 0.1));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+    }
   </style>
   <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full">
-  <div class="h-full flex"><!-- SIDEBAR -->
-   <aside id="sidebar" class="h-full flex-shrink-0 flex flex-col glass" style="width:240px;border-right:1px solid rgba(255,255,255,0.06);transition:transform .2s">
-    <div class="p-5 flex items-center gap-3 border-b" style="border-color:rgba(255,255,255,0.06)">
-     <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#00e6c8,#00b89e)">
-      <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16s4-4 8-1c3 2 5-1 7-3s5-2 5-2" /> <path d="M2 12s4-4 8-1c3 2 5-1 7-3s5-2 5-2" /> <path d="M2 20s4-4 8-1c3 2 5-1 7-3s5-2 5-2" />
+  <div id="appContainer" class="h-full flex">
+   <!-- SIDEBAR -->
+   <aside id="sidebar" class="h-full flex-shrink-0 flex flex-col glass" style="width:260px; border-right:1px solid rgba(0,230,200,0.1); transition:transform 0.3s; position: relative;">
+    <!-- Logo Header -->
+    <div class="p-6 flex items-center gap-3 border-b" style="border-color:rgba(0,230,200,0.1)">
+     <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#00e6c8,#00d4ff)">
+      <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M2 16s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path> <path d="M2 12s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path> <path d="M2 20s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path>
       </svg>
      </div>
      <div>
-      <div class="font-heading font-bold text-sm leading-tight" id="sidebarCompany">
+      <div class="font-bold text-sm leading-tight" id="sidebarCompany" style="font-size:15px;">
        Jaguaribe
       </div>
-      <div class="text-xs" style="color:rgba(255,255,255,0.35)">
+      <div class="text-xs" style="color:rgba(0,230,200,0.6);">
        Pescados
       </div>
      </div>
     </div>
     <nav class="flex-1 p-4 space-y-1 overflow-auto">
-     <a class="sidebar-link active" href="dashboard.html">
-  <i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>Dashboard
-</a>
-
-<a class="sidebar-link" href="clientes.html">
-  <i data-lucide="users" style="width:18px;height:18px"></i>Clientes
-</a>
-
-<a class="sidebar-link" href="funcionarios.html">
-  <i data-lucide="briefcase" style="width:18px;height:18px"></i>Funcionários
-</a>
-
-<a class="sidebar-link" href="financeiro.html">
-  <i data-lucide="credit-card" style="width:18px;height:18px"></i>Financeiro
-</a>
-
-<a class="sidebar-link" href="estoque.html">
-  <i data-lucide="package" style="width:18px;height:18px"></i>Estoque
-</a>
-
-<a class="sidebar-link" href="estoque-geral.html">
-  <i data-lucide="boxes" style="width:18px;height:18px"></i>Estoque Geral
-</a>
-
-<a class="sidebar-link" href="producao.html">
-  <i data-lucide="factory" style="width:18px;height:18px"></i>Produção
-</a>
-
-<a class="sidebar-link" href="relatorios.html">
-  <i data-lucide="bar-chart-3" style="width:18px;height:18px"></i>Relatórios
-</a>
-
-<a class="sidebar-link" href="configuracoes.html">
-  <i data-lucide="settings" style="width:18px;height:18px"></i>Configurações
-</a>
+     <div class="sidebar-link active" data-page="dashboard" onclick="navigateTo('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i><span>Dashboard</span>
+     </div>
+     <div class="sidebar-link" data-page="clientes" onclick="navigateTo('clientes')"><i data-lucide="users" style="width:18px;height:18px"></i><span>Clientes</span>
+     </div>
+     <div class="sidebar-link" data-page="funcionarios" onclick="navigateTo('funcionarios')"><i data-lucide="hard-hat" style="width:18px;height:18px"></i><span>Funcionários</span>
+     </div>
+     <div class="sidebar-link" data-page="financeiro" onclick="navigateTo('financeiro')"><i data-lucide="wallet" style="width:18px;height:18px"></i><span>Financeiro</span>
+     </div>
+     <div class="sidebar-link" data-page="estoque" onclick="navigateTo('estoque')"><i data-lucide="package-2" style="width:18px;height:18px"></i><span>Cadastro de Lotes</span>
+     </div>
+     <div class="sidebar-link" data-page="estoque-geral" onclick="navigateTo('estoque-geral')"><i data-lucide="trending-up" style="width:18px;height:18px"></i><span>Rendimento</span>
+     </div>
+     <div class="sidebar-link" data-page="producao" onclick="navigateTo('producao')"><i data-lucide="factory" style="width:18px;height:18px"></i><span>Produção</span>
+     </div>
+     <div class="sidebar-link" data-page="relatorios" onclick="navigateTo('relatorios')"><i data-lucide="bar-chart-3" style="width:18px;height:18px"></i><span>Relatórios</span>
+     </div>
+     <div class="sidebar-link" data-page="configuracoes" onclick="navigateTo('configuracoes')"><i data-lucide="shield" style="width:18px;height:18px"></i><span>Configurações</span>
+     </div>
     </nav>
-    <div class="p-4 border-t" style="border-color:rgba(255,255,255,0.06)">
-     <div class="sidebar-link" onclick="logout()"><i data-lucide="log-out" style="width:18px;height:18px"></i>Sair
+    <div class="p-4 border-t" style="border-color:rgba(0,230,200,0.1)">
+     <div class="sidebar-link" onclick="logout()"><i data-lucide="log-out" style="width:18px;height:18px"></i><span>Sair</span>
      </div>
     </div>
    </aside><!-- MAIN CONTENT -->
-   <div class="flex-1 flex flex-col h-full overflow-hidden"><!-- TOPBAR -->
-    <header class="flex items-center justify-between px-6 py-4 flex-shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.06)">
-     <div class="flex items-center gap-4"><button id="menuToggle" class="lg:hidden p-2 rounded-lg" style="color:rgba(255,255,255,0.5)" onclick="toggleSidebar()"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
+   <div class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- TOPBAR -->
+    <header class="flex items-center justify-between px-8 py-5 flex-shrink-0 glass" style="border-bottom:1px solid rgba(0,230,200,0.1)">
+     <div class="flex items-center gap-4">
+      <button id="menuToggle" class="lg:hidden p-2 rounded-lg" style="color:rgba(255,255,255,0.5)" onclick="toggleSidebar()"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
       <div>
-       <h1 class="font-heading font-semibold text-lg" id="pageTitle">Dashboard</h1>
-       <p class="text-xs" style="color:rgba(255,255,255,0.4)" id="companyNameTopbar">Jaguaribe Pescados — Parajuru</p>
+       <h1 class="font-bold text-lg" id="pageTitle" style="font-size:18px;">Dashboard</h1>
+       <p class="text-xs" style="color:rgba(255,255,255,0.5);" id="companyNameTopbar">Jaguaribe Pescados — Parajuru</p>
       </div>
      </div>
-     <div class="flex items-center gap-4">
-      <div class="relative hidden sm:block"><input type="text" placeholder="Buscar..." class="pl-9 pr-4 py-2 text-xs rounded-lg" style="width:200px;background:rgba(255,255,255,0.04)"> <i data-lucide="search" style="width:14px;height:14px;position:absolute;left:10px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.3)"></i>
-      </div><button class="relative p-2 rounded-lg" style="color:rgba(255,255,255,0.5)"> <i data-lucide="bell" style="width:18px;height:18px"></i> <span class="absolute top-1 right-1 w-2 h-2 rounded-full" style="background:#00e6c8"></span> </button>
-      <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:linear-gradient(135deg,#00e6c8,#00b89e);color:#0a1628">
+     <div class="flex items-center gap-6">
+      <button class="relative p-2 rounded-lg hover:bg-white/5" style="color:rgba(255,255,255,0.5)"> <i data-lucide="bell" style="width:20px;height:20px"></i> <span class="absolute top-1 right-1 w-2 h-2 rounded-full" style="background:#00e6c8"></span> </button>
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold" style="background:linear-gradient(135deg,#00e6c8,#00d4ff);color:#0a1628;">
        JP
       </div>
      </div>
     </header><!-- PAGE CONTENT -->
-    <main id="mainContent" class="flex-1 overflow-auto p-6"><!-- DASHBOARD PAGE -->
-     <div id="page-dashboard" class="page-content fade-in">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold mb-1" id="welcomeMsg">Bem-vindo de volta!</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Aqui está o resumo do seu negócio</p>
-      </div><!-- KPI CARDS -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-       <div class="glass rounded-xl p-6 stat-card fade-in" style="animation-delay:0.05s">
-        <div class="flex items-center justify-between mb-4"><span class="text-xs font-medium" style="color:rgba(255,255,255,0.5)">LUCRO DO MÊS</span>
-         <div class="stat-icon" style="background:rgba(0,230,200,0.15);box-shadow:0 0 20px rgba(0,230,200,0.1)"><i data-lucide="trending-up" style="width:20px;height:20px;color:#00e6c8"></i>
-         </div>
+    <main id="mainContent" class="flex-1 overflow-auto" style="height:100%;">
+     <div class="p-8">
+      <main id="mainContent" class="flex-1 overflow-auto p-6" style="height:100%"><!-- DASHBOARD PAGE -->
+       <div id="page-dashboard" class="page-content fade-in" style="display:block">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Dashboard</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Visão geral do seu negócio</p>
         </div>
-        <div class="stat-value mb-2">
-         R$ 53.240
-        </div>
-        <div class="flex items-center gap-1" style="font-size:12px;color:#00e6c8"><i data-lucide="arrow-up" style="width:14px;height:14px"></i><span>18.7% vs mês anterior</span>
-        </div>
-       </div>
-       <div class="glass rounded-xl p-6 stat-card fade-in" style="animation-delay:0.1s">
-        <div class="flex items-center justify-between mb-4"><span class="text-xs font-medium" style="color:rgba(255,255,255,0.5)">GASTOS TOTAIS</span>
-         <div class="stat-icon" style="background:rgba(255,107,107,0.15);box-shadow:0 0 20px rgba(255,107,107,0.1)"><i data-lucide="trending-down" style="width:20px;height:20px;color:#ff6b6b"></i>
-         </div>
-        </div>
-        <div class="stat-value mb-2">
-         R$ 34.180
-        </div>
-        <div class="flex items-center gap-1" style="font-size:12px;color:#ff6b6b"><i data-lucide="arrow-up" style="width:14px;height:14px"></i><span>3.2% vs mês anterior</span>
-        </div>
-       </div>
-       <div class="glass rounded-xl p-6 stat-card fade-in" style="animation-delay:0.15s">
-        <div class="flex items-center justify-between mb-4"><span class="text-xs font-medium" style="color:rgba(255,255,255,0.5)">PRODUÇÃO TOTAL</span>
-         <div class="stat-icon" style="background:rgba(0,212,255,0.15);box-shadow:0 0 20px rgba(0,212,255,0.1)"><i data-lucide="zap" style="width:20px;height:20px;color:#00d4ff"></i>
-         </div>
-        </div>
-        <div class="stat-value mb-2">
-         12.580 kg
-        </div>
-        <div class="flex items-center gap-1" style="font-size:12px;color:#00d4ff"><i data-lucide="arrow-up" style="width:14px;height:14px"></i><span>22.4% este mês</span>
-        </div>
-       </div>
-       <div class="glass rounded-xl p-6 stat-card fade-in" style="animation-delay:0.2s">
-        <div class="flex items-center justify-between mb-4"><span class="text-xs font-medium" style="color:rgba(255,255,255,0.5)">VENDAS REALIZADAS</span>
-         <div class="stat-icon" style="background:rgba(255,200,55,0.15);box-shadow:0 0 20px rgba(255,200,55,0.1)"><i data-lucide="shopping-cart" style="width:20px;height:20px;color:#ffc837"></i>
-         </div>
-        </div>
-        <div class="stat-value mb-2">
-         342
-        </div>
-        <div class="flex items-center gap-1" style="font-size:12px;color:#ffc837"><i data-lucide="arrow-up" style="width:14px;height:14px"></i><span>8.1% este mês</span>
-        </div>
-       </div>
-      </div><!-- CHARTS ROW --> <!-- PIE CHARTS ROW -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-       <div class="glass rounded-xl p-6 fade-in" style="animation-delay:0.35s">
-        <h3 class="font-heading font-semibold text-sm mb-4 flex items-center gap-2"><i data-lucide="pie-chart" style="width:16px;height:16px;color:#00e6c8"></i>Distribuição de Vendas</h3>
-        <div id="salesDistribution" style="position:relative;height:auto;min-height:250px;display:flex;flex-direction:column;gap:12px"></div>
-       </div>
-       <div class="glass rounded-xl p-6 fade-in" style="animation-delay:0.4s">
-        <h3 class="font-heading font-semibold text-sm mb-4 flex items-center gap-2"><i data-lucide="pie-chart" style="width:16px;height:16px;color:#ffc837"></i>Composição de Despesas</h3>
-        <div id="expensesDistribution" style="position:relative;height:auto;min-height:250px;display:flex;flex-direction:column;gap:12px"></div>
-       </div>
-       <div class="glass rounded-xl p-6 fade-in" style="animation-delay:0.45s">
-        <h3 class="font-heading font-semibold text-sm mb-4 flex items-center gap-2"><i data-lucide="pie-chart" style="width:16px;height:16px;color:#00d4ff"></i>Status de Estoque</h3>
-        <div id="stockDistribution" style="position:relative;height:auto;min-height:250px;display:flex;flex-direction:column;gap:12px"></div>
-       </div>
-      </div><!-- RECENT TRANSACTIONS -->
-      <div class="glass rounded-xl p-6 fade-in" style="animation-delay:0.5s">
-       <div class="flex items-center justify-between mb-4">
-        <h3 class="font-heading font-semibold text-sm flex items-center gap-2"><i data-lucide="history" style="width:16px;height:16px;color:#00e6c8"></i>Transações Recentes</h3><button class="text-xs font-medium" style="color:#00e6c8;cursor:pointer;transition:all .2s" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">Ver todas →</button>
-       </div>
-       <div class="space-y-2">
-        <div id="recentTransactions"></div>
-       </div>
-      </div>
-     </div><!-- CLIENTES PAGE -->
-     <div id="page-clientes" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Clientes</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie seus clientes</p>
-      </div>
-     </div><!-- FUNCIONÁRIOS PAGE -->
-     <div id="page-funcionarios" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Funcionários</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie sua equipe</p>
-      </div>
-     </div><!-- FINANCEIRO PAGE -->
-     <div id="page-financeiro" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Financeiro</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Controle de receitas e despesas</p>
-      </div>
-     </div><!-- ESTOQUE PAGE -->
-     <div id="page-estoque" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Estoque</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Produtos em estoque</p>
-      </div>
-     </div><!-- ESTOQUE GERAL PAGE -->
-     <div id="page-estoque-geral" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Estoque Geral</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Visão completa do inventário</p>
-      </div>
-     </div><!-- PRODUÇÃO PAGE -->
-     <div id="page-producao" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Produção</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Acompanhe a produção</p>
-      </div>
-     </div><!-- RELATÓRIOS PAGE -->
-     <div id="page-relatorios" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Relatórios</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Análise e insights do negócio</p>
-      </div>
-     </div><!-- CONFIGURAÇÕES PAGE -->
-     <div id="page-configuracoes" class="page-content fade-in hidden">
-      <div class="mb-6">
-       <h2 class="font-heading text-2xl font-bold">Configurações</h2>
-       <p class="text-sm" style="color:rgba(255,255,255,0.4)">Ajuste as preferências do sistema</p>
-      </div>
-     </div>
-    </main>
-   </div>
-  </div><!-- TOAST CONTAINER -->
-  <div id="toastContainer"></div>
-  <script>
-// ===== CONFIGURATION =====
-const defaultConfig = {
-  company_name: 'Jaguaribe Pescados',
-  company_subtitle: 'Parajuru',
-  dashboard_title: 'Painel de Controle',
-  welcome_message: 'Bem-vindo de volta!',
-  background_color: '#0a1628',
-  text_color: '#ffffff',
-  primary_action_color: '#00e6c8',
-  secondary_action_color: '#00d4ff',
-  font_family: 'DM Sans',
-  font_size: 14
-};
-
-function applyConfig(c) {
-  const company = c.company_name || defaultConfig.company_name;
-  const subtitle = c.company_subtitle || defaultConfig.company_subtitle;
-  document.getElementById('sidebarCompany').textContent = company.split(' ')[0] || company;
-  document.getElementById('companyNameTopbar').textContent = company + ' — ' + subtitle;
-  document.getElementById('welcomeMsg').textContent = c.welcome_message || defaultConfig.welcome_message;
-  document.body.style.background = c.background_color || defaultConfig.background_color;
-  const font = c.font_family || defaultConfig.font_family;
-  document.body.style.fontFamily = font + ', sans-serif';
-}
-
-if (window.elementSdk) {
-  window.elementSdk.init({
-    defaultConfig,
-    onConfigChange: async (c) => applyConfig(c),
-    mapToCapabilities: (c) => ({
-      recolorables: [
-        {
-          get: () => c.background_color || defaultConfig.background_color,
-          set: (v) => {
-            c.background_color = v;
-            window.elementSdk.setConfig({ background_color: v });
-          }
-        },
-        {
-          get: () => c.text_color || defaultConfig.text_color,
-          set: (v) => {
-            c.text_color = v;
-            window.elementSdk.setConfig({ text_color: v });
-          }
-        },
-        {
-          get: () => c.primary_action_color || defaultConfig.primary_action_color,
-          set: (v) => {
-            c.primary_action_color = v;
-            window.elementSdk.setConfig({ primary_action_color: v });
-          }
-        },
-        {
-          get: () => c.secondary_action_color || defaultConfig.secondary_action_color,
-          set: (v) => {
-            c.secondary_action_color = v;
-            window.elementSdk.setConfig({ secondary_action_color: v });
-          }
-        }
-      ],
-      borderables: [],
-      fontEditable: {
-        get: () => c.font_family || defaultConfig.font_family,
-        set: (v) => {
-          c.font_family = v;
-          window.elementSdk.setConfig({ font_family: v });
-        }
-      },
-      fontSizeable: {
-        get: () => c.font_size || defaultConfig.font_size,
-        set: (v) => {
-          c.font_size = v;
-          window.elementSdk.setConfig({ font_size: v });
-        }
-      }
-    }),
-    mapToEditPanelValues: (c) => new Map([
-      ['company_name', c.company_name || defaultConfig.company_name],
-      ['company_subtitle', c.company_subtitle || defaultConfig.company_subtitle],
-      ['dashboard_title', c.dashboard_title || defaultConfig.dashboard_title],
-      ['welcome_message', c.welcome_message || defaultConfig.welcome_message]
-    ])
-  });
-}
-
-// ===== DATA =====
-const transacoes = [
-  { desc: 'Venda Camarão — Mar Azul', tipo: 'Entrada', data: '10/01', valor: 'R$ 3.500', cor: '#00e6c8' },
-  { desc: 'Diesel embarcação', tipo: 'Saída', data: '10/01', valor: '-R$ 2.800', cor: '#ff6b6b' },
-  { desc: 'Venda Lagosta — Porto', tipo: 'Entrada', data: '09/01', valor: 'R$ 4.800', cor: '#00e6c8' },
-  { desc: 'Reparo motor', tipo: 'Saída', data: '08/01', valor: '-R$ 1.500', cor: '#ff6b6b' }
-];
-
-// ===== RENDERING FUNCTIONS =====
-function renderHorizontalCharts() {
-  // Helper: Create clean pie chart with legend on the right
-  function create3DPie(containerId, title, labels, data, colors) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    
-    // Create main wrapper with horizontal layout
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = `
-      display: flex;
-      gap: 20px;
-      width: 100%;
-      height: 100%;
-      align-items: flex-start;
-    `;
-    
-    // Create canvas for pie (left side)
-    const canvasWrapper = document.createElement('div');
-    canvasWrapper.style.cssText = `
-      flex: 0 0 180px;
-      height: 180px;
-      position: relative;
-    `;
-    
-    const canvas = document.createElement('canvas');
-    canvas.style.cssText = `
-      display: block;
-      filter: drop-shadow(0 8px 16px rgba(0,230,200,0.08));
-      transition: filter 0.3s ease;
-      width: 100%;
-      height: 100%;
-    `;
-    canvas.onmouseover = function() { this.style.filter = 'drop-shadow(0 12px 24px rgba(0,230,200,0.12))'; };
-    canvas.onmouseout = function() { this.style.filter = 'drop-shadow(0 8px 16px rgba(0,230,200,0.08))'; };
-    
-    canvasWrapper.appendChild(canvas);
-    wrapper.appendChild(canvasWrapper);
-    
-    // Create legend with percentage (right side)
-    const legend = document.createElement('div');
-    legend.style.cssText = `
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
-      overflow-y: auto;
-      max-height: 180px;
-    `;
-    
-    labels.forEach((label, idx) => {
-      const item = document.createElement('div');
-      item.style.cssText = `
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 6px 10px;
-        border-radius: 8px;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid ${colors[idx]}33;
-        transition: all 0.2s;
-        cursor: pointer;
-      `;
-      item.onmouseover = function() { 
-        this.style.background = 'rgba(255,255,255,0.08)';
-        this.style.transform = 'translateX(4px)';
-      };
-      item.onmouseout = function() { 
-        this.style.background = 'rgba(255,255,255,0.03)';
-        this.style.transform = 'translateX(0)';
-      };
-      
-      const dot = document.createElement('div');
-      dot.style.cssText = `
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: ${colors[idx]};
-        box-shadow: 0 0 10px ${colors[idx]}66;
-        flex-shrink: 0;
-      `;
-      
-      const text = document.createElement('div');
-      text.style.cssText = `
-        flex: 1;
-        font-size: 12px;
-        color: rgba(255,255,255,0.7);
-        line-height: 1.3;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      `;
-      text.textContent = label;
-      
-      const percent = document.createElement('div');
-      percent.style.cssText = `
-        font-size: 13px;
-        font-weight: 700;
-        color: ${colors[idx]};
-        text-shadow: 0 0 8px ${colors[idx]}44;
-        flex-shrink: 0;
-        min-width: 32px;
-        text-align: right;
-      `;
-      percent.textContent = `${data[idx]}%`;
-      
-      item.appendChild(dot);
-      item.appendChild(text);
-      item.appendChild(percent);
-      legend.appendChild(item);
-    });
-    
-    wrapper.appendChild(legend);
-    container.appendChild(wrapper);
-    
-    // Create chart with proper sizing
-    const ctx = canvas.getContext('2d');
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: data,
-          backgroundColor: colors,
-          borderColor: 'rgba(10,22,40,0.8)',
-          borderWidth: 3,
-          hoverBorderWidth: 4,
-          hoverOffset: 12,
-          borderRadius: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '50%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: true,
-            backgroundColor: 'rgba(10,22,40,0.95)',
-            titleColor: '#fff',
-            bodyColor: '#fff',
-            borderColor: 'rgba(0,230,200,0.5)',
-            borderWidth: 1.5,
-            padding: 12,
-            titleFont: { size: 13, weight: '600' },
-            bodyFont: { size: 12 },
-            displayColors: true,
-            callbacks: {
-              label: (ctx) => `${ctx.label}: ${ctx.parsed}%`
-            }
-          }
-        }
-      }
-    });
-  }
-
-  // Sales Distribution - 3D Pie
-  create3DPie(
-    'salesDistribution',
-    'Distribuição de Vendas',
-    ['Camarão', 'Lagosta', 'Peixe Fresco', 'Caranguejo'],
-    [35, 25, 25, 15],
-    ['#00e6c8', '#00d4ff', '#ffc837', '#ff6b6b']
-  );
-
-  // Expenses Distribution - 3D Pie
-  create3DPie(
-    'expensesDistribution',
-    'Composição de Despesas',
-    ['Combustível', 'Salários', 'Manutenção', 'Insumos'],
-    [30, 35, 20, 15],
-    ['#ff6b6b', '#ffc837', '#00d4ff', '#00e6c8']
-  );
-
-  // Stock Distribution - 3D Pie
-  create3DPie(
-    'stockDistribution',
-    'Status de Estoque',
-    ['Camarão Rosa', 'Peixe Fresco', 'Lagosta', 'Caranguejo'],
-    [40, 45, 10, 5],
-    ['#00e6c8', '#00d4ff', '#ffc837', '#ff6b6b']
-  );
-}
-
-function renderDashboard() {
-  renderTransacoes();
-  renderHorizontalCharts();
-}
-
-function renderTransacoes() {
-  const tbody = document.getElementById('recentTransactions');
-  tbody.innerHTML = transacoes.map((t, i) => `
-    <div class="transaction-item" style="animation:floatIn .4s ease forwards;animation-delay:${i * 0.08}s;opacity:0">
-      <div class="flex items-center justify-between">
-        <div class="flex-1">
-          <div class="text-sm font-medium mb-1">${t.desc}</div>
-          <div class="flex items-center gap-3">
-            <span class="text-xs px-2 py-0.5 rounded-full" style="background:${t.cor}15;color:${t.cor};font-weight:500">${t.tipo}</span>
-            <span class="text-xs" style="color:rgba(255,255,255,0.35)">${t.data}</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            LUCRO
+           </div><i data-lucide="trending-up" style="width:20px;height:20px;color:#00e6c8"></i>
           </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashLucro">
+           R$ 0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Este mês
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            GASTOS
+           </div><i data-lucide="trending-down" style="width:20px;height:20px;color:#ff6b6b"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashGastos">
+           R$ 0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Despesas
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            PRODUÇÃO
+           </div><i data-lucide="factory" style="width:20px;height:20px;color:#00d4ff"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashProducao">
+           0 kg
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Total processado
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            CLIENTES
+           </div><i data-lucide="users" style="width:20px;height:20px;color:#ffc837"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashClientes">
+           0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Cadastrados
+          </div>
+         </div>
         </div>
-        <div class="text-right ml-4">
-          <div class="font-semibold" style="color:${t.cor}">${t.valor}</div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Receitas</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartReceitas"></canvas>
+          </div>
+         </div>
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Despesas</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartDespesas"></canvas>
+          </div>
+         </div>
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Produção</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartProducao"></canvas>
+          </div>
+         </div>
         </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-// ===== NAVIGATION =====
-function navigateTo(page) {
-  document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-  const target = document.getElementById('page-' + page);
-  if (target) {
-    target.classList.remove('hidden');
-    target.classList.remove('fade-in');
-    void target.offsetWidth;
-    target.classList.add('fade-in');
-  }
-  document.querySelectorAll('.sidebar-link[data-page]').forEach(l => {
-    l.classList.toggle('active', l.dataset.page === page);
-  });
-  const titles = {
-    dashboard: 'Dashboard',
-    clientes: 'Clientes',
-    funcionarios: 'Funcionários',
-    financeiro: 'Financeiro',
-    estoque: 'Estoque',
-    'estoque-geral': 'Estoque Geral',
-    producao: 'Produção',
-    relatorios: 'Relatórios',
-    configuracoes: 'Configurações'
-  };
-  const titleEl = document.getElementById('pageTitle');
-if (titleEl) {
-  titleEl.textContent = titles[page] || page;
-   }
-
-  if (page === 'dashboard' && typeof renderDashboard === "function") {
-  renderDashboard();
-   }
-
-  if (window.innerWidth < 1024) document.getElementById('sidebar').style.transform = 'translateX(-100%)';
-}
-
-function toggleSidebar() {
-  const s = document.getElementById('sidebar');
-  const isHidden = s.style.transform === 'translateX(-100%)' || !s.style.transform;
-  s.style.transform = isHidden ? 'translateX(0)' : 'translateX(-100%)';
-}
-
-function logout() {
-  alert('Logout realizado!');
-}
-
-// ===== RESPONSIVE SIDEBAR =====
-(function() {
-  const sb = document.getElementById('sidebar');
-  function check() {
-    if (window.innerWidth < 1024) {
-      sb.style.position = 'fixed';
-      sb.style.zIndex = '100';
-      sb.style.transform = 'translateX(-100%)';
-      sb.style.transition = 'transform .2s';
-    } else {
-      sb.style.position = 'relative';
-      sb.style.transform = 'translateX(0)';
-      sb.style.transition = 'none';
-    }
-  }
-  window.addEventListener('resize', check);
-  check();
-})();
-
-// ===== INIT =====
-window.addEventListener('load', () => {
-  if (typeof renderDashboard === "function") {
-    renderDashboard();
-  }
-
-  applyConfig(defaultConfig);
-  lucide.createIcons();
-});
-  </script>
- </body>
-</html>
+        <div class="mt-6">
+         <div class="glass rounded-xl p-6">
+          <div class="mb-6">
+           <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Financeiro</h3>
+          </div>
+          <div style="space-y:4">
+           <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Receitas</span> <span style="font-weight:600" id="dashReceitas">R$ 0</span>
+           </div>
+           <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Despesas</span> <span style="font-weight:600;color:#ff6b6b" id="dashDespesas">R$ 0</span>
+           </div>
+           <div style="display:flex;justify-content:space-between;padding:12px 0"><span style="color:rgba(255,255,255,0.6)">Saldo</span> <span style="font-weight:600;color:#00e6c8" id="dashSaldo">R$ 0</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div><!-- CLIENTES PAGE -->
+       <div id="page-clientes" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Clientes</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie seus clientes</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addClientModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
+        </div>
+        <div id="clientesList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="clientesEmpty" class="text-center py-12"><i data-lucide="users" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhum cliente</p>
+        </div>
+       </div><!-- FUNCIONÁRIOS PAGE -->
+       <div id="page-funcionarios" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Funcionários</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie sua equipe</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addFuncionarioModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
+        </div>
+        <div id="funcionariosList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="funcionariosEmpty" class="text-center py-12"><i data-lucide="briefcase" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhum funcionário</p>
+        </div>
+       </div><!-- FINANCEIRO PAGE -->
+       <div id="page-financeiro" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Financeiro</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Controle de receitas e despesas</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           RECEITAS
+          </div>
+          <div class="font-heading text-2xl font-bold" id="finReceitas">
+           R$ 0
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           DESPESAS
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#ff6b6b" id="finDespesas">
+           R$ 0
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           SALDO
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#00e6c8" id="finSaldo">
+           R$ 0
+          </div>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+         <div>
+          <div class="mb-4 flex items-center justify-between">
+           <h3 class="font-heading text-lg font-semibold">Despesas Fixas</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaFixaModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
+          </div>
+          <div id="despesasFixasList" class="space-y-3"></div>
+          <div id="despesasFixasEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
+           Nenhuma despesa fixa
+          </div>
+         </div>
+         <div>
+          <div class="mb-4 flex items-center justify-between">
+           <h3 class="font-heading text-lg font-semibold">Despesas Variáveis</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaVariavelModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
+          </div>
+          <div id="despesasVariaveisList" class="space-y-3"></div>
+          <div id="despesasVariaveisEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
+           Nenhuma despesa variável
+          </div>
+         </div>
+        </div>
+        <div class="mb-6"><button class="btn-primary flex items-center gap-2 mb-4" onclick="openModal('addTransacaoModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Nova Transação </button>
+         <div class="glass rounded-xl p-6">
+          <div class="overflow-x-auto">
+           <table class="w-full text-sm">
+            <thead>
+             <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Descrição</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Tipo</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Valor</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+              <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
+             </tr>
+            </thead>
+            <tbody id="transacoesList"></tbody>
+           </table>
+          </div>
+          <div id="transacoesEmpty" class="text-center py-12"><i data-lucide="credit-card" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+           <p style="color:rgba(255,255,255,0.4)">Nenhuma transação</p>
+          </div>
+         </div>
+         </div><!-- ESTOQUE PAGE -->
+       <div id="page-estoque" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Cadastro de Lotes</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie seus lotes de camarão</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addEstoqueModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Novo Lote </button>
+        </div>
+        <div class="glass rounded-xl p-6">
+         <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+           <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Tipo de Lote</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Gramatura</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Quantidade</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+             <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
+            </tr>
+           </thead>
+           <tbody id="estoqueList"></tbody>
+          </table>
+         </div>
+         <div id="estoqueEmpty" class="text-center py-12"><i data-lucide="package" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+          <p style="color:rgba(255,255,255,0.4)">Nenhum lote cadastrado</p>
+         </div>
+        </div>
+        </div><!-- ESTOQUE GERAL PAGE - ANÁLISE DE RENDIMENTO -->
+       <div id="page-estoque-geral" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Análise de Rendimento</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Calcule o rendimento de seus lotes</p>
+        </div><!-- CARD 1: SELEÇÃO DE LOTE -->
+        <div class="glass rounded-xl p-6 mb-6">
+         <div class="mb-4">
+          <h3 class="font-heading font-semibold" style="font-size:15px">Selecione um Lote</h3>
+         </div>
+         <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:8px">Lote Disponível</label> <select id="loteRendimentoSelect" onchange="carregarDadosLote()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:10px;padding:10px 14px;width:100%;font-size:14px;cursor:pointer"> <option value="">-- Selecione um lote --</option> </select>
+         </div>
+         <div id="infoLoteRendimento" style="display:none;background:rgba(0,230,200,0.08);border:1px solid rgba(0,230,200,0.2);border-radius:10px;padding:12px;font-size:13px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+           <div>
+            <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-bottom:4px">
+             GRAMATURA
+            </div>
+            <div style="font-weight:600" id="infoGramatura">
+             -
+            </div>
+           </div>
+           <div>
+            <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-bottom:4px">
+             QUANTIDADE
+            </div>
+            <div style="font-weight:600" id="infoQuantidade">
+             -
+            </div>
+           </div>
+           <div>
+            <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-bottom:4px">
+             DATA
+            </div>
+            <div style="font-weight:600" id="infoData">
+             -
+            </div>
+           </div>
+           <div>
+            <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-bottom:4px">
+             STATUS
+            </div>
+            <div style="font-weight:600" id="infoStatus">
+             -
+            </div>
+           </div>
+          </div>
+ </div>
+         
+         
