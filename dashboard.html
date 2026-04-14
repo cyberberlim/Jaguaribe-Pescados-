@@ -4318,3 +4318,195 @@
 
       document.getElementById('relDataInicial').valueAsDate = trinta;
       document.getElementById('relDataFinal').valueAsDate = hoje;
+ 
+     // Aplicar filtros iniciais
+      aplicarFiltrosRelatorios();
+    }
+
+    function abrirExportarPDF() {
+      showToast('PDF exportado com sucesso!');
+    }
+
+    function gerarPDF() {
+      showToast('PDF gerado com sucesso!');
+    }
+
+    function logout() {
+      showToast('Logout realizado!', '#ffc837');
+ }
+ 
+    // ====== RESPONSIVE ======
+    (function() {
+      const sb = document.getElementById('sidebar');
+      function check() {
+        if (window.innerWidth < 1024) {
+          sb.style.position = 'fixed';
+          sb.style.zIndex = '100';
+          sb.style.transform = 'translateX(-100%)';
+        } else {
+          sb.style.position = 'relative';
+          sb.style.transform = 'translateX(0)';
+        }
+      }
+      window.addEventListener('resize', check);
+      check();
+    })();
+    // ====== GRÁFICOS ======
+    function initCharts() {
+      const receitas = currentData.transacoes.filter(t => t.tipo_transacao === 'entrada');
+      const despesas = currentData.transacoes.filter(t => t.tipo_transacao === 'saida');
+      
+      const ctxReceitas = document.getElementById('chartReceitas');
+      const ctxDespesas = document.getElementById('chartDespesas');
+      const ctxProducao = document.getElementById('chartProducao');
+      
+      if (chartReceitas) chartReceitas.destroy();
+      if (chartDespesas) chartDespesas.destroy();
+      if (chartProducao) chartProducao.destroy();
+
+     // Gráfico de Receitas
+      chartReceitas = new Chart(ctxReceitas, {
+        type: 'doughnut',
+        data: {
+          labels: receitas.map(r => r.descricao),
+          datasets: [{
+            data: receitas.map(r => r.valor_transacao),
+            backgroundColor: ['#00e6c8', '#00d4ff', '#1ae7dc', '#0fb9d1'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+     
+       // Gráfico de Despesas
+      chartDespesas = new Chart(ctxDespesas, {
+        type: 'doughnut',
+        data: {
+          labels: despesas.map(d => d.descricao),
+          datasets: [{
+            data: despesas.map(d => d.valor_transacao),
+            backgroundColor: ['#ff6b6b', '#ff8787', '#fa5252', '#f06595'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+// Gráfico de Produção
+      const producaoDescabecamento = currentData.producao.filter(p => p.servico === 'descabeçamento').reduce((a, b) => a + b.peso, 0);
+      const producaoFile = currentData.producao.filter(p => p.servico === 'filé').reduce((a, b) => a + b.peso, 0);
+      
+      chartProducao = new Chart(ctxProducao, {
+        type: 'pie',
+        data: {
+          labels: ['Descabeçamento', 'Filé'],
+          datasets: [{
+            data: [producaoDescabecamento, producaoFile],
+            backgroundColor: ['#00e6c8', '#00d4ff'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+    }
+        // ====== INIT ======
+    window.addEventListener('load', () => {
+      initDataSdk();
+      navigateTo('dashboard');
+      lucide.createIcons();
+      document.getElementById('entradaData').valueAsDate = new Date();
+      document.getElementById('saidaData').valueAsDate = new Date();
+      document.getElementById('transData').valueAsDate = new Date();
+      document.getElementById('estoqueData').valueAsDate = new Date();
+      
+      // Carregar dados de exemplo para demonstração
+      initExemplosData();
+      atualizarSelectLotes();
+      atualizarSelectFiltrosRelatorios();
+    });
+
+    function apagarCliente(id) {
+      const cliente = currentData.clientes.find(c => c.__backendId === id);
+      if (cliente) {
+        window.dataSdk.delete(cliente).then(result => {
+          if (result.isOk) {
+            showToast('Cliente deletado com sucesso!');
+          }
+        });
+      }
+ }
+ function apagarFuncionario(id) {
+      const funcionario = currentData.funcionarios.find(f => f.__backendId === id);
+      if (funcionario) {
+        window.dataSdk.delete(funcionario).then(result => {
+          if (result.isOk) {
+            showToast('Funcionário deletado com sucesso!');
+          }
+        });
+      }
+    }
+
+    function apagarEstoque(id) {
+      const estoque = currentData.estoque.find(e => e.__backendId === id);
+      if (estoque) {
+        window.dataSdk.delete(estoque).then(result => {
+          if (result.isOk) {
+            showToast('Lote deletado com sucesso!');
+          }
+        });
+      }
+    }
+    function editarCliente(id) {
+      showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+    }
+
+    function editarFuncionario(id) {
+      showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+    }
+
+    function editarProducao(id) {
+      showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+    }
+
+    function renderDespesasFixas() {
+      const container = document.getElementById('despesasFixasList');
+      if (!currentData.despesasFixas || currentData.despesasFixas.length === 0) {
+        container.innerHTML = '';
+        document.getElementById('despesasFixasEmpty').style.display = 'block';
+        return;
+      }
+      document.getElementById('despesasFixasEmpty').style.display = 'none';
+      container.innerHTML = currentData.despesasFixas.map(d => `
+        <div class="glass rounded-lg p-3 flex items-center justify-between">
+          <div>
+            <p style="font-size:13px;font-weight:500">${d.nome_despesa_fixa}</p>
+            <p style="font-size:11px;color:rgba(255,255,255,0.4)">Despesa Fixa</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span style="font-weight:600;color:#ff6b6b">R$ ${d.valor_despesa_fixa.toFixed(2)}</span>
+            <button class="btn-danger btn-small py-1" onclick="deleteData('${d.__backendId}')">×</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
