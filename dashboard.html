@@ -3583,26 +3583,7 @@
     }
 
     // ====== SAVE FUNCTIONS ======
-    async function salvarCliente(e) {
-      e.preventDefault();
-      if (currentData.clientes.length >= 999) {
-        showToast('Limite de clientes atingido', '#ff6b6b');
-        return;
-      }
-      const result = await window.dataSdk.create({
-        nome: document.getElementById('clientNome').value,
-        telefone: document.getElementById('clientTelefone').value,
-        historico: document.getElementById('clientHistorico').value,
-        data_criacao: new Date().toISOString(),
-        status: 'ativo'
-      });
-      if (result.isOk) {
-        closeModal(null, 'addClientModal');
-        showToast('Cliente adicionado!');
-        document.querySelector('#addClientModal form').reset();
-      }
-    }
-
+ 
     async function salvarFuncionario(e) {
       e.preventDefault();
       
