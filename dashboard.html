@@ -2037,532 +2037,905 @@
       document.getElementById('transData').valueAsDate = new Date();
       document.getElementById('dataRendimento').valueAsDate = new Date();
     });
-   </script><!-- DASHBOARD PAGE -->
-   <div id="page-dashboard" class="page-content fade-in" style="display:block">
-    <div class="mb-6">
-     <h2 class="font-heading text-2xl font-bold">Dashboard</h2>
-     <p class="text-sm" style="color:rgba(255,255,255,0.4)">Visão geral do seu negócio</p>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-     <div class="card-stat glow">
-      <div class="flex items-center justify-between mb-3">
-       <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
-        LUCRO
-       </div><i data-lucide="trending-up" style="width:20px;height:20px;color:#00e6c8"></i>
-      </div>
-      <div class="font-heading text-3xl font-bold mb-1" id="dashLucro">
-       R$ 0
-      </div>
-      <div style="color:rgba(255,255,255,0.4);font-size:12px">
-       Este mês
-      </div>
+   </script>
+  </div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jaguaribe Pescados - Sistema de Gestão</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Poppins:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);
+      color: #fff; 
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body { 
+      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a2644 100%);
+      position: relative;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(0, 230, 200, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    #appContainer { position: relative; z-index: 1; }
+    
+    .glass { 
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 230, 200, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .glass-hover:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(0, 230, 200, 0.2);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #00e6c8 0%, #00d4ff 100%);
+      color: #0a1628;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 230, 200, 0.25);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn-danger {
+      background: rgba(255, 107, 107, 0.1);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    
+    .btn-danger:hover {
+      background: rgba(255, 107, 107, 0.2);
+    }
+    
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      position: relative;
+    }
+    
+    .sidebar-link:hover {
+      background: rgba(0, 230, 200, 0.08);
+      color: #00e6c8;
+    }
+    
+    .sidebar-link.active {
+      background: rgba(0, 230, 200, 0.12);
+      color: #00e6c8;
+      border-left: 3px solid #00e6c8;
+      padding-left: 13px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="file"],
+    select,
+    textarea {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #00e6c8;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(0, 230, 200, 0.1);
+    }
+    
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 230, 200, 0.2);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 230, 200, 0.3);
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+    }
+    
+    .modal-overlay.hidden {
+      display: none;
+    }
+    
+    .table-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+      backdrop-filter: blur(12px);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-ativo {
+      background: rgba(0, 230, 200, 0.2);
+      color: #00e6c8;
+    }
+    
+    .badge-inativo {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+    }
+    
+    .badge-pendente {
+      background: rgba(255, 200, 55, 0.2);
+      color: #ffc837;
+    }
+    
+    .badge-pago {
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+    }
+    
+    .badge-pendente {
+      background: rgba(255, 200, 55, 0.2);
+      color: #ffc837;
+    }
+    
+    .card-stat {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 230, 200, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+    
+    .card-stat:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(0, 230, 200, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .shrimp-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(0, 230, 200, 0.2), rgba(0, 212, 255, 0.1));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <div id="appContainer" class="h-full flex">
+   <!-- SIDEBAR -->
+   <aside id="sidebar" class="h-full flex-shrink-0 flex flex-col glass" style="width:260px; border-right:1px solid rgba(0,230,200,0.1); transition:transform 0.3s; position: relative;">
+    <!-- Logo Header -->
+    <div class="p-6 flex items-center gap-3 border-b" style="border-color:rgba(0,230,200,0.1)">
+     <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#00e6c8,#00d4ff)">
+      <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M2 16s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path> <path d="M2 12s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path> <path d="M2 20s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path>
+      </svg>
      </div>
-     <div class="card-stat glow">
-      <div class="flex items-center justify-between mb-3">
-       <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
-        GASTOS
-       </div><i data-lucide="trending-down" style="width:20px;height:20px;color:#ff6b6b"></i>
-      </div>
-      <div class="font-heading text-3xl font-bold mb-1" id="dashGastos">
-       R$ 0
-      </div>
-      <div style="color:rgba(255,255,255,0.4);font-size:12px">
-       Despesas
-      </div>
-     </div>
-     <div class="card-stat glow">
-      <div class="flex items-center justify-between mb-3">
-       <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
-        PRODUÇÃO
-       </div><i data-lucide="factory" style="width:20px;height:20px;color:#00d4ff"></i>
-      </div>
-      <div class="font-heading text-3xl font-bold mb-1" id="dashProducao">
-       0 kg
-      </div>
-      <div style="color:rgba(255,255,255,0.4);font-size:12px">
-       Total processado
-      </div>
-     </div>
-     <div class="card-stat glow">
-      <div class="flex items-center justify-between mb-3">
-       <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
-        CLIENTES
-       </div><i data-lucide="users" style="width:20px;height:20px;color:#ffc837"></i>
-      </div>
-      <div class="font-heading text-3xl font-bold mb-1" id="dashClientes">
-       0
-      </div>
-      <div style="color:rgba(255,255,255,0.4);font-size:12px">
-       Cadastrados
-      </div>
-     </div>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-     <div class="glass rounded-xl p-4">
-      <div class="mb-4">
-       <h3 class="font-heading font-semibold" style="font-size:14px">Receitas</h3>
-      </div>
-      <div style="position:relative;width:100%;height:200px">
-       <canvas id="chartReceitas"></canvas>
-      </div>
-     </div>
-     <div class="glass rounded-xl p-4">
-      <div class="mb-4">
-       <h3 class="font-heading font-semibold" style="font-size:14px">Despesas</h3>
-      </div>
-      <div style="position:relative;width:100%;height:200px">
-       <canvas id="chartDespesas"></canvas>
-      </div>
-     </div>
-     <div class="glass rounded-xl p-4">
-      <div class="mb-4">
-       <h3 class="font-heading font-semibold" style="font-size:14px">Produção</h3>
-      </div>
-      <div style="position:relative;width:100%;height:200px">
-       <canvas id="chartProducao"></canvas>
-      </div>
-     </div>
-    </div>
-    <div class="mt-6">
-     <div class="glass rounded-xl p-6">
-      <div class="mb-6">
-       <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Financeiro</h3>
-      </div>
-      <div style="space-y:4">
-       <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Receitas</span> <span style="font-weight:600" id="dashReceitas">R$ 0</span>
-       </div>
-       <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Despesas</span> <span style="font-weight:600;color:#ff6b6b" id="dashDespesas">R$ 0</span>
-       </div>
-       <div style="display:flex;justify-content:space-between;padding:12px 0"><span style="color:rgba(255,255,255,0.6)">Saldo</span> <span style="font-weight:600;color:#00e6c8" id="dashSaldo">R$ 0</span>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div><!-- CLIENTES PAGE -->
-   <div id="page-clientes" class="page-content fade-in hidden">
-    <div class="mb-6 flex items-center justify-between">
      <div>
-      <h2 class="font-heading text-2xl font-bold">Clientes</h2>
-      <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie seus clientes</p>
-     </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addClientModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
-    </div>
-    <div id="clientesList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
-    <div id="clientesEmpty" class="text-center py-12"><i data-lucide="users" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
-     <p style="color:rgba(255,255,255,0.4)">Nenhum cliente</p>
-    </div>
-   </div><!-- FUNCIONÁRIOS PAGE -->
-   <div id="page-funcionarios" class="page-content fade-in hidden">
-    <div class="mb-6 flex items-center justify-between">
-     <div>
-      <h2 class="font-heading text-2xl font-bold">Funcionários</h2>
-      <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie sua equipe</p>
-     </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addFuncionarioModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
-    </div>
-    <div id="funcionariosList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
-    <div id="funcionariosEmpty" class="text-center py-12"><i data-lucide="briefcase" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
-     <p style="color:rgba(255,255,255,0.4)">Nenhum funcionário</p>
-    </div>
-   </div><!-- FINANCEIRO PAGE -->
-   <div id="page-financeiro" class="page-content fade-in hidden">
-    <div class="mb-6">
-     <h2 class="font-heading text-2xl font-bold">Financeiro</h2>
-     <p class="text-sm" style="color:rgba(255,255,255,0.4)">Controle de receitas e despesas</p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-     <div class="card-stat glow">
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
-       RECEITAS
+      <div class="font-bold text-sm leading-tight" id="sidebarCompany" style="font-size:15px;">
+       Jaguaribe
       </div>
-      <div class="font-heading text-2xl font-bold" id="finReceitas">
-       R$ 0
-      </div>
-     </div>
-     <div class="card-stat glow">
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
-       DESPESAS
-      </div>
-      <div class="font-heading text-2xl font-bold" style="color:#ff6b6b" id="finDespesas">
-       R$ 0
-      </div>
-     </div>
-     <div class="card-stat glow">
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
-       SALDO
-      </div>
-      <div class="font-heading text-2xl font-bold" style="color:#00e6c8" id="finSaldo">
-       R$ 0
+      <div class="text-xs" style="color:rgba(0,230,200,0.6);">
+       Pescados
       </div>
      </div>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-     <div>
-      <div class="mb-4 flex items-center justify-between">
-       <h3 class="font-heading text-lg font-semibold">Despesas Fixas</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaFixaModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
-      </div>
-      <div id="despesasFixasList" class="space-y-3"></div>
-      <div id="despesasFixasEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
-       Nenhuma despesa fixa
-      </div>
+    <nav class="flex-1 p-4 space-y-1 overflow-auto">
+     <div class="sidebar-link active" data-page="dashboard" onclick="navigateTo('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i><span>Dashboard</span>
      </div>
-     <div>
-      <div class="mb-4 flex items-center justify-between">
-       <h3 class="font-heading text-lg font-semibold">Despesas Variáveis</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaVariavelModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
-      </div>
-      <div id="despesasVariaveisList" class="space-y-3"></div>
-      <div id="despesasVariaveisEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
-       Nenhuma despesa variável
-      </div>
+     <div class="sidebar-link" data-page="clientes" onclick="navigateTo('clientes')"><i data-lucide="users" style="width:18px;height:18px"></i><span>Clientes</span>
      </div>
-    </div>
-    <div class="mb-6"><button class="btn-primary flex items-center gap-2 mb-4" onclick="openModal('addTransacaoModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Nova Transação </button>
-     <div class="glass rounded-xl p-6">
-      <div class="overflow-x-auto">
-       <table class="w-full text-sm">
-        <thead>
-         <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-          <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Descrição</th>
-          <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Tipo</th>
-          <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Valor</th>
-          <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
-          <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
-         </tr>
-        </thead>
-        <tbody id="transacoesList"></tbody>
-       </table>
-      </div>
-      <div id="transacoesEmpty" class="text-center py-12"><i data-lucide="credit-card" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
-       <p style="color:rgba(255,255,255,0.4)">Nenhuma transação</p>
-      </div>
+     <div class="sidebar-link" data-page="funcionarios" onclick="navigateTo('funcionarios')"><i data-lucide="hard-hat" style="width:18px;height:18px"></i><span>Funcionários</span>
+     </div>
+     <div class="sidebar-link" data-page="financeiro" onclick="navigateTo('financeiro')"><i data-lucide="wallet" style="width:18px;height:18px"></i><span>Financeiro</span>
+     </div>
+     <div class="sidebar-link" data-page="estoque" onclick="navigateTo('estoque')"><i data-lucide="package-2" style="width:18px;height:18px"></i><span>Estoque</span>
+     </div>
+     <div class="sidebar-link" data-page="estoque-geral" onclick="navigateTo('estoque-geral')"><i data-lucide="warehouse" style="width:18px;height:18px"></i><span>Estoque Geral</span>
+     </div>
+     <div class="sidebar-link" data-page="producao" onclick="navigateTo('producao')"><i data-lucide="zap" style="width:18px;height:18px"></i><span>Produção</span>
+     </div>
+     <div class="sidebar-link" data-page="relatorios" onclick="navigateTo('relatorios')"><i data-lucide="bar-chart-3" style="width:18px;height:18px"></i><span>Relatórios</span>
+     </div>
+     <div class="sidebar-link" data-page="configuracoes" onclick="navigateTo('configuracoes')"><i data-lucide="settings" style="width:18px;height:18px"></i><span>Configurações</span>
+     </div>
+    </nav>
+    <div class="p-4 border-t" style="border-color:rgba(0,230,200,0.1)">
+     <div class="sidebar-link" onclick="logout()"><i data-lucide="log-out" style="width:18px;height:18px"></i><span>Sair</span>
      </div>
     </div>
-   </div><!-- ESTOQUE PAGE -->
-   <div id="page-estoque" class="page-content fade-in hidden">
-    <div class="mb-6 flex items-center justify-between">
-     <div>
-      <h2 class="font-heading text-2xl font-bold">Estoque de Lotes</h2>
-      <p class="text-sm" style="color:rgba(255,255,255,0.4)">Cadastro de lotes de camarão</p>
-     </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addEstoqueModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Novo Lote </button>
-    </div>
-    <div class="glass rounded-xl p-6">
-     <div class="overflow-x-auto">
-      <table class="w-full text-sm">
-       <thead>
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Nome do Lote</th>
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Gramatura</th>
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Peso (kg)</th>
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
-         <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
-        </tr>
-       </thead>
-       <tbody id="estoqueList"></tbody>
-      </table>
-     </div>
-     <div id="estoqueEmpty" class="text-center py-12"><i data-lucide="package" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
-      <p style="color:rgba(255,255,255,0.4)">Nenhum lote cadastrado</p>
-     </div>
-    </div>
-   </div><!-- ESTOQUE GERAL PAGE -->
-   <div id="page-estoque-geral" class="page-content fade-in hidden">
-    <div class="mb-6">
-     <h2 class="font-heading text-2xl font-bold">Estoque Geral</h2>
-     <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerenciamento de peso e saídas</p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
-     <div class="card-stat glow">
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
-       PESO TOTAL
-      </div>
-      <div class="font-heading text-2xl font-bold" id="pesoTotal">
-       0 kg
+   </aside><!-- MAIN CONTENT -->
+   <div class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- TOPBAR -->
+    <header class="flex items-center justify-between px-8 py-5 flex-shrink-0 glass" style="border-bottom:1px solid rgba(0,230,200,0.1)">
+     <div class="flex items-center gap-4">
+      <button id="menuToggle" class="lg:hidden p-2 rounded-lg" style="color:rgba(255,255,255,0.5)" onclick="toggleSidebar()"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
+      <div>
+       <h1 class="font-bold text-lg" id="pageTitle" style="font-size:18px;">Dashboard</h1>
+       <p class="text-xs" style="color:rgba(255,255,255,0.5);" id="companyNameTopbar">Jaguaribe Pescados — Parajuru</p>
       </div>
      </div>
-     <div class="card-stat glow">
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
-       ENTRADAS
-      </div>
-      <div class="font-heading text-2xl font-bold" style="color:#00e6c8" id="totalEntradas">
-       0 kg
+     <div class="flex items-center gap-6">
+      <button class="relative p-2 rounded-lg hover:bg-white/5" style="color:rgba(255,255,255,0.5)"> <i data-lucide="bell" style="width:20px;height:20px"></i> <span class="absolute top-1 right-1 w-2 h-2 rounded-full" style="background:#00e6c8"></span> </button>
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold" style="background:linear-gradient(135deg,#00e6c8,#00d4ff);color:#0a1628;">
+       JP
       </div>
      </div>
-     <div class="card-stat glow">
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
-       SAÍDAS
-      </div>
-      <div class="font-heading text-2xl font-bold" style="color:#ff6b6b" id="totalSaidas">
-       0 kg
-      </div>
-     </div>
-     <div class="card-stat glow">
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
-       RENDIMENTO
-      </div>
-      <div class="font-heading text-2xl font-bold" style="color:#00d4ff" id="rendimento">
-       0 %
-      </div>
-     </div>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-     <button class="glass rounded-xl p-6 flex items-center justify-center gap-3 hover:bg-white/5 transition cursor-pointer" onclick="openModal('addEntradaModal')" style="border:2px solid rgba(0,230,200,0.3)"> <i data-lucide="arrow-down-circle" style="width:32px;height:32px;color:#00e6c8"></i>
-      <div class="text-left">
-       <div class="font-semibold">
-        Entrada de Peso
+    </header><!-- PAGE CONTENT -->
+    <main id="mainContent" class="flex-1 overflow-auto" style="height:100%;">
+     <div class="p-8">
+      <main id="mainContent" class="flex-1 overflow-auto p-6" style="height:100%"><!-- DASHBOARD PAGE -->
+       <div id="page-dashboard" class="page-content fade-in" style="display:block">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Dashboard</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Visão geral do seu negócio</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            LUCRO
+           </div><i data-lucide="trending-up" style="width:20px;height:20px;color:#00e6c8"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashLucro">
+           R$ 0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Este mês
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            GASTOS
+           </div><i data-lucide="trending-down" style="width:20px;height:20px;color:#ff6b6b"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashGastos">
+           R$ 0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Despesas
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            PRODUÇÃO
+           </div><i data-lucide="factory" style="width:20px;height:20px;color:#00d4ff"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashProducao">
+           0 kg
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Total processado
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            CLIENTES
+           </div><i data-lucide="users" style="width:20px;height:20px;color:#ffc837"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashClientes">
+           0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Cadastrados
+          </div>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Receitas</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartReceitas"></canvas>
+          </div>
+         </div>
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Despesas</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartDespesas"></canvas>
+          </div>
+         </div>
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Produção</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartProducao"></canvas>
+          </div>
+         </div>
+        </div>
+        <div class="mt-6">
+         <div class="glass rounded-xl p-6">
+          <div class="mb-6">
+           <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Financeiro</h3>
+          </div>
+          <div style="space-y:4">
+           <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Receitas</span> <span style="font-weight:600" id="dashReceitas">R$ 0</span>
+           </div>
+           <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Despesas</span> <span style="font-weight:600;color:#ff6b6b" id="dashDespesas">R$ 0</span>
+           </div>
+           <div style="display:flex;justify-content:space-between;padding:12px 0"><span style="color:rgba(255,255,255,0.6)">Saldo</span> <span style="font-weight:600;color:#00e6c8" id="dashSaldo">R$ 0</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div><!-- CLIENTES PAGE -->
+       <div id="page-clientes" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Clientes</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie seus clientes</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addClientModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
+        </div>
+        <div id="clientesList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="clientesEmpty" class="text-center py-12"><i data-lucide="users" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhum cliente</p>
+        </div>
+       </div><!-- FUNCIONÁRIOS PAGE -->
+       <div id="page-funcionarios" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Funcionários</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie sua equipe</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addFuncionarioModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
+        </div>
+        <div id="funcionariosList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="funcionariosEmpty" class="text-center py-12"><i data-lucide="briefcase" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhum funcionário</p>
+        </div>
+       </div><!-- FINANCEIRO PAGE -->
+       <div id="page-financeiro" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Financeiro</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Controle de receitas e despesas</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           RECEITAS
+          </div>
+          <div class="font-heading text-2xl font-bold" id="finReceitas">
+           R$ 0
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           DESPESAS
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#ff6b6b" id="finDespesas">
+           R$ 0
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           SALDO
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#00e6c8" id="finSaldo">
+           R$ 0
+          </div>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+         <div>
+          <div class="mb-4 flex items-center justify-between">
+           <h3 class="font-heading text-lg font-semibold">Despesas Fixas</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaFixaModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
+          </div>
+          <div id="despesasFixasList" class="space-y-3"></div>
+          <div id="despesasFixasEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
+           Nenhuma despesa fixa
+          </div>
+         </div>
+         <div>
+          <div class="mb-4 flex items-center justify-between">
+           <h3 class="font-heading text-lg font-semibold">Despesas Variáveis</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaVariavelModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
+          </div>
+          <div id="despesasVariaveisList" class="space-y-3"></div>
+          <div id="despesasVariaveisEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
+           Nenhuma despesa variável
+          </div>
+         </div>
+        </div>
+        <div class="mb-6"><button class="btn-primary flex items-center gap-2 mb-4" onclick="openModal('addTransacaoModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Nova Transação </button>
+         <div class="glass rounded-xl p-6">
+          <div class="overflow-x-auto">
+           <table class="w-full text-sm">
+            <thead>
+             <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Descrição</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Tipo</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Valor</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+              <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
+             </tr>
+            </thead>
+            <tbody id="transacoesList"></tbody>
+           </table>
+          </div>
+          <div id="transacoesEmpty" class="text-center py-12"><i data-lucide="credit-card" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+           <p style="color:rgba(255,255,255,0.4)">Nenhuma transação</p>
+          </div>
+         </div>
+        </div>
+       </div><!-- ESTOQUE PAGE -->
+       <div id="page-estoque" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Estoque de Lotes</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Cadastro de lotes de camarão</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addEstoqueModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Novo Lote </button>
+        </div>
+        <div class="glass rounded-xl p-6">
+         <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+           <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Nome do Lote</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Gramatura</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Peso (kg)</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+             <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
+            </tr>
+           </thead>
+           <tbody id="estoqueList"></tbody>
+          </table>
+         </div>
+         <div id="estoqueEmpty" class="text-center py-12"><i data-lucide="package" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+          <p style="color:rgba(255,255,255,0.4)">Nenhum lote cadastrado</p>
+         </div>
+        </div>
+       </div><!-- ESTOQUE GERAL PAGE -->
+       <div id="page-estoque-geral" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Estoque Geral</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerenciamento de peso e saídas</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           PESO TOTAL
+          </div>
+          <div class="font-heading text-2xl font-bold" id="pesoTotal">
+           0 kg
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           ENTRADAS
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#00e6c8" id="totalEntradas">
+           0 kg
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           SAÍDAS
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#ff6b6b" id="totalSaidas">
+           0 kg
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           RENDIMENTO
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#00d4ff" id="rendimento">
+           0 %
+          </div>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+         <button class="glass rounded-xl p-6 flex items-center justify-center gap-3 hover:bg-white/5 transition cursor-pointer" onclick="openModal('addEntradaModal')" style="border:2px solid rgba(0,230,200,0.3)"> <i data-lucide="arrow-down-circle" style="width:32px;height:32px;color:#00e6c8"></i>
+          <div class="text-left">
+           <div class="font-semibold">
+            Entrada de Peso
+           </div>
+           <div style="font-size:12px;color:rgba(255,255,255,0.5)">
+            Registrar entrada
+           </div>
+          </div></button> <button class="glass rounded-xl p-6 flex items-center justify-center gap-3 hover:bg-white/5 transition cursor-pointer" onclick="openModal('addSaidaModal')" style="border:2px solid rgba(255,107,107,0.3)"> <i data-lucide="arrow-up-circle" style="width:32px;height:32px;color:#ff6b6b"></i>
+          <div class="text-left">
+           <div class="font-semibold">
+            Saída de Peso
+           </div>
+           <div style="font-size:12px;color:rgba(255,255,255,0.5)">
+            Registrar saída
+           </div>
+          </div></button>
+        </div>
+        <div class="glass rounded-xl p-6">
+         <div class="mb-4">
+          <h3 class="font-heading font-semibold" style="font-size:16px">Histórico de Movimentos</h3>
+         </div>
+         <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+           <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Lote</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Antes (kg)</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Depois (kg)</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Rendimento</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+            </tr>
+           </thead>
+           <tbody id="historicoEstoqueList"></tbody>
+          </table>
+         </div>
+         <div id="historicoEstoqueEmpty" class="text-center py-12"><i data-lucide="warehouse" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+          <p style="color:rgba(255,255,255,0.4)">Nenhum movimento</p>
+         </div>
+        </div>
+       </div><!-- PRODUÇÃO PAGE -->
+       <div id="page-producao" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Produção</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Registro de produção por funcionário</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addProducaoModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Registrar </button>
+        </div>
+        <div id="producaoList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="producaoEmpty" class="text-center py-12"><i data-lucide="factory" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhuma produção registrada</p>
+        </div>
+       </div><!-- RELATÓRIOS PAGE -->
+       <div id="page-relatorios" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Relatórios</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Análise e insights do negócio</p>
+        </div><button class="btn-primary flex items-center gap-2 mb-6" onclick="gerarPDF()"> <i data-lucide="download" style="width:18px;height:18px"></i>Gerar PDF </button>
+        <div class="glass rounded-xl p-6">
+         <div class="mb-6">
+          <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Operacional</h3>
+         </div>
+         <div style="space-y:4">
+          <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Total de Clientes</span> <span id="relClientes" style="font-weight:600">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Funcionários Ativos</span> <span id="relFuncionarios" style="font-weight:600">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Total Produzido</span> <span id="relProducao" style="font-weight:600">0 kg</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0"><span>Receita Total</span> <span id="relReceita" style="font-weight:600;color:#00e6c8">R$ 0</span>
+          </div>
+         </div>
+        </div>
+       </div><!-- CONFIGURAÇÕES PAGE -->
+       <div id="page-configuracoes" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Configurações</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Personalize sua conta</p>
+        </div>
+        <div class="glass rounded-xl p-6 max-w-xl">
+         <form onsubmit="salvarConfiguracoes(event)">
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Empresa</label> <input type="text" id="configNome" placeholder="Nome da empresa">
+          </div>
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">CNPJ</label> <input type="text" id="configCNPJ" placeholder="00.000.000/0000-00">
+          </div>
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="configTelefone" placeholder="(XX) 99999-9999">
+          </div>
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Email</label> <input type="email" id="configEmail" placeholder="contato@empresa.com">
+          </div>
+          <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Endereço</label> <textarea id="configEndereco" placeholder="Rua, número, cidade" rows="3" style="resize:vertical"></textarea>
+          </div><button type="submit" class="btn-primary w-full">Salvar Configurações</button>
+         </form>
+        </div>
        </div>
-       <div style="font-size:12px;color:rgba(255,255,255,0.5)">
-        Registrar entrada
-       </div>
-      </div></button> <button class="glass rounded-xl p-6 flex items-center justify-center gap-3 hover:bg-white/5 transition cursor-pointer" onclick="openModal('addSaidaModal')" style="border:2px solid rgba(255,107,107,0.3)"> <i data-lucide="arrow-up-circle" style="width:32px;height:32px;color:#ff6b6b"></i>
-      <div class="text-left">
-       <div class="font-semibold">
-        Saída de Peso
-       </div>
-       <div style="font-size:12px;color:rgba(255,255,255,0.5)">
-        Registrar saída
-       </div>
-      </div></button>
-    </div>
-    <div class="glass rounded-xl p-6">
-     <div class="mb-4">
-      <h3 class="font-heading font-semibold" style="font-size:16px">Histórico de Movimentos</h3>
+      </main>
      </div>
-     <div class="overflow-x-auto">
-      <table class="w-full text-sm">
-       <thead>
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Lote</th>
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Antes (kg)</th>
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Depois (kg)</th>
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Rendimento</th>
-         <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
-        </tr>
-       </thead>
-       <tbody id="historicoEstoqueList"></tbody>
-      </table>
+    </main>
+   </div><!-- MODALS --> <!-- ADD CLIENT MODAL -->
+   <div id="addClientModal" class="modal-overlay hidden" onclick="closeModal(event, 'addClientModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Novo Cliente</h3><button onclick="closeModal(null, 'addClientModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
      </div>
-     <div id="historicoEstoqueEmpty" class="text-center py-12"><i data-lucide="warehouse" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
-      <p style="color:rgba(255,255,255,0.4)">Nenhum movimento</p>
+     <form onsubmit="salvarCliente(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome</label> <input type="text" id="clientNome" placeholder="Nome completo" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="clientTelefone" placeholder="(XX) 99999-9999" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Histórico</label> <textarea id="clientHistorico" placeholder="Notas" rows="3" style="resize:vertical"></textarea>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addClientModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD FUNCIONÁRIO MODAL -->
+   <div id="addFuncionarioModal" class="modal-overlay hidden" onclick="closeModal(event, 'addFuncionarioModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Novo Funcionário</h3><button onclick="closeModal(null, 'addFuncionarioModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
      </div>
+     <form onsubmit="salvarFuncionario(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome</label> <input type="text" id="funcNome" placeholder="Nome completo" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Cargo</label> <select id="funcCargo" required> <option value="">Selecione o cargo</option> <option value="fixo">Funcionário Fixo</option> <option value="produtor">Produtor</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="funcTelefone" placeholder="(XX) 99999-9999" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Chave PIX</label> <input type="text" id="funcPix" placeholder="Chave PIX">
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addFuncionarioModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
     </div>
-   </div><!-- PRODUÇÃO PAGE -->
-   <div id="page-producao" class="page-content fade-in hidden">
-    <div class="mb-6 flex items-center justify-between">
-     <div>
-      <h2 class="font-heading text-2xl font-bold">Produção</h2>
-      <p class="text-sm" style="color:rgba(255,255,255,0.4)">Registro de produção por funcionário</p>
-     </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addProducaoModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Registrar </button>
-    </div>
-    <div id="producaoList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
-    <div id="producaoEmpty" class="text-center py-12"><i data-lucide="factory" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
-     <p style="color:rgba(255,255,255,0.4)">Nenhuma produção registrada</p>
-    </div>
-   </div><!-- RELATÓRIOS PAGE -->
-   <div id="page-relatorios" class="page-content fade-in hidden">
-    <div class="mb-6">
-     <h2 class="font-heading text-2xl font-bold">Relatórios</h2>
-     <p class="text-sm" style="color:rgba(255,255,255,0.4)">Análise e insights do negócio</p>
-    </div><button class="btn-primary flex items-center gap-2 mb-6" onclick="gerarPDF()"> <i data-lucide="download" style="width:18px;height:18px"></i>Gerar PDF </button>
-    <div class="glass rounded-xl p-6">
-     <div class="mb-6">
-      <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Operacional</h3>
+   </div><!-- ADD TRANSAÇÃO MODAL -->
+   <div id="addTransacaoModal" class="modal-overlay hidden" onclick="closeModal(event, 'addTransacaoModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Nova Transação</h3><button onclick="closeModal(null, 'addTransacaoModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
      </div>
-     <div style="space-y:4">
-      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Total de Clientes</span> <span id="relClientes" style="font-weight:600">0</span>
+     <form onsubmit="salvarTransacao(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Descrição</label> <input type="text" id="transDescricao" placeholder="Descrição" required>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Funcionários Ativos</span> <span id="relFuncionarios" style="font-weight:600">0</span>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Tipo</label> <select id="transType" required> <option value="">Selecione o tipo</option> <option value="entrada">Receita</option> <option value="saida">Despesa</option> </select>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Total Produzido</span> <span id="relProducao" style="font-weight:600">0 kg</span>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="transValor" placeholder="0.00" step="0.01" required>
       </div>
-      <div style="display:flex;justify-content:space-between;padding:12px 0"><span>Receita Total</span> <span id="relReceita" style="font-weight:600;color:#00e6c8">R$ 0</span>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="transData" required>
       </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addTransacaoModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD ESTOQUE MODAL -->
+   <div id="addEstoqueModal" class="modal-overlay hidden" onclick="closeModal(event, 'addEstoqueModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Novo Lote</h3><button onclick="closeModal(null, 'addEstoqueModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
      </div>
+     <form onsubmit="salvarEstoque(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome do Lote</label> <input type="text" id="estoqueLote" placeholder="Ex: Lote A, Lote Premium" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Gramatura</label> <input type="text" id="estoqueGramatura" placeholder="Ex: 10/20, 20/30" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="estoquePeso" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="estoqueData" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addEstoqueModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
     </div>
-   </div><!-- CONFIGURAÇÕES PAGE -->
-   <div id="page-configuracoes" class="page-content fade-in hidden">
-    <div class="mb-6">
-     <h2 class="font-heading text-2xl font-bold">Configurações</h2>
-     <p class="text-sm" style="color:rgba(255,255,255,0.4)">Personalize sua conta</p>
+   </div><!-- ADD ENTRADA ESTOQUE GERAL MODAL -->
+   <div id="addEntradaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addEntradaModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Entrada de Peso</h3><button onclick="closeModal(null, 'addEntradaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarEntrada(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Lote</label> <select id="entradaLoteId" required> <option value="">Selecione um lote</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="entradaPeso" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="entradaData" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addEntradaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
+      </div>
+     </form>
     </div>
-    <div class="glass rounded-xl p-6 max-w-xl">
-     <form onsubmit="salvarConfiguracoes(event)">
-      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Empresa</label> <input type="text" id="configNome" placeholder="Nome da empresa">
+   </div><!-- ADD SAÍDA ESTOQUE GERAL MODAL -->
+   <div id="addSaidaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addSaidaModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Saída de Peso</h3><button onclick="closeModal(null, 'addSaidaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarSaida(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Lote</label> <select id="saidaLoteId" required onchange="carregarPesoAntes()"> <option value="">Selecione um lote</option> </select>
       </div>
-      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">CNPJ</label> <input type="text" id="configCNPJ" placeholder="00.000.000/0000-00">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso Antes (kg)</label> <input type="number" id="saidaPesoAntes" placeholder="0.00" step="0.01" disabled style="background:rgba(255,255,255,0.02)">
       </div>
-      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="configTelefone" placeholder="(XX) 99999-9999">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso Depois (kg)</label> <input type="number" id="saidaPeso" placeholder="0.00" step="0.01" required onchange="calcularRendimento()">
       </div>
-      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Email</label> <input type="email" id="configEmail" placeholder="contato@empresa.com">
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="saidaData" required>
       </div>
-      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Endereço</label> <textarea id="configEndereco" placeholder="Rua, número, cidade" rows="3" style="resize:vertical"></textarea>
-      </div><button type="submit" class="btn-primary w-full">Salvar Configurações</button>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addSaidaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD PRODUÇÃO MODAL -->
+   <div id="addProducaoModal" class="modal-overlay hidden" onclick="closeModal(event, 'addProducaoModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Registrar Produção</h3><button onclick="closeModal(null, 'addProducaoModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarProducao(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Funcionário</label> <select id="producFuncionario" required> <option value="">Selecione</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Serviço</label> <select id="producServico" required onchange="atualizarValorProducao()"> <option value="">Selecione</option> <option value="descabeçamento">Descabeçamento (R$ 0.50/kg)</option> <option value="filé">Filé (R$ 2.50/kg)</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Período</label> <select id="producPeriodo" required> <option value="manhã">Manhã</option> <option value="tarde">Tarde</option> <option value="noite">Noite</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="producPeso" placeholder="0.00" step="0.01" required onchange="atualizarValorProducao()">
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor Calculado (R$)</label> <input type="text" id="producValor" disabled style="background:rgba(255,255,255,0.02)">
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Código de Pagamento</label> <input type="text" id="producCodigo" placeholder="Digite o código">
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addProducaoModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD DESPESA FIXA MODAL -->
+   <div id="addDespesaFixaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addDespesaFixaModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Nova Despesa Fixa</h3><button onclick="closeModal(null, 'addDespesaFixaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarDespesaFixa(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Despesa</label> <input type="text" id="nomeDespesaFixa" placeholder="Ex: Aluguel, Salários" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="valorDespesaFixa" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addDespesaFixaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Adicionar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD DESPESA VARIÁVEL MODAL -->
+   <div id="addDespesaVariavelModal" class="modal-overlay hidden" onclick="closeModal(event, 'addDespesaVariavelModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Nova Despesa Variável</h3><button onclick="closeModal(null, 'addDespesaVariavelModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarDespesaVariavel(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Despesa</label> <input type="text" id="nomeDespesaVariavel" placeholder="Ex: Gelo, Combustível" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="valorDespesaVariavel" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addDespesaVariavelModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Adicionar</button>
+      </div>
      </form>
     </div>
    </div>
-  </div> <!-- MODALS --> <!-- ADD CLIENT MODAL -->
-  <div id="addClientModal" class="modal-overlay hidden" onclick="closeModal(event, 'addClientModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Novo Cliente</h3><button onclick="closeModal(null, 'addClientModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarCliente(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome</label> <input type="text" id="clientNome" placeholder="Nome completo" required>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="clientTelefone" placeholder="(XX) 99999-9999" required>
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Histórico</label> <textarea id="clientHistorico" placeholder="Notas" rows="3" style="resize:vertical"></textarea>
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addClientModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD FUNCIONÁRIO MODAL -->
-  <div id="addFuncionarioModal" class="modal-overlay hidden" onclick="closeModal(event, 'addFuncionarioModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Novo Funcionário</h3><button onclick="closeModal(null, 'addFuncionarioModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarFuncionario(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome</label> <input type="text" id="funcNome" placeholder="Nome completo" required>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Cargo</label> <select id="funcCargo" required> <option value="">Selecione o cargo</option> <option value="fixo">Funcionário Fixo</option> <option value="produtor">Produtor</option> </select>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="funcTelefone" placeholder="(XX) 99999-9999" required>
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Chave PIX</label> <input type="text" id="funcPix" placeholder="Chave PIX">
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addFuncionarioModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD TRANSAÇÃO MODAL -->
-  <div id="addTransacaoModal" class="modal-overlay hidden" onclick="closeModal(event, 'addTransacaoModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Nova Transação</h3><button onclick="closeModal(null, 'addTransacaoModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarTransacao(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Descrição</label> <input type="text" id="transDescricao" placeholder="Descrição" required>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Tipo</label> <select id="transType" required> <option value="">Selecione o tipo</option> <option value="entrada">Receita</option> <option value="saida">Despesa</option> </select>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="transValor" placeholder="0.00" step="0.01" required>
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="transData" required>
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addTransacaoModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD ESTOQUE MODAL -->
-  <div id="addEstoqueModal" class="modal-overlay hidden" onclick="closeModal(event, 'addEstoqueModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Novo Lote</h3><button onclick="closeModal(null, 'addEstoqueModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarEstoque(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome do Lote</label> <input type="text" id="estoqueLote" placeholder="Ex: Lote A, Lote Premium" required>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Gramatura</label> <input type="text" id="estoqueGramatura" placeholder="Ex: 10/20, 20/30" required>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="estoquePeso" placeholder="0.00" step="0.01" required>
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="estoqueData" required>
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addEstoqueModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD ENTRADA ESTOQUE GERAL MODAL -->
-  <div id="addEntradaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addEntradaModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Entrada de Peso</h3><button onclick="closeModal(null, 'addEntradaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarEntrada(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Lote</label> <select id="entradaLoteId" required> <option value="">Selecione um lote</option> </select>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="entradaPeso" placeholder="0.00" step="0.01" required>
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="entradaData" required>
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addEntradaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD SAÍDA ESTOQUE GERAL MODAL -->
-  <div id="addSaidaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addSaidaModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Saída de Peso</h3><button onclick="closeModal(null, 'addSaidaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarSaida(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Lote</label> <select id="saidaLoteId" required onchange="carregarPesoAntes()"> <option value="">Selecione um lote</option> </select>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso Antes (kg)</label> <input type="number" id="saidaPesoAntes" placeholder="0.00" step="0.01" disabled style="background:rgba(255,255,255,0.02)">
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso Depois (kg)</label> <input type="number" id="saidaPeso" placeholder="0.00" step="0.01" required onchange="calcularRendimento()">
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="saidaData" required>
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addSaidaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD PRODUÇÃO MODAL -->
-  <div id="addProducaoModal" class="modal-overlay hidden" onclick="closeModal(event, 'addProducaoModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Registrar Produção</h3><button onclick="closeModal(null, 'addProducaoModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarProducao(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Funcionário</label> <select id="producFuncionario" required> <option value="">Selecione</option> </select>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Serviço</label> <select id="producServico" required onchange="atualizarValorProducao()"> <option value="">Selecione</option> <option value="descabeçamento">Descabeçamento (R$ 0.50/kg)</option> <option value="filé">Filé (R$ 2.50/kg)</option> </select>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Período</label> <select id="producPeriodo" required> <option value="manhã">Manhã</option> <option value="tarde">Tarde</option> <option value="noite">Noite</option> </select>
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="producPeso" placeholder="0.00" step="0.01" required onchange="atualizarValorProducao()">
-     </div>
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor Calculado (R$)</label> <input type="text" id="producValor" disabled style="background:rgba(255,255,255,0.02)">
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Código de Pagamento</label> <input type="text" id="producCodigo" placeholder="Digite o código">
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addProducaoModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD DESPESA FIXA MODAL -->
-  <div id="addDespesaFixaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addDespesaFixaModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Nova Despesa Fixa</h3><button onclick="closeModal(null, 'addDespesaFixaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarDespesaFixa(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Despesa</label> <input type="text" id="nomeDespesaFixa" placeholder="Ex: Aluguel, Salários" required>
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="valorDespesaFixa" placeholder="0.00" step="0.01" required>
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addDespesaFixaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Adicionar</button>
-     </div>
-    </form>
-   </div>
-  </div><!-- ADD DESPESA VARIÁVEL MODAL -->
-  <div id="addDespesaVariavelModal" class="modal-overlay hidden" onclick="closeModal(event, 'addDespesaVariavelModal')">
-   <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
-    <div class="flex items-center justify-between mb-6">
-     <h3 class="font-heading text-xl font-bold">Nova Despesa Variável</h3><button onclick="closeModal(null, 'addDespesaVariavelModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
-    </div>
-    <form onsubmit="salvarDespesaVariavel(event)">
-     <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Despesa</label> <input type="text" id="nomeDespesaVariavel" placeholder="Ex: Gelo, Combustível" required>
-     </div>
-     <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="valorDespesaVariavel" placeholder="0.00" step="0.01" required>
-     </div>
-     <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addDespesaVariavelModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Adicionar</button>
-     </div>
-    </form>
-   </div>
-  </div>
-  <div id="toastContainer"></div>
-  <script>
+   <div id="toastContainer"></div>
+   <script>
     // ====== CONFIG ======
     const defaultConfig = {
       company_name: 'Jaguaribe Pescados',
@@ -4200,6 +4573,6 @@
       showToast('Funcionalidade em desenvolvimento', '#00d4ff');
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9edc57b09650f63b',t:'MTc3NjQzODQ3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
- </body>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9edc6e6931192874',t:'MTc3NjQzOTQxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
