@@ -1768,6 +1768,24 @@
     showToast('Erro ao salvar cliente', '#ff6b6b');
   }
 }
+    async function apagarCliente(id) {
+  if (!id) {
+    console.error('ID inválido');
+    return;
+  }
+
+  const confirmar = confirm('Deseja excluir este cliente?');
+  if (!confirmar) return;
+
+  const result = await window.dataSdk.delete(id);
+
+  if (result.isOk) {
+    showToast('Cliente removido com sucesso');
+  } else {
+    console.error(result);
+    showToast('Erro ao deletar', '#ff6b6b');
+  }
+}
 
     
     async function salvarFuncionario(e) {
