@@ -1412,29 +1412,40 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    function navigateTo(page) {
-      const pageId = 'page-' + page;
-      document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-      const pageEl = document.getElementById(pageId);
-      if (pageEl) pageEl.style.display = 'block';
-      
-      document.querySelectorAll('.sidebar-link[data-page]').forEach(l => {
-        l.classList.toggle('active', l.dataset.page === page);
-      });
-      
-      if (window.innerWidth < 1024) {
-        document.getElementById('sidebar').style.transform = 'translateX(-100%)';
-      }
+   function navigateTo(page) {
+  const pageId = 'page-' + page;
 
-      if (page === 'estoque-geral') {
-        atualizarSelectLotes();
-      }
-    }
+  // Esconde todas as páginas
+  document.querySelectorAll('.page-content')
+    .forEach(p => p.style.display = 'none');
 
-    function toggleSidebar() {
-      const s = document.getElementById('sidebar');
-      s.style.transform = s.style.transform === 'translateX(-100%)' ? 'translateX(0)' : 'translateX(-100%)';
+  // Mostra a página atual (com segurança)
+  const pageEl = document.getElementById(pageId);
+  if (pageEl) {
+    pageEl.style.display = 'block';
+  } else {
+    console.warn('Página não encontrada:', pageId);
+  }
+
+  // Ativa link da sidebar
+  document.querySelectorAll('.sidebar-link[data-page]')
+    .forEach(l => {
+      l.classList.toggle('active', l.dataset.page === page);
+    });
+
+  // Fecha sidebar no mobile
+  if (window.innerWidth < 1024) {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.transform = 'translateX(-100%)';
+  }
+
+  // Atualizações específicas
+  if (page === 'estoque-geral') {
+    if (typeof atualizarSelectLotes === 'function') {
+      atualizarSelectLotes();
     }
+  }
+}
 
     // ====== RENDER FUNCTIONS ======
     function renderClientes() {
@@ -3224,18 +3235,7 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    function navigateTo(page) {
-      document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-      document.getElementById('page-' + page).style.display = 'block';
-      document.querySelectorAll('.sidebar-link[data-page]').forEach(l => {
-        l.classList.toggle('active', l.dataset.page === page);
-      });
-      if (window.innerWidth < 1024) {
-        document.getElementById('sidebar').style.transform = 'translateX(-100%)';
-      }
-    }
-
-    function toggleSidebar() {
+      function toggleSidebar() {
       const s = document.getElementById('sidebar');
       s.style.transform = s.style.transform === 'translateX(-100%)' ? 'translateX(0)' : 'translateX(-100%)';
     }
