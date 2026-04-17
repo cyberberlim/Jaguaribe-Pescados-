@@ -1181,7 +1181,16 @@
       company_subtitle: 'Parajuru'
     };
 
-    let currentData = { clientes: [], funcionarios: [], transacoes: [], estoque: [], producao: [], historicoRendimento: [], despesasFixas: [], despesasVariaveis: [] };
+    let currentData = { 
+     clientes: [],
+     funcionarios: [],
+     transacoes: [],
+     estoque: [], producao: [],
+     historicoRendimento: [],
+     despesasFixas: [],
+     despesasVariaveis: [] 
+    };
+    
     let chartReceitas = null;
     let chartDespesas = null;
     let chartProducao = null;
@@ -2936,16 +2945,8 @@
    </div>
    <div id="toastContainer"></div>
    <script>
-    // ====== CONFIG ======
-    const defaultConfig = {
-      company_name: 'Jaguaribe Pescados',
-      company_subtitle: 'Parajuru'
-    };
 
-    let currentData = { clientes: [], funcionarios: [], transacoes: [], estoque: [], producao: [], historicoEstoque: [], despesasFixas: [], despesasVariaveis: [] };
-    let chartReceitas = null;
-    let chartDespesas = null;
-    let chartProducao = null;
+  
 
     function initExemplosData() {
       // Clientes de exemplo
@@ -3203,37 +3204,7 @@
       });
     }
 
-    // ====== DATA SDK ======
-    const dataHandler = {
-      onDataChanged(data) {
-        currentData.clientes = data.filter(d => d.nome && d.telefone && !d.cargo && !d.servico && !d.tipo_lote && !d.peso_antes);
-        currentData.funcionarios = data.filter(d => d.cargo);
-        currentData.transacoes = data.filter(d => d.tipo_transacao && !d.lote_id);
-        currentData.estoque = data.filter(d => d.tipo_lote && !d.peso_antes);
-        currentData.historicoEstoque = data.filter(d => d.peso_antes !== undefined && d.peso_depois !== undefined);
-        currentData.producao = data.filter(d => d.servico);
-        currentData.despesasFixas = data.filter(d => d.nome_despesa_fixa && d.tipo_despesa === 'fixa');
-        currentData.despesasVariaveis = data.filter(d => d.nome_despesa_fixa && d.tipo_despesa === 'variavel');
-        
-        renderClientes();
-        renderFuncionarios();
-        renderTransacoes();
-        renderEstoque();
-        renderHistoricoEstoque();
-        renderDespesasFixas();
-        renderDespesasVariaveis();
-        renderProducao();
-        updateDashboard();
-        atualizarSelectFuncionarios();
-        atualizarSelectLotes();
-      }
-    };
-
-    async function initDataSdk() {
-      const result = await window.dataSdk.init(dataHandler);
-      if (!result.isOk) console.error('Data SDK init failed');
-    }
-
+   
     // ====== HELPERS ======
     function openModal(id) {
       document.getElementById(id).classList.remove('hidden');
