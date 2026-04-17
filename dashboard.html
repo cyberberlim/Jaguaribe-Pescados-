@@ -1319,6 +1319,7 @@
         document.getElementById('infoLoteRendimento').style.display = 'none';
         renderHistoricoRendimento();
         atualizarSelectLotes();
+
       } else {
         showToast('Erro ao salvar: ' + result.error.message, '#ff6b6b');
       }
@@ -1876,6 +1877,7 @@ if (window.elementSdk) {
       window.addEventListener('resize', check);
       check();
     })();
+    // ====== CONFIG ======
     function initCharts() {
       const receitas = currentData.transacoes.filter(t => t.tipo_transacao === 'entrada');
       const despesas = currentData.transacoes.filter(t => t.tipo_transacao === 'saida');
@@ -4318,13 +4320,9 @@ if (window.elementSdk) {
       showToast('PDF exportado com sucesso!');
     }
 
-    function gerarPDF() {
-      showToast('PDF gerado com sucesso!');
-    }
+    
 
-    function logout() {
-      showToast('Logout realizado!', '#ffc837');
- }
+   
  
     // ====== RESPONSIVE ======
     (function() {
@@ -4342,19 +4340,7 @@ if (window.elementSdk) {
       window.addEventListener('resize', check);
       check();
     })();
-    // ====== GRÁFICOS ======
-    function initCharts() {
-      const receitas = currentData.transacoes.filter(t => t.tipo_transacao === 'entrada');
-      const despesas = currentData.transacoes.filter(t => t.tipo_transacao === 'saida');
-      
-      const ctxReceitas = document.getElementById('chartReceitas');
-      const ctxDespesas = document.getElementById('chartDespesas');
-      const ctxProducao = document.getElementById('chartProducao');
-      
-      if (chartReceitas) chartReceitas.destroy();
-      if (chartDespesas) chartDespesas.destroy();
-      if (chartProducao) chartProducao.destroy();
-
+   
      // Gráfico de Receitas
       chartReceitas = new Chart(ctxReceitas, {
         type: 'doughnut',
