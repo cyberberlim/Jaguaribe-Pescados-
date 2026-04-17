@@ -457,7 +457,7 @@
           <div class="mb-6">
            <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Financeiro</h3>
           </div>
-          <div class="space-y:4">
+          <div class="space-y-4">
            <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Receitas</span> <span style="font-weight:600" id="dashReceitas">R$ 0</span>
            </div>
            <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Despesas</span> <span style="font-weight:600;color:#ff6b6b" id="dashDespesas">R$ 0</span>
@@ -1327,24 +1327,25 @@
       btn.textContent = 'Calcular Rendimento';
     }
     // ====== ELEMENT SDK ======
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange: async (c) => {
-          document.getElementById('sidebarCompany').textContent = (c.company_name || defaultConfig.company_name).split(' ')[0];
-          document.getElementById('companyNameTopbar').textContent = `${c.company_name || defaultConfig.company_name} — ${c.company_subtitle || defaultConfig.company_subtitle}`;
-        },
-        mapToCapabilities: (c) => ({
-          recolorables: [],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (c) => new Map([
-          ['company_name', c.company_name || defaultConfig.company_name]
-        ])
-      });
-    }
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (c) => {
+      document.getElementById('sidebarCompany').textContent = (c.company_name || defaultConfig.company_name).split(' ')[0];
+      document.getElementById('companyNameTopbar').textContent = `${c.company_name || defaultConfig.company_name} — ${c.company_subtitle || defaultConfig.company_subtitle}`;
+    },
+    mapToCapabilities: (c) => ({
+      recolorables: [],
+      borderables: [],
+      fontEditable: false,  // ✅ CORRIGIDO: adicionado valor boolean
+      fontSizeable: false
+    }),
+    mapToEditPanelValues: (c) => new Map([
+      ['company_name', c.company_name || defaultConfig.company_name],
+      ['company_subtitle', c.company_subtitle || defaultConfig.company_subtitle]  // ✅ Opcional: adicionar subtitle
+    ])
+  });
+}
    // ====== DATA SDK ======
     const dataHandler = {
       onDataChanged(data) {
@@ -1703,7 +1704,7 @@
       document.getElementById('relProducao').textContent = producaoTotal.toFixed(1) + ' kg';
       document.getElementById('relReceita').textContent = 'R$ ' + receitas.toFixed(2);
     }
-    / ====== SAVE FUNCTIONS ======
+    // ====== SAVE FUNCTIONS ======
     async function salvarCliente(e) {
       e.preventDefault();
       if (currentData.clientes.length >= 999) {
