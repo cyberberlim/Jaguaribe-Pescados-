@@ -1181,11 +1181,8 @@
       company_subtitle: 'Parajuru'
     };
 
-    // BANCO DE DADOS LOCAL STORAGE
-    const STORAGE_KEY = 'jaguaribe_pescados_v1';
-    
-    // Tenta carregar dados salvos, se não houver, inicia vazio
-    let currentData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { 
+    // BANCO DE DADOs
+    let currentData = {
       clientes: [], 
       funcionarios: [], 
       transacoes: [], 
@@ -1375,30 +1372,40 @@
     }
 
     // ====== DATA SDK ======
-    const dataHandler = {
-      onDataChanged(data) {
-        currentData.clientes = data.filter(d => d.nome && d.telefone && !d.cargo && !d.servico && !d.tipo_lote && !d.peso_antes);
-        currentData.funcionarios = data.filter(d => d.cargo);
-        currentData.transacoes = data.filter(d => d.tipo_transacao && !d.lote_id);
-        currentData.estoque = data.filter(d => d.tipo_lote && d.quantidade !== undefined);
-        currentData.historicoRendimento = data.filter(d => d.peso_entrada !== undefined && d.peso_saida !== undefined);
-        currentData.producao = data.filter(d => d.servico);
-        currentData.despesasFixas = data.filter(d => d.nome_despesa_fixa && d.tipo_despesa === 'fixa');
-        currentData.despesasVariaveis = data.filter(d => d.nome_despesa_fixa && d.tipo_despesa === 'variavel');
+function onDataChanged(data) {
+  console.log('DADOS DO BACKEND:', data);
 
-        renderClientes();
-        renderFuncionarios();
-        renderTransacoes();
-        renderEstoque();
-        renderHistoricoRendimento();
-        renderDespesasFixas();
-        renderDespesasVariaveis();
-        renderProducao();
-        atualizarSelectFuncionarios();
-        atualizarSelectLotes();
-        updateDashboard();
-      }
-    };
+  if (!Array.isArray(data)) return;
+
+  currentData.clientes = data.filter(d => d.nome && d.telefone);
+
+  currentData.funcionarios = data.filter(d => d.nome && d.cargo);
+
+  currentData.financeiro = data.filter(d => d.valor_transacao !== undefined);
+
+  currentData.lotes = data.filter(d => d.tipo_lote);
+
+  currentData.producao = data.filter(d => d.peso_antes);
+
+  // 🔒 segurança extra (evita undefined)
+  currentData.clientes ||= [];
+  currentData.funcionarios ||= [];
+  currentData.financeiro ||= [];
+  currentData.lotes ||= [];
+  currentData.producao ||= [];
+
+  renderClientes();
+  renderFuncionarios();
+  renderFinanceiro();
+  renderLotes();
+  renderProducao();
+
+  // 🔒 só chama se existir
+  if (typeof atualizarSelectFuncionarios === 'function') atualizarSelectFuncionarios();
+  if (typeof atualizarSelectLotes === 'function') atualizarSelectLotes();
+
+  updateDashboard();
+    }
 
     async function initDataSdk() {
       const result = await window.dataSdk.init(dataHandler);
@@ -1756,49 +1763,32 @@
     async function salvarCliente(e) {
   e.preventDefault();
 
-  if (currentData.clientes.length >= 999) {
-    showToast('Limite de clientes atingido', '#ff6b6b');
+  const nome = document.getElementById('clientNome')?.value;
+  const telefone = document.getElementById('clientTelefone')?.value;
+
+  if (!nome || !telefone) {
+    showToast('Preencha os campos', '#ff6b6b');
     return;
   }
 
   const result = await window.dataSdk.create({
-    nome: document.getElementById('clientNome').value,
-    telefone: document.getElementById('clientTelefone').value,
-    historico: document.getElementById('clientHistorico').value,
-    data_criacao: new Date().toISOString(),
-    status: 'ativo'
+    nome,
+    telefone,
+    historico: document.getElementById('clientHistorico')?.value || '',
+    status: 'ativo',
+    data_criacao: new Date().toISOString()
   });
 
   if (result.isOk) {
+    showToast('Cliente salvo!');
+    document.querySelector('#addClientModal form')?.reset();
     closeModal(null, 'addClientModal');
-    showToast('✓ Cliente adicionado!');
-    document.querySelector('#addClientModal form').reset();
-  } 
-  else {
-    console.error(result);
-    showToast('Erro ao salvar cliente', '#ff6b6b');
-  }
-}
-    async function apagarCliente(id) {
-  if (!id) {
-    console.error('ID inválido');
-    return;
-  }
-
-  const confirmar = confirm('Deseja excluir este cliente?');
-  if (!confirmar) return;
-
-  const result = await window.dataSdk.delete(id);
-
-  if (result.isOk) {
-    showToast('Cliente removido com sucesso');
   } else {
     console.error(result);
-    showToast('Erro ao deletar', '#ff6b6b');
+    showToast('Erro ao salvar', '#ff6b6b');
   }
-}
+    }
 
-    
     async function salvarFuncionario(e) {
       e.preventDefault();
       const result = await window.dataSdk.create({
@@ -3287,8 +3277,6 @@
     return;
   }
 
-  console.log(currentData.clientes); // debug
-
   if (!currentData.clientes || currentData.clientes.length === 0) {
     container.innerHTML = '';
     if (empty) empty.style.display = 'block';
@@ -3298,30 +3286,36 @@
   if (empty) empty.style.display = 'none';
 
   container.innerHTML = currentData.clientes.map(c => {
-    const id = c.id || c.__backendId;
+    const id = c.id || c.__backendId || '';
 
     return `
       <div class="glass rounded-xl p-5 flex flex-col">
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
-            <h3 class="font-heading font-semibold" style="font-size:16px">${c.nome || ''}</h3>
-            <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:2px">${c.telefone || ''}</p>
+            <h3 class="font-heading font-semibold" style="font-size:16px">
+              ${escapeHTML(c.nome || '')}
+            </h3>
+            <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:2px">
+              ${escapeHTML(c.telefone || '')}
+            </p>
           </div>
-          <span class="status-badge badge-ativo" style="font-size:11px">${c.status || 'Ativo'}</span>
+          <span class="status-badge badge-ativo" style="font-size:11px">
+            ${escapeHTML(c.status || 'Ativo')}
+          </span>
         </div>
 
         <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:4px;line-height:1.4">
-          ${c.historico || 'Sem histórico'}
+          ${escapeHTML(c.historico || 'Sem histórico')}
         </p>
 
         <div class="flex gap-2 mt-auto">
           <button class="flex-1 btn-secondary py-2 text-xs"
-            onclick="editarCliente('${id}')">
+            onclick="editarCliente(\`${id}\`)">
             Editar
           </button>
 
           <button class="flex-1 btn-danger py-2 text-xs"
-            onclick="apagarCliente('${id}')">
+            onclick="apagarCliente(\`${id}\`)">
             Excluir
           </button>
         </div>
@@ -3330,7 +3324,7 @@
   }).join('');
 
   if (window.lucide) lucide.createIcons();
-}
+                           }
     function renderFuncionarios() {
       const container = document.getElementById('funcionariosList');
       const funcionarios = currentData.funcionarios;
