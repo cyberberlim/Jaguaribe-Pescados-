@@ -3745,38 +3745,44 @@ async function salvarProducao(e) {
     }
 
     // ====== SAVE FUNCTIONS ======
- 
-    async function salvarFuncionario(e) {
-      e.preventDefault();
-      
-      const btn = e.target.querySelector('button[type="submit"]');
-      const textOriginal = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = '⏳ Salvando...';
-      
-      const result = await window.dataSdk.create({
-        nome: document.getElementById('funcNome').value,
-        cargo: document.getElementById('funcCargo').value,
-        telefone: document.getElementById('funcTelefone').value,
-        pix: document.getElementById('funcPix').value,
-        data_criacao: new Date().toISOString()
-      });
-      
-      if (result.isOk) {
-        showToast('✓ Funcionário adicionado!');
-        document.querySelector('#addFuncionarioModal form').reset();
-        
-        // Fechar modal após sucesso
-        setTimeout(() => {
-          document.getElementById('addFuncionarioModal').classList.add('hidden');
-        }, 100);
-      } else {
-        showToast('Erro ao adicionar: ' + result.error.message, '#ff6b6b');
-      }
-      
-      btn.disabled = false;
-      btn.textContent = textOriginal;
-    }
+ async function salvarFuncionario(e) {
+  e.preventDefault();
+
+  const nome = document.getElementById('funcNome').value;
+  const cargo = document.getElementById('funcCargo').value;
+  const telefone = document.getElementById('funcTelefone').value;
+
+  // validação básica
+  if (!nome) {
+    showToast('Digite o nome do funcionário!', '#ff4d4f');
+    return;
+  }
+
+  const novoFuncionario = {
+    __backendId: Date.now().toString(),
+    nome: nome,
+    cargo: cargo,
+    telefone: telefone
+  };
+
+  // salva no array
+  currentData.funcionarios.push(novoFuncionario);
+
+  // salva no navegador
+  saveAll();
+
+  // atualiza selects (IMPORTANTE PRA PRODUÇÃO)
+  atualizarSelectFuncionarios();
+
+  // fecha modal
+  closeModal(null, 'addFuncionarioModal');
+
+  // limpa form
+  document.querySelector('#addFuncionarioModal form').reset();
+
+  // feedback
+  showToast('✓ Funcionário cadastrado!');
+}
 
     async function salvarTransacao(e) {
       e.preventDefault();
