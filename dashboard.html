@@ -1176,20 +1176,31 @@
    <div id="toastContainer"></div>
    <script>
     // ====== CONFIG ======
-    const defaultConfig = {
+        const defaultConfig = {
       company_name: 'Jaguaribe Pescados',
       company_subtitle: 'Parajuru'
     };
 
-    let currentData = { 
-     clientes: [],
-     funcionarios: [],
-     transacoes: [],
-     estoque: [], producao: [],
-     historicoRendimento: [],
-     despesasFixas: [],
-     despesasVariaveis: [] 
+    // BANCO DE DADOS LOCAL STORAGE
+    const STORAGE_KEY = 'jaguaribe_pescados_v1';
+    
+    // Tenta carregar dados salvos, se não houver, inicia vazio
+    let currentData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { 
+      clientes: [], 
+      funcionarios: [], 
+      transacoes: [], 
+      estoque: [], 
+      producao: [], 
+      historicoRendimento: [], 
+      despesasFixas: [], 
+      despesasVariaveis: [] 
     };
+
+    // Função universal para salvar no navegador
+    function saveAll() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
+    }
+    
     
     let chartReceitas = null;
     let chartDespesas = null;
