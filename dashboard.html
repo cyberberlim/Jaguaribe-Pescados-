@@ -1174,13 +1174,15 @@
    </div>
    <div id="toastContainer"></div>
    <script>
-    // ====== CONFIG ======
-        const STORAGE_KEY = 'jaguaribe_pescados_v1';
+    
+   // ====== CONFIG ======
+const STORAGE_KEY = 'jaguaribe_pescados_v1';
 
+// Deixe EXATAMENTE assim:
 let currentData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { 
   clientes: [],
   funcionarios: [],
-  financeiro: [], // 🔥 usa esse nome padrão
+  transacoes: [], // Usando 'transacoes' para bater com suas funções
   estoque: [],
   producao: [],
   historicoRendimento: [],
@@ -1188,16 +1190,10 @@ let currentData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
   despesasVariaveis: []
 };
 
-
-    // Função universal para salvar no navegador
-    function saveAll() {
+// Função universal para salvar
+function saveAll() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
-    }
-    
-    
-    let chartReceitas = null;
-    let chartDespesas = null;
-    let chartProducao = null;
+}
 
     // ====== RENDER ESTOQUE ======
     function renderEstoque() {
@@ -1313,12 +1309,17 @@ let currentData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
       btn.disabled = true;
       btn.textContent = 'Salvando...';
 
-      const result = await window.dataSdk.create({
+     const novoRendimento = {
+        __backendId: Date.now().toString(),
         lote_id: loteId,
         peso_entrada: pesoEntrada,
         peso_saida: pesoSaida,
         data_processamento: data
-      });
+      };
+
+      currentData.historicoRendimento.push(novoRendimento);
+      saveAll();
+      renderHistoricoRendimento();
 
       if (result.isOk) {
         const diferenca = pesoSaida - pesoEntrada;
@@ -3782,39 +3783,43 @@ async function salvarProducao(e) {
   showToast('✓ Funcionário cadastrado!');
 }
 
-    async function salvarTransacao(e) {
+   async function salvarTransacao(e) {
       e.preventDefault();
-      const result = await window.dataSdk.create({
+      const nova = {
+        __backendId: Date.now().toString(),
         descricao: document.getElementById('transDescricao').value,
         tipo_transacao: document.getElementById('transType').value,
         valor_transacao: parseFloat(document.getElementById('transValor').value),
         data_transacao: document.getElementById('transData').value
-      });
-      if (result.isOk) {
-        closeModal(null, 'addTransacaoModal');
-        showToast('Transação registrada!');
-        document.querySelector('#addTransacaoModal form').reset();
-      }
-    }
+      };
 
-    async function salvarEstoque(e) {
+      currentData.transacoes.push(nova);
+      saveAll(); 
+      renderTransacoes();
+      updateDashboard();
+      closeModal(null, 'addTransacaoModal');
+      showToast('✓ Transação registrada!');
+      e.target.reset();
+    }
+     
+   async function salvarEstoque(e) {
       e.preventDefault();
-      const result = await window.dataSdk.create({
+      const novo = {
+        __backendId: Date.now().toString(),
         tipo_lote: document.getElementById('estoqueLote').value,
         gramatura: document.getElementById('estoqueGramatura').value,
-        peso: parseFloat(document.getElementById('estoquePeso').value),
+        quantidade: parseFloat(document.getElementById('estoquePeso').value),
         data_lote: document.getElementById('estoqueData').value,
         status: 'ativo'
-      });
-      if (result.isOk) {
-        closeModal(null, 'addEstoqueModal');
-        showToast('Lote cadastrado!');
-        document.querySelector('#addEstoqueModal form').reset();
-        // Atualizar imediatamente os selects de lotes
-        setTimeout(() => {
-          atualizarSelectLotes();
-        }, 100);
-      }
+      };
+
+      currentData.estoque.push(novo);
+      saveAll();
+      renderEstoque();
+      atualizarSelectLotes();
+      closeModal(null, 'addEstoqueModal');
+      showToast('✓ Lote cadastrado!');
+      e.target.reset();
     }
 
     async function salvarEntrada(e) {
@@ -4110,38 +4115,41 @@ async function salvarProducao(e) {
       document.getElementById('statPendente').textContent = 'R$ ' + valorPendente.toFixed(2);
     }
 
-    async function salvarDespesaFixa(e) {
+   async function salvarDespesaFixa(e) {
       e.preventDefault();
-      const result = await window.dataSdk.create({
+      const nova = {
+        __backendId: Date.now().toString(),
         nome_despesa_fixa: document.getElementById('nomeDespesaFixa').value,
         valor_despesa_fixa: parseFloat(document.getElementById('valorDespesaFixa').value),
         tipo_despesa: 'fixa'
-      });
-      if (result.isOk) {
-        closeModal(null, 'addDespesaFixaModal');
-        showToast('Despesa fixa adicionada!');
-        document.querySelector('#addDespesaFixaModal form').reset();
-        renderDespesasFixas();
-        updateDashboard();
-      }
+      };
+      
+      currentData.despesasFixas.push(nova);
+      saveAll();
+      renderDespesasFixas();
+      updateDashboard();
+      closeModal(null, 'addDespesaFixaModal');
+      showToast('✓ Despesa fixa adicionada!');
+      e.target.reset();
     }
 
     async function salvarDespesaVariavel(e) {
       e.preventDefault();
-      const result = await window.dataSdk.create({
+      const nova = {
+        __backendId: Date.now().toString(),
         nome_despesa_fixa: document.getElementById('nomeDespesaVariavel').value,
         valor_despesa_fixa: parseFloat(document.getElementById('valorDespesaVariavel').value),
         tipo_despesa: 'variavel'
-      });
-      if (result.isOk) {
-        closeModal(null, 'addDespesaVariavelModal');
-        showToast('Despesa variável adicionada!');
-        document.querySelector('#addDespesaVariavelModal form').reset();
-        renderDespesasVariaveis();
-        updateDashboard();
-      }
-    }
+      };
 
+      currentData.despesasVariaveis.push(nova);
+      saveAll();
+      renderDespesasVariaveis();
+      updateDashboard();
+      closeModal(null, 'addDespesaVariavelModal');
+      showToast('✓ Despesa variável adicionada!');
+      e.target.reset();
+    }
     async function salvarConfiguracoes(e) {
       e.preventDefault();
       showToast('Configurações salvas!');
