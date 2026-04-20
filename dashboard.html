@@ -1176,26 +1176,23 @@
    <div id="toastContainer"></div>
    <script>
     // ====== CONFIG ======
-        const defaultConfig = {
-      company_name: 'Jaguaribe Pescados',
-      company_subtitle: 'Parajuru'
-    };
+        const STORAGE_KEY = 'jaguaribe_pescados_v1';
 
-    // BANCO DE DADOs
-    let currentData = {
-      clientes: [], 
-      funcionarios: [], 
-      transacoes: [], 
-      estoque: [], 
-      producao: [], 
-      historicoRendimento: [], 
-      despesasFixas: [], 
-      despesasVariaveis: [] 
-    };
+let currentData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { 
+  clientes: [],
+  funcionarios: [],
+  financeiro: [], // 🔥 usa esse nome padrão
+  estoque: [],
+  producao: [],
+  historicoRendimento: [],
+  despesasFixas: [],
+  despesasVariaveis: []
+};
+
 
     // Função universal para salvar no navegador
     function saveAll() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(currentData));
     }
     
     
@@ -4686,10 +4683,16 @@ async function salvarProducao(e) {
       `).join('');
     }
 
-    function abrirSaidaEstoque(estoqueId) {
-      showToast('Funcionalidade em desenvolvimento', '#00d4ff');
-    }
- 
-    
- (function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9edc6e6931192874',t:'MTc3NjQzOTQxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    <script>
+function abrirSaidaEstoque(estoqueId) {
+  showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+}
+
+// Inicialização do Sistema
+window.onload = () => {
+  renderDashboard();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+};
+</script>
+</body>
 </html>
