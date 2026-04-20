@@ -1805,35 +1805,27 @@ function onDataChanged(data) {
     }
 
     // ====== SAVE FUNCTIONS ======
-    async function salvarCliente(e) {
-  e.preventDefault();
+   async function salvarCliente(e) {
+      e.preventDefault();
+      const nome = document.getElementById('clientNome').value;
+      const telefone = document.getElementById('clientTelefone').value;
+      const historico = document.getElementById('clientHistorico').value;
 
-  const nome = document.getElementById('clientNome')?.value;
-  const telefone = document.getElementById('clientTelefone')?.value;
+      const novo = {
+        __backendId: Date.now().toString(),
+        nome: nome,
+        telefone: telefone,
+        historico: historico,
+        status: 'ativo'
+      };
 
-  if (!nome || !telefone) {
-    showToast('Preencha os campos', '#ff6b6b');
-    return;
-  }
-
-  const result = await window.dataSdk.create({
-    nome,
-    telefone,
-    historico: document.getElementById('clientHistorico')?.value || '',
-    status: 'ativo',
-    data_criacao: new Date().toISOString()
-  });
-
-  if (result.isOk) {
-    showToast('Cliente salvo!');
-    document.querySelector('#addClientModal form')?.reset();
-    closeModal(null, 'addClientModal');
-  } else {
-    console.error(result);
-    showToast('Erro ao salvar', '#ff6b6b');
-  }
+      currentData.clientes.push(novo);
+      saveAll(); // Salva no computador
+      renderClientes(); // Atualiza a lista na tela
+      closeModal(null, 'addClientModal');
+      e.target.reset();
+      showToast('✓ Cliente salvo no sistema!');
     }
-
     async function salvarFuncionario(e) {
   e.preventDefault();
 
@@ -1865,75 +1857,58 @@ function onDataChanged(data) {
   }
     }
 
-    async function salvarTransacao(e) {
-  e.preventDefault();
+   async function salvarTransacao(e) {
+      e.preventDefault();
+      const desc = document.getElementById('transDescricao').value;
+      const tipo = document.getElementById('transType').value;
+      const valor = parseFloat(document.getElementById('transValor').value);
+      const data = document.getElementById('transData').value;
 
-  const nova = {
-    __backendId: Date.now().toString(),
-    descricao: document.getElementById('transDescricao').value,
-    tipo_transacao: document.getElementById('transType').value,
-    valor_transacao: parseFloat(document.getElementById('transValor').value),
-    data_transacao: document.getElementById('transData').value
-  };
+      const nova = {
+        __backendId: Date.now().toString(),
+        descricao: desc,
+        tipo_transacao: tipo,
+        valor_transacao: valor,
+        data_transacao: data
+      };
 
-  if (!descricao || !tipo || isNaN(valor)) {
-    showToast('Preencha todos os campos corretamente', '#ff6b6b');
-    return;
-  }
-
-  currentData.transacoes.push(nova);
-  saveAll();
-({
-    descricao,
-    tipo_transacao: tipo,
-    valor_transacao: valor,
-    data_transacao: data
-  });
-
-  if (result.isOk) {
-    closeModal(null, 'addTransacaoModal');
-    showToast('✓ Transação registrada!');
+      currentData.financeiro.push(nova);
+      saveAll(); // Salva no computador
+      renderTransacoes(); // Atualiza a tabela
+      updateDashboard(); // Atualiza os números do topo
+      closeModal(null, 'addTransacaoModal');
+      e.target.reset();
+      showToast('✓ Transação registrada!');
+    }
     document.querySelector('#addTransacaoModal form')?.reset();
   } else {
     console.error(result);
     showToast('Erro ao salvar', '#ff6b6b');
-  } renderTransacoes();
-  updateDashboard();
-
-  showToast('✓ Transação registrada!');
-}
+  } 
     
 
-    async function salvarEstoque(e) {
-  e.preventDefault();
+   async function salvarEstoque(e) {
+      e.preventDefault();
+      const tipo = document.getElementById('estoqueLote').value;
+      const grama = document.getElementById('estoqueGramatura').value;
+      const peso = parseFloat(document.getElementById('estoquePeso').value);
+      const data = document.getElementById('estoqueData').value;
 
-  const tipo = document.getElementById('estoqueLote')?.value;
-  const gramatura = document.getElementById('estoqueGramatura')?.value;
-  const quantidade = parseFloat(document.getElementById('estoquePeso')?.value);
-  const data = document.getElementById('estoqueData')?.value;
+      const novo = {
+        __backendId: Date.now().toString(),
+        tipo_lote: tipo,
+        gramatura: grama,
+        quantidade: peso,
+        data_lote: data
+      };
 
-  if (!tipo || isNaN(quantidade)) {
-    showToast('Preencha os campos corretamente', '#ff6b6b');
-    return;
-  }
-
-  const result = await window.dataSdk.create({
-    tipo_lote: tipo,
-    gramatura,
-    quantidade,
-    data_lote: data
-  });
-
-  if (result.isOk) {
-    closeModal(null, 'addEstoqueModal');
-    showToast('✓ Lote cadastrado!');
-    document.querySelector('#addEstoqueModal form')?.reset();
-  } else {
-    console.error(result);
-    showToast('Erro ao salvar lote', '#ff6b6b');
-  }
- }
-
+      currentData.estoque.push(novo);
+      saveAll(); // Salva no computador
+      renderEstoque(); // Atualiza a tabela
+      closeModal(null, 'addEstoqueModal');
+      e.target.reset();
+      showToast('✓ Lote adicionado ao estoque!');
+    }
     function getTaxaServico(servico) {
   if (servico === 'descabeçamento') return 0.50;
   if (servico === 'filé') return 2.50;
