@@ -4753,7 +4753,9 @@ function abrirSaidaEstoque(estoqueId) {
 
 // Inicialização do Sistema
 window.onload = () => {
+  navigateTo('dashboard'); // 🔥 ESSENCIAL
   renderDashboard();
+
 
   renderClientes();
   renderFuncionarios();
