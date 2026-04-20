@@ -1495,58 +1495,107 @@ function onDataChanged(data) {
     }
 
     function renderFuncionarios() {
-      const container = document.getElementById('funcionariosList');
-      const funcionarios = currentData.funcionarios;
-      if (funcionarios.length === 0) {
-        container.innerHTML = '';
-        document.getElementById('funcionariosEmpty').style.display = 'block';
-        return;
-      }
-      document.getElementById('funcionariosEmpty').style.display = 'none';
-      container.innerHTML = funcionarios.map(f => `
-        <div class="glass rounded-xl p-5 flex flex-col">
-          <div class="flex items-start justify-between mb-3">
-            <div class="flex-1">
-              <h3 class="font-heading font-semibold" style="font-size:16px">${f.nome}</h3>
-              <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px">${f.cargo === 'fixo' ? 'Funcionário Fixo' : 'Produtor'}</p>
-            </div>
-            <span class="status-badge badge-ativo" style="font-size:11px">Ativo</span>
-          </div>
-          <div style="background:rgba(255,255,255,0.02);border-radius:8px;padding:10px;margin-bottom:4px;font-size:12px">
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-              <span style="color:rgba(255,255,255,0.5)">Telefone:</span>
-              <span>${f.telefone}</span>
-            </div>
-            <div style="display:flex;justify-content:space-between">
-              <span style="color:rgba(255,255,255,0.5)">PIX:</span>
-              <span style="font-family:monospace">${f.pix || '-'}</span>
-            </div>
-          </div>
-          <div class="flex gap-2 mt-auto">
-            <button class="flex-1 btn-danger py-2 text-xs" onclick="deleteData('${f.__backendId}')">Excluir</button>
-          </div>
+  const container = document.getElementById('funcionariosList');
+  const empty = document.getElementById('funcionariosEmpty');
+
+  if (!container) return;
+
+  const funcionarios = currentData.funcionarios || [];
+
+  if (funcionarios.length === 0) {
+    container.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+
+  if (empty) empty.style.display = 'none';
+
+  container.innerHTML = funcionarios.map(f => `
+    <div class="glass rounded-xl p-5 flex flex-col">
+      <div class="flex items-start justify-between mb-3">
+        <div class="flex-1">
+          <h3 class="font-heading font-semibold" style="font-size:16px">${f.nome || ''}</h3>
+          <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px">
+            ${f.cargo === 'fixo' ? 'Funcionário Fixo' : 'Produtor'}
+          </p>
         </div>
-      `).join('');
-      lucide.createIcons();
+        <span class="status-badge badge-ativo" style="font-size:11px">Ativo</span>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.02);border-radius:8px;padding:10px;margin-bottom:4px;font-size:12px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="color:rgba(255,255,255,0.5)">Telefone:</span>
+          <span>${f.telefone || '-'}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:rgba(255,255,255,0.5)">PIX:</span>
+          <span style="font-family:monospace">${f.pix || '-'}</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-auto">
+        <button class="flex-1 btn-danger py-2 text-xs"
+          onclick="apagarFuncionario(\`${f.__backendId}\`)">
+          Excluir
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  if (window.lucide) lucide.createIcons();
     }
 
     function renderTransacoes() {
-      const tbody = document.getElementById('transacoesList');
-      if (currentData.transacoes.length === 0) {
-        tbody.innerHTML = '';
-        document.getElementById('transacoesEmpty').style.display = 'block';
-        return;
-      }
-      document.getElementById('transacoesEmpty').style.display = 'none';
-      tbody.innerHTML = currentData.transacoes.map(t => `
-        <tr class="table-row">
-          <td class="py-3 px-4">${t.descricao}</td>
-          <td class="py-3 px-4"><span class="status-badge ${t.tipo_transacao === 'entrada' ? 'badge-ativo' : 'badge-inativo'}">${t.tipo_transacao === 'entrada' ? 'Receita' : 'Despesa'}</span></td>
-          <td class="py-3 px-4" style="font-weight:600;color:${t.tipo_transacao === 'entrada' ? '#00e6c8' : '#ff6b6b'}">R$ ${t.valor_transacao.toFixed(2)}</td>
-          <td class="py-3 px-4" style="color:rgba(255,255,255,0.6)">${new Date(t.data_transacao).toLocaleDateString('pt-BR')}</td>
-          <td class="py-3 px-4"><div class="flex justify-center"><button class="btn-danger py-1 px-2 text-xs" onclick="deleteData('${t.__backendId}')">Excluir</button></div></td>
-        </tr>
-      `).join('');
+  const tbody = document.getElementById('transacoesList');
+  const empty = document.getElementById('transacoesEmpty');
+
+  if (!tbody) return;
+
+  const lista = currentData.financeiro || [];
+
+  if (lista.length === 0) {
+    tbody.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+
+  if (empty) empty.style.display = 'none';
+
+  tbody.innerHTML = lista.map(t => {
+    const valor = Number(t.valor_transacao || 0);
+    const data = t.data_transacao 
+      ? new Date(t.data_transacao).toLocaleDateString('pt-BR') 
+      : '-';
+
+    return `
+      <tr class="table-row">
+        <td class="py-3 px-4">${t.descricao || ''}</td>
+
+        <td class="py-3 px-4">
+          <span class="status-badge ${t.tipo_transacao === 'entrada' ? 'badge-ativo' : 'badge-inativo'}">
+            ${t.tipo_transacao === 'entrada' ? 'Receita' : 'Despesa'}
+          </span>
+        </td>
+
+        <td class="py-3 px-4" style="font-weight:600;color:${t.tipo_transacao === 'entrada' ? '#00e6c8' : '#ff6b6b'}">
+          R$ ${valor.toFixed(2)}
+        </td>
+
+        <td class="py-3 px-4" style="color:rgba(255,255,255,0.6)">
+          ${data}
+        </td>
+
+        <td class="py-3 px-4">
+          <div class="flex justify-center">
+            <button class="btn-danger py-1 px-2 text-xs"
+              onclick="apagarTransacao(\`${t.__backendId}\`)">
+              Excluir
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
     }
 
     function obterQuinzena(data) {
@@ -1790,85 +1839,148 @@ function onDataChanged(data) {
     }
 
     async function salvarFuncionario(e) {
-      e.preventDefault();
-      const result = await window.dataSdk.create({
-        nome: document.getElementById('funcNome').value,
-        cargo: document.getElementById('funcCargo').value,
-        telefone: document.getElementById('funcTelefone').value,
-        pix: document.getElementById('funcPix').value,
-        data_criacao: new Date().toISOString()
-      });
-      if (result.isOk) {
-        closeModal(null, 'addFuncionarioModal');
-        showToast('✓ Funcionário adicionado!');
-        document.querySelector('#addFuncionarioModal form').reset();
-        atualizarSelectFuncionarios();
-      }
+  e.preventDefault();
+
+  const nome = document.getElementById('funcNome')?.value;
+  const cargo = document.getElementById('funcCargo')?.value;
+  const telefone = document.getElementById('funcTelefone')?.value;
+  const pix = document.getElementById('funcPix')?.value;
+
+  if (!nome || !cargo) {
+    showToast('Preencha nome e cargo', '#ff6b6b');
+    return;
+  }
+
+  const result = await window.dataSdk.create({
+    nome,
+    cargo,
+    telefone,
+    pix,
+    data_criacao: new Date().toISOString()
+  });
+
+  if (result.isOk) {
+    closeModal(null, 'addFuncionarioModal');
+    showToast('✓ Funcionário adicionado!');
+    document.querySelector('#addFuncionarioModal form')?.reset();
+  } else {
+    console.error(result);
+    showToast('Erro ao salvar', '#ff6b6b');
+  }
     }
 
     async function salvarTransacao(e) {
-      e.preventDefault();
-      const result = await window.dataSdk.create({
-        descricao: document.getElementById('transDescricao').value,
-        tipo_transacao: document.getElementById('transType').value,
-        valor_transacao: parseFloat(document.getElementById('transValor').value),
-        data_transacao: document.getElementById('transData').value
-      });
-      if (result.isOk) {
-        closeModal(null, 'addTransacaoModal');
-        showToast('✓ Transação registrada!');
-        document.querySelector('#addTransacaoModal form').reset();
-      }
+  e.preventDefault();
+
+  const descricao = document.getElementById('transDescricao')?.value;
+  const tipo = document.getElementById('transType')?.value;
+  const valor = parseFloat(document.getElementById('transValor')?.value);
+  const data = document.getElementById('transData')?.value;
+
+  if (!descricao || !tipo || isNaN(valor)) {
+    showToast('Preencha todos os campos corretamente', '#ff6b6b');
+    return;
+  }
+
+  const result = await window.dataSdk.create({
+    descricao,
+    tipo_transacao: tipo,
+    valor_transacao: valor,
+    data_transacao: data
+  });
+
+  if (result.isOk) {
+    closeModal(null, 'addTransacaoModal');
+    showToast('✓ Transação registrada!');
+    document.querySelector('#addTransacaoModal form')?.reset();
+  } else {
+    console.error(result);
+    showToast('Erro ao salvar', '#ff6b6b');
+  }
     }
 
     async function salvarEstoque(e) {
-      e.preventDefault();
-      const result = await window.dataSdk.create({
-        tipo_lote: document.getElementById('estoqueLote').value,
-        gramatura: document.getElementById('estoqueGramatura').value,
-        quantidade: parseFloat(document.getElementById('estoquePeso').value),
-        data_lote: document.getElementById('estoqueData').value
-      });
-      if (result.isOk) {
-        closeModal(null, 'addEstoqueModal');
-        showToast('✓ Lote cadastrado!');
-        document.querySelector('#addEstoqueModal form').reset();
-        setTimeout(() => {
-          atualizarSelectLotes();
-        }, 100);
-      }
-    }
+  e.preventDefault();
 
-    function atualizarValorProducao() {
-      const servico = document.getElementById('producServico').value;
-      const peso = parseFloat(document.getElementById('producPeso').value) || 0;
-      const taxa = servico === 'descabeçamento' ? 0.50 : servico === 'filé' ? 2.50 : 0;
-      const valor = peso * taxa;
-      document.getElementById('producValor').value = 'R$ ' + valor.toFixed(2);
-    }
+  const tipo = document.getElementById('estoqueLote')?.value;
+  const gramatura = document.getElementById('estoqueGramatura')?.value;
+  const quantidade = parseFloat(document.getElementById('estoquePeso')?.value);
+  const data = document.getElementById('estoqueData')?.value;
 
-    async function salvarProducao(e) {
-      e.preventDefault();
-      const servico = document.getElementById('producServico').value;
-      const peso = parseFloat(document.getElementById('producPeso').value);
-      const taxa = servico === 'descabeçamento' ? 0.50 : 2.50;
-      const valor = peso * taxa;
+  if (!tipo || isNaN(quantidade)) {
+    showToast('Preencha os campos corretamente', '#ff6b6b');
+    return;
+  }
 
-      const result = await window.dataSdk.create({
-        funcionario_id: document.getElementById('producFuncionario').value,
-        servico: servico,
-        periodo: document.getElementById('producPeriodo').value,
-        peso: peso,
-        valor: valor,
-        codigo_pagamento: document.getElementById('producCodigo').value,
-        data_producao: new Date().toISOString()
-      });
-      if (result.isOk) {
-        closeModal(null, 'addProducaoModal');
-        showToast('✓ Produção registrada!');
-        document.querySelector('#addProducaoModal form').reset();
-      }
-    }
+  const result = await window.dataSdk.create({
+    tipo_lote: tipo,
+    gramatura,
+    quantidade,
+    data_lote: data
+  });
+
+  if (result.isOk) {
+    closeModal(null, 'addEstoqueModal');
+    showToast('✓ Lote cadastrado!');
+    document.querySelector('#addEstoqueModal form')?.reset();
+  } else {
+    console.error(result);
+    showToast('Erro ao salvar lote', '#ff6b6b');
+  }
+ }
+
+    function getTaxaServico(servico) {
+  if (servico === 'descabeçamento') return 0.50;
+  if (servico === 'filé') return 2.50;
+  return 0;
+}
+
+function atualizarValorProducao() {
+  const servico = document.getElementById('producServico')?.value;
+  const peso = parseFloat(document.getElementById('producPeso')?.value) || 0;
+
+  const taxa = getTaxaServico(servico);
+  const valor = peso * taxa;
+
+  document.getElementById('producValor').value = 'R$ ' + valor.toFixed(2);
+}
+
+async function salvarProducao(e) {
+  e.preventDefault();
+
+  const funcionario = document.getElementById('producFuncionario')?.value;
+  const servico = document.getElementById('producServico')?.value;
+  const periodo = document.getElementById('producPeriodo')?.value;
+  const peso = parseFloat(document.getElementById('producPeso')?.value);
+  const codigo = document.getElementById('producCodigo')?.value;
+
+  if (!funcionario || !servico || isNaN(peso) || peso <= 0) {
+    showToast('Preencha os dados corretamente', '#ff6b6b');
+    return;
+  }
+
+  const taxa = getTaxaServico(servico);
+  const valor = peso * taxa;
+
+  const result = await window.dataSdk.create({
+    funcionario_id: funcionario,
+    servico,
+    periodo,
+    peso,
+    valor,
+    codigo_pagamento: codigo,
+    data_producao: new Date().toISOString()
+  });
+
+  if (result.isOk) {
+    closeModal(null, 'addProducaoModal');
+    showToast('✓ Produção registrada!');
+    document.querySelector('#addProducaoModal form')?.reset();
+  } else {
+    console.error(result);
+    showToast('Erro ao salvar produção', '#ff6b6b');
+  }
+ }
 
     async function salvarDespesaFixa(e) {
       e.preventDefault();
