@@ -3988,15 +3988,28 @@ async function salvarProducao(e) {
       btn.disabled = true;
       btn.textContent = '⏳ Registrando...';
       
-      const result = await window.dataSdk.create({
-        funcionario_id: funcId,
-        servico: servico,
-        periodo: turno,
-        peso: quantidade,
-        valor: valor,
-        codigo_pagamento: '',
-        data_producao: new Date().toISOString()
-      });
+      const novo = {
+  __backendId: Date.now().toString(),
+  funcionario_id: funcId,
+  servico: servico,
+  periodo: turno,
+  peso: quantidade,
+  valor: valor,
+  codigo_pagamento: '',
+  data_producao: new Date().toISOString()
+};
+
+// salva no "banco local"
+currentData.producao.push(novo);
+
+// salva no navegador
+saveAll();
+
+// atualiza a tela
+renderDashboard();
+
+// feedback visual
+showToast('✓ Produção registrada com sucesso!');
       
       if (result.isOk) {
         showToast('✓ Produção registrada com sucesso!');
@@ -4683,7 +4696,7 @@ async function salvarProducao(e) {
       `).join('');
     }
 
-    <script>
+    
 function abrirSaidaEstoque(estoqueId) {
   showToast('Funcionalidade em desenvolvimento', '#00d4ff');
 }
