@@ -8,7 +8,6 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Poppins:wght@600;700;800&amp;display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
@@ -1903,7 +1902,7 @@ function onDataChanged(data) {
 
   showToast('✓ Transação registrada!');
 }
-    }
+    
 
     async function salvarEstoque(e) {
   e.preventDefault();
@@ -3998,63 +3997,56 @@ async function salvarProducao(e) {
       calcularValorProducao();
     }
 
-    async function salvarProducao(e) {
-      e.preventDefault();
-      
-      const funcionario = document.getElementById('producFuncionario').value;
-      const turno = document.getElementById('producPeriodo').value;
-      const servico = document.getElementById('producServico').value;
-      const quantidade = parseFloat(document.getElementById('producPeso').value);
-      
-      if (!funcId || !turno || !servico || !quantidade) {
-        showToast('Preencha todos os campos!', '#ff6b6b');
-        return;
-      }
-      
-      const taxa = servico === 'descabeçamento' ? 0.50 : 2.50;
-      const valor = quantidade * taxa;
-      
-      const btn = e.target.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.textContent = '⏳ Registrando...';
-      
-      const novo = {
-  __backendId: Date.now().toString(),
-  funcionario_id: funcId,
-  servico: servico,
-  periodo: turno,
-  peso: quantidade,
-  valor: valor,
-  codigo_pagamento: '',
-  data_producao: new Date().toISOString()
-};
+   function salvarProducao(e) {
+  e.preventDefault();
+  
+  const funcionario = document.getElementById('producFuncionario').value;
+  const turno = document.getElementById('producPeriodo').value;
+  const servico = document.getElementById('producServico').value;
+  const quantidade = parseFloat(document.getElementById('producPeso').value);
+  
+  if (!funcionario || !turno || !servico || !quantidade) {
+    showToast('Preencha todos os campos!', '#ff6b6b');
+    return;
+  }
+  
+  const taxa = servico === 'descabeçamento' ? 0.50 : 2.50;
+  const valor = quantidade * taxa;
+  
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = '⏳ Registrando...';
+  
+  const novo = {
+    __backendId: Date.now().toString(),
+    funcionario_id: funcionario,
+    servico: servico,
+    periodo: turno,
+    peso: quantidade,
+    valor: valor,
+    codigo_pagamento: '',
+    data_producao: new Date().toISOString()
+  };
 
-// salva no "banco local"
-currentData.producao.push(novo);
+  // salva local
+  currentData.producao.push(novo);
+  saveAll();
 
-// salva no navegador
-saveAll();
+  // feedback
+  showToast('✓ Produção registrada com sucesso!');
 
-// atualiza a tela
-renderDashboard();
+  // reset UI
+  e.target.reset();
+  document.getElementById('producValorDisplay').textContent = '0,00';
+  closeModal(null, 'addProducaoModal');
 
-// feedback visual
-showToast('✓ Produção registrada com sucesso!');
-      
-      if (result.isOk) {
-        showToast('✓ Produção registrada com sucesso!');
-        e.target.reset();
-        document.getElementById('producValorDisplay').textContent = '0,00';
-        closeModal(null, 'addProducaoModal');
-        renderProducao();
-      } else {
-        showToast('Erro: ' + result.error.message, '#ff6b6b');
-      }
-      
-      btn.disabled = false;
-      btn.textContent = 'Registrar';
-    }
+  // re-render
+  renderDashboard();
+  renderProducao();
 
+  btn.disabled = false;
+  btn.textContent = 'Registrar';
+}
     function copiarPixFuncionario(pix) {
       if (pix && pix !== 'Não cadastrada') {
         navigator.clipboard.writeText(pix);
