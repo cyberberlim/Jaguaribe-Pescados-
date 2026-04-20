@@ -1869,17 +1869,22 @@ function onDataChanged(data) {
     async function salvarTransacao(e) {
   e.preventDefault();
 
-  const descricao = document.getElementById('transDescricao')?.value;
-  const tipo = document.getElementById('transType')?.value;
-  const valor = parseFloat(document.getElementById('transValor')?.value);
-  const data = document.getElementById('transData')?.value;
+  const nova = {
+    __backendId: Date.now().toString(),
+    descricao: document.getElementById('transDescricao').value,
+    tipo_transacao: document.getElementById('transType').value,
+    valor_transacao: parseFloat(document.getElementById('transValor').value),
+    data_transacao: document.getElementById('transData').value
+  };
 
   if (!descricao || !tipo || isNaN(valor)) {
     showToast('Preencha todos os campos corretamente', '#ff6b6b');
     return;
   }
 
-  const result = await window.dataSdk.create({
+  currentData.transacoes.push(nova);
+  saveAll();
+({
     descricao,
     tipo_transacao: tipo,
     valor_transacao: valor,
@@ -1893,7 +1898,11 @@ function onDataChanged(data) {
   } else {
     console.error(result);
     showToast('Erro ao salvar', '#ff6b6b');
-  }
+  } renderTransacoes();
+  updateDashboard();
+
+  showToast('✓ Transação registrada!');
+}
     }
 
     async function salvarEstoque(e) {
@@ -1945,11 +1954,16 @@ function atualizarValorProducao() {
 async function salvarProducao(e) {
   e.preventDefault();
 
-  const funcionario = document.getElementById('producFuncionario')?.value;
-  const servico = document.getElementById('producServico')?.value;
-  const periodo = document.getElementById('producPeriodo')?.value;
-  const peso = parseFloat(document.getElementById('producPeso')?.value);
-  const codigo = document.getElementById('producCodigo')?.value;
+  const nova = {
+    __backendId: Date.now().toString(),
+    funcionario_id: document.getElementById('producFuncionario').value,
+    servico: document.getElementById('producServico').value,
+    periodo: document.getElementById('producPeriodo').value,
+    peso: parseFloat(document.getElementById('producPeso').value),
+    valor: parseFloat(document.getElementById('producValor').value),
+    codigo_pagamento: '',
+    data_producao: new Date().toISOString()
+  };
 
   if (!funcionario || !servico || isNaN(peso) || peso <= 0) {
     showToast('Preencha os dados corretamente', '#ff6b6b');
@@ -1959,7 +1973,8 @@ async function salvarProducao(e) {
   const taxa = getTaxaServico(servico);
   const valor = peso * taxa;
 
-  const result = await window.dataSdk.create({
+ currentData.producao.push(nova);
+  saveAll();({
     funcionario_id: funcionario,
     servico,
     periodo,
@@ -1979,37 +1994,46 @@ async function salvarProducao(e) {
   }
  }
 
-    async function salvarDespesaFixa(e) {
-      e.preventDefault();
-      const result = await window.dataSdk.create({
-        nome_despesa_fixa: document.getElementById('nomeDespesaFixa').value,
-        valor_despesa_fixa: parseFloat(document.getElementById('valorDespesaFixa').value),
-        tipo_despesa: 'fixa'
-      });
-      if (result.isOk) {
-        closeModal(null, 'addDespesaFixaModal');
-        showToast('✓ Despesa fixa adicionada!');
-        document.querySelector('#addDespesaFixaModal form').reset();
-        renderDespesasFixas();
-        updateDashboard();
-      }
-    }
+   function salvarDespesaFixa(e) {
+  e.preventDefault();
 
-    async function salvarDespesaVariavel(e) {
-      e.preventDefault();
-      const result = await window.dataSdk.create({
-        nome_despesa_fixa: document.getElementById('nomeDespesaVariavel').value,
-        valor_despesa_fixa: parseFloat(document.getElementById('valorDespesaVariavel').value),
-        tipo_despesa: 'variavel'
-      });
-      if (result.isOk) {
-        closeModal(null, 'addDespesaVariavelModal');
-        showToast('✓ Despesa variável adicionada!');
-        document.querySelector('#addDespesaVariavelModal form').reset();
-        renderDespesasVariaveis();
-        updateDashboard();
-      }
-    }
+  const nova = {
+    __backendId: Date.now().toString(),
+    nome_despesa_fixa: document.getElementById('nomeDespesaFixa').value,
+    valor_despesa_fixa: parseFloat(document.getElementById('valorDespesaFixa').value)
+  };
+
+  currentData.despesasFixas.push(nova);
+  saveAll();
+
+  closeModal(null, 'addDespesaFixaModal');
+  document.querySelector('#addDespesaFixaModal form').reset();
+
+  renderDespesasFixas();
+  updateDashboard();
+
+  showToast('✓ Despesa fixa adicionada!');
+}
+    function salvarDespesaVariavel(e) {
+  e.preventDefault();
+
+  const nova = {
+    __backendId: Date.now().toString(),
+    nome_despesa_fixa: document.getElementById('nomeDespesaVariavel').value,
+    valor_despesa_fixa: parseFloat(document.getElementById('valorDespesaVariavel').value)
+  };
+
+  currentData.despesasVariaveis.push(nova);
+  saveAll();
+
+  closeModal(null, 'addDespesaVariavelModal');
+  document.querySelector('#addDespesaVariavelModal form').reset();
+
+  renderDespesasVariaveis();
+  updateDashboard();
+
+  showToast('✓ Despesa variável adicionada!');
+}
 
     async function salvarConfiguracoes(e) {
       e.preventDefault();
@@ -3977,7 +4001,7 @@ async function salvarProducao(e) {
     async function salvarProducao(e) {
       e.preventDefault();
       
-      const funcId = document.getElementById('producFuncionario').value;
+      const funcionario = document.getElementById('producFuncionario').value;
       const turno = document.getElementById('producPeriodo').value;
       const servico = document.getElementById('producServico').value;
       const quantidade = parseFloat(document.getElementById('producPeso').value);
@@ -4157,13 +4181,33 @@ showToast('✓ Produção registrada com sucesso!');
     }
 
     async function deleteData(id) {
-      const record = [...currentData.clientes, ...currentData.funcionarios, ...currentData.transacoes, ...currentData.estoque, ...currentData.producao].find(r => r.__backendId === id);
-      if (record) {
-        const result = await window.dataSdk.delete(record);
-        if (result.isOk) showToast('Deletado com sucesso!');
-      }
-    }
+  const listas = [
+    'clientes',
+    'funcionarios',
+    'transacoes',
+    'estoque',
+    'producao',
+    'despesasFixas',
+    'despesasVariaveis'
+  ];
 
+  listas.forEach(lista => {
+    currentData[lista] = currentData[lista].filter(item => item.__backendId !== id);
+  });
+
+  saveAll();
+
+  renderClientes();
+  renderFuncionarios();
+  renderTransacoes();
+  renderEstoque();
+  renderProducao();
+  renderDespesasFixas();
+  renderDespesasVariaveis();
+  updateDashboard();
+
+  showToast('✓ Deletado com sucesso!');
+}
     function atualizarSelectFuncionarios() {
       const select = document.getElementById('producFuncionario');
       if (!select) return;
@@ -4710,7 +4754,18 @@ function abrirSaidaEstoque(estoqueId) {
 // Inicialização do Sistema
 window.onload = () => {
   renderDashboard();
- atualizarSelectFuncionarios();
+
+  renderClientes();
+  renderFuncionarios();
+  renderTransacoes();
+  renderEstoque();
+  renderProducao();
+  renderDespesasFixas();
+  renderDespesasVariaveis();
+
+  atualizarSelectFuncionarios();
+  atualizarSelectLotes();
+
   if (typeof lucide !== 'undefined') lucide.createIcons();
 };
 </script>
