@@ -1341,8 +1341,8 @@ function saveAll() {
         renderHistoricoRendimento();
         atualizarSelectLotes();
       } else {
-        showToast('Erro ao salvar: ' + result.error.message, '#ff6b6b');
-      }
+  showToast('Erro ao salvar', '#ff6b6b');
+    }
 
       btn.disabled = false;
       btn.textContent = 'Calcular Rendimento';
@@ -1873,16 +1873,18 @@ function onDataChanged(data) {
         data_transacao: data
       };
 
-      currentData.financeiro.push(nova);
-      saveAll(); // Salva no computador
-      renderTransacoes(); // Atualiza a tabela
-      updateDashboard(); // Atualiza os números do topo
-      closeModal(null, 'addTransacaoModal');
-      e.target.reset();
-      showToast('✓ Transação registrada!');
+      if (true) { // (ou sua condição real)
+  currentData.financeiro.push(nova);
+  saveAll();
+  renderTransacoes();
+  updateDashboard();
+  closeModal(null, 'addTransacaoModal');
+  e.target.reset();
+  showToast('✓ Transação registrada!');
+} else {
+  console.error(result);
+  showToast('Erro ao salvar', '#ff6b6b');
     }
-    document.querySelector('#addTransacaoModal form')?.reset();
-  
     
 
    async function salvarEstoque(e) {
@@ -3982,48 +3984,48 @@ async function salvarProducao(e) {
   const servico = document.getElementById('producServico').value;
   const quantidade = parseFloat(document.getElementById('producPeso').value);
   
-  if (!funcionario || !turno || !servico || !quantidade) {
-    showToast('Preencha todos os campos!', '#ff6b6b');
+  if (!funcionario || !turno || !servico || isNaN(quantidade) || quantidade <= 0) {
+    showToast('Preencha os dados corretamente!', '#ff6b6b');
     return;
   }
   
-  const taxa = servico === 'descabeçamento' ? 0.50 : 2.50;
+  const taxa = getTaxaServico ? getTaxaServico(servico) : (servico === 'descabeçamento' ? 0.50 : 2.50);
   const valor = quantidade * taxa;
   
   const btn = e.target.querySelector('button[type="submit"]');
-  btn.disabled = true;
-  btn.textContent = '⏳ Registrando...';
-  
-  const novo = {
-    __backendId: Date.now().toString(),
-    funcionario_id: funcionario,
-    servico: servico,
-    periodo: turno,
-    peso: quantidade,
-    valor: valor,
-    codigo_pagamento: '',
-    data_producao: new Date().toISOString()
-  };
 
-  // salva local
-  currentData.producao.push(novo);
-  saveAll();
+  try {
+    btn.disabled = true;
+    btn.textContent = '⏳ Registrando...';
+    
+    const novo = {
+      __backendId: Date.now().toString(),
+      funcionario_id: funcionario,
+      servico: servico,
+      periodo: turno,
+      peso: quantidade,
+      valor: valor,
+      codigo_pagamento: '',
+      data_producao: new Date().toISOString()
+    };
 
-  // feedback
-  showToast('✓ Produção registrada com sucesso!');
+    currentData.producao.push(novo);
+    saveAll();
 
-  // reset UI
-  e.target.reset();
-  document.getElementById('producValorDisplay').textContent = '0,00';
-  closeModal(null, 'addProducaoModal');
+    showToast('✓ Produção registrada com sucesso!');
 
-  // re-render
-  renderDashboard();
-  renderProducao();
+    e.target.reset();
+    document.getElementById('producValorDisplay').textContent = '0,00';
+    closeModal(null, 'addProducaoModal');
 
-  btn.disabled = false;
-  btn.textContent = 'Registrar';
-}
+    renderDashboard();
+    renderProducao();
+
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Registrar';
+  }
+                                }
     function copiarPixFuncionario(pix) {
       if (pix && pix !== 'Não cadastrada') {
         navigator.clipboard.writeText(pix);
@@ -4739,9 +4741,7 @@ window.addEventListener('DOMContentLoaded', () => {
   atualizarSelectFuncionarios();
   atualizarSelectLotes();
 
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-  }
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 </script>
 </body>
