@@ -1882,7 +1882,7 @@ function onDataChanged(data) {
       showToast('✓ Transação registrada!');
     }
     document.querySelector('#addTransacaoModal form')?.reset();
-  } else {
+  } else }
     console.error(result);
     showToast('Erro ao salvar', '#ff6b6b');
   } 
@@ -4728,10 +4728,9 @@ function abrirSaidaEstoque(estoqueId) {
 
 // Inicialização do Sistema
 window.addEventListener('DOMContentLoaded', () => {
-  navigateTo('dashboard'); // 🔥 ESSENCIAL
+  navigateTo('dashboard');
+
   renderDashboard();
-
-
   renderClientes();
   renderFuncionarios();
   renderTransacoes();
@@ -4743,8 +4742,10 @@ window.addEventListener('DOMContentLoaded', () => {
   atualizarSelectFuncionarios();
   atualizarSelectLotes();
 
-  if (typeof lucide !== 'undefined') lucide.createIcons();
-};
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
 </script>
 </body>
 </html>
