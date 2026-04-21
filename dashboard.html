@@ -1968,26 +1968,7 @@ async function salvarProducao(e) {
   }
  }
 
-   function salvarDespesaFixa(e) {
-  e.preventDefault();
-
-  const nova = {
-    __backendId: Date.now().toString(),
-    nome_despesa_fixa: document.getElementById('nomeDespesaFixa').value,
-    valor_despesa_fixa: parseFloat(document.getElementById('valorDespesaFixa').value)
-  };
-
-  currentData.despesasFixas.push(nova);
-  saveAll();
-
-  closeModal(null, 'addDespesaFixaModal');
-  document.querySelector('#addDespesaFixaModal form').reset();
-
-  renderDespesasFixas();
-  updateDashboard();
-
-  showToast('✓ Despesa fixa adicionada!');
-}
+   
     function salvarDespesaVariavel(e) {
   e.preventDefault();
 
