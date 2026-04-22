@@ -1918,16 +1918,10 @@ function atualizarValorProducao() {
 async function salvarProducao(e) {
   e.preventDefault();
 
-  const nova = {
-    __backendId: Date.now().toString(),
-    funcionario_id: document.getElementById('producFuncionario').value,
-    servico: document.getElementById('producServico').value,
-    periodo: document.getElementById('producPeriodo').value,
-    peso: parseFloat(document.getElementById('producPeso').value),
-    valor: parseFloat(document.getElementById('producValor').value),
-    codigo_pagamento: '',
-    data_producao: new Date().toISOString()
-  };
+  const funcionario = document.getElementById('producFuncionario').value;
+  const servico = document.getElementById('producServico').value;
+  const periodo = document.getElementById('producPeriodo').value;
+  const peso = parseFloat(document.getElementById('producPeso').value);
 
   if (!funcionario || !servico || isNaN(peso) || peso <= 0) {
     showToast('Preencha os dados corretamente', '#ff6b6b');
@@ -1937,26 +1931,30 @@ async function salvarProducao(e) {
   const taxa = getTaxaServico(servico);
   const valor = peso * taxa;
 
- currentData.producao.push(nova);
-  saveAll();
+  const nova = {
+    id: Date.now().toString(),
     funcionario_id: funcionario,
-    servico,
-    periodo,
-    peso,
-    valor,
-    codigo_pagamento: codigo,
+    servico: servico,
+    periodo: periodo,
+    peso: peso,
+    valor: valor,
+    codigo_pagamento: '',
     data_producao: new Date().toISOString()
-  });
+  };
 
-  if (result.isOk) {
-    closeModal(null, 'addProducaoModal');
-    showToast('✓ Produção registrada!');
-    document.querySelector('#addProducaoModal form')?.reset();
-  } else {
-    console.error(result);
-    showToast('Erro ao salvar produção', '#ff6b6b');
+  if (!currentData.producao) {
+    currentData.producao = [];
   }
- }
+
+  currentData.producao.push(nova);
+
+  saveAll();
+
+  closeModal(null, 'addProducaoModal');
+  showToast('✓ Produção registrada!');
+
+  document.querySelector('#addProducaoModal form')?.reset();
+}
 
    
     function salvarDespesaVariavel(e) {
