@@ -1282,72 +1282,77 @@ function saveAll() {
 
     // ====== SALVAR RENDIMENTO ======
     async function salvarRendimento(e) {
-      e.preventDefault();
+  e.preventDefault();
 
-      const loteId = document.getElementById('loteRendimentoSelect').value;
-      const pesoEntrada = parseFloat(document.getElementById('pesoEntradaRendimento').value);
-      const pesoSaida = parseFloat(document.getElementById('pesoSaidaRendimento').value);
-      const data = document.getElementById('dataRendimento').value;
+  const loteId = document.getElementById('loteRendimentoSelect').value;
+  const pesoEntrada = parseFloat(document.getElementById('pesoEntradaRendimento').value);
+  const pesoSaida = parseFloat(document.getElementById('pesoSaidaRendimento').value);
+  const data = document.getElementById('dataRendimento').value;
 
-      if (!loteId) {
-        showToast('Selecione um lote!', '#ff6b6b');
-        return;
-      }
+  if (!loteId) {
+    showToast('Selecione um lote!', '#ff6b6b');
+    return;
+  }
 
-      if (!pesoEntrada || pesoEntrada <= 0) {
-        showToast('Peso de entrada inválido!', '#ff6b6b');
-        return;
-      }
+  if (!pesoEntrada || pesoEntrada <= 0) {
+    showToast('Peso de entrada inválido!', '#ff6b6b');
+    return;
+  }
 
-      if (!pesoSaida || pesoSaida < 0) {
-        showToast('Peso de saída inválido!', '#ff6b6b');
-        return;
-      }
+  if (!pesoSaida || pesoSaida < 0) {
+    showToast('Peso de saída inválido!', '#ff6b6b');
+    return;
+  }
 
-      // Desabilitar botão
-      const btn = e.target.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.textContent = 'Salvando...';
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
 
-     const novoRendimento = {
-        __backendId: Date.now().toString(),
-        lote_id: loteId,
-        peso_entrada: pesoEntrada,
-        peso_saida: pesoSaida,
-        data_processamento: data
-      };
+  const novoRendimento = {
+    id: Date.now().toString(),
+    lote_id: loteId,
+    peso_entrada: pesoEntrada,
+    peso_saida: pesoSaida,
+    data_processamento: data
+  };
 
-      currentData.historicoRendimento.push(novoRendimento);
-      saveAll();
-      renderHistoricoRendimento();
+  if (!currentData.historicoRendimento) {
+    currentData.historicoRendimento = [];
+  }
 
-       
-        const diferenca = pesoSaida - pesoEntrada;
-        const percentual = pesoEntrada > 0 ? ((pesoSaida / pesoEntrada) * 100 - 100).toFixed(1) : 0;
+  currentData.historicoRendimento.push(novoRendimento);
 
-        // Exibir resultado
-        document.getElementById('resultadoEntrada').textContent = pesoEntrada.toFixed(2);
-        document.getElementById('resultadoSaida').textContent = pesoSaida.toFixed(2);
-        document.getElementById('resultadoDiferenca').textContent = (diferenca >= 0 ? '+' : '') + diferenca.toFixed(2) + ' kg';
-        document.getElementById('resultadoPercentual').textContent = (percentual >= 0 ? '+' : '') + percentual + '%';
-        document.getElementById('resultadoPercentual').style.color = diferenca >= 0 ? '#00e6c8' : '#ff6b6b';
-        document.getElementById('resultadoDiferenca').style.color = diferenca >= 0 ? '#00e6c8' : '#ff6b6b';
-        document.getElementById('resultadoRendimento').style.display = 'block';
+  saveAll();
 
-        showToast('✓ Rendimento salvo com sucesso!');
-        e.target.reset();
-        document.getElementById('loteRendimentoSelect').value = '';
-        document.getElementById('infoLoteRendimento').style.display = 'none';
-        renderHistoricoRendimento();
-        atualizarSelectLotes();
-      } else {
-  showToast('Erro ao salvar', '#ff6b6b');
-    }
+  const diferenca = pesoSaida - pesoEntrada;
+  const percentual = pesoEntrada > 0
+    ? ((pesoSaida / pesoEntrada) * 100 - 100).toFixed(1)
+    : 0;
 
-      btn.disabled = false;
-      btn.textContent = 'Calcular Rendimento';
-    }
+  document.getElementById('resultadoEntrada').textContent = pesoEntrada.toFixed(2);
+  document.getElementById('resultadoSaida').textContent = pesoSaida.toFixed(2);
+  document.getElementById('resultadoDiferenca').textContent =
+    (diferenca >= 0 ? '+' : '') + diferenca.toFixed(2) + ' kg';
+  document.getElementById('resultadoPercentual').textContent =
+    (percentual >= 0 ? '+' : '') + percentual + '%';
 
+  document.getElementById('resultadoPercentual').style.color =
+    diferenca >= 0 ? '#00e6c8' : '#ff6b6b';
+  document.getElementById('resultadoDiferenca').style.color =
+    diferenca >= 0 ? '#00e6c8' : '#ff6b6b';
+
+  document.getElementById('resultadoRendimento').style.display = 'block';
+
+  renderHistoricoRendimento();
+  atualizarSelectLotes();
+
+  showToast('✓ Rendimento salvo com sucesso!');
+
+  e.target.reset();
+
+  btn.disabled = false;
+  btn.textContent = 'Salvar';
+}
     // ====== ELEMENT SDK ======
     if (window.elementSdk) {
       window.elementSdk.init({
