@@ -4676,17 +4676,17 @@ function abrirSaidaEstoque(estoqueId) {
 window.addEventListener('load', () => {
   navigateTo('dashboard');
 
-  renderDashboard();
-  renderClientes();
-  renderFuncionarios();
-  renderTransacoes();
-  renderEstoque();
-  renderProducao();
-  renderDespesasFixas();
-  renderDespesasVariaveis();
+  if (typeof renderDashboard === 'function') renderDashboard();
+  if (typeof renderClientes === 'function') renderClientes();
+  if (typeof renderFuncionarios === 'function') renderFuncionarios();
+  if (typeof renderTransacoes === 'function') renderTransacoes();
+  if (typeof renderEstoque === 'function') renderEstoque();
+  if (typeof renderProducao === 'function') renderProducao();
+  if (typeof renderDespesasFixas === 'function') renderDespesasFixas();
+  if (typeof renderDespesasVariaveis === 'function') renderDespesasVariaveis();
 
-  atualizarSelectFuncionarios();
-  atualizarSelectLotes();
+  if (typeof atualizarSelectFuncionarios === 'function') atualizarSelectFuncionarios();
+  if (typeof atualizarSelectLotes === 'function') atualizarSelectLotes();
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
