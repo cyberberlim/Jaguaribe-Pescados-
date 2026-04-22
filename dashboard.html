@@ -1321,7 +1321,7 @@ function saveAll() {
       saveAll();
       renderHistoricoRendimento();
 
-      if (result.isOk) {
+       {
         const diferenca = pesoSaida - pesoEntrada;
         const percentual = pesoEntrada > 0 ? ((pesoSaida / pesoEntrada) * 100 - 100).toFixed(1) : 0;
 
