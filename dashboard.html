@@ -2149,14 +2149,7 @@ async function salvarProducao(e) {
       }
     }
 
-    window.addEventListener('load', () => {
-      initDataSdk();
-      navigateTo('dashboard');
-      lucide.createIcons();
-      document.getElementById('estoqueData').valueAsDate = new Date();
-      document.getElementById('transData').valueAsDate = new Date();
-      document.getElementById('dataRendimento').valueAsDate = new Date();
-    });
+    
    </script>
   </div>
   <meta charset="UTF-8">
@@ -4582,21 +4575,7 @@ async function salvarProducao(e) {
     }
 
     // ====== INIT ======
-    window.addEventListener('load', () => {
-      initDataSdk();
-      navigateTo('dashboard');
-      lucide.createIcons();
-      document.getElementById('entradaData').valueAsDate = new Date();
-      document.getElementById('saidaData').valueAsDate = new Date();
-      document.getElementById('transData').valueAsDate = new Date();
-      document.getElementById('estoqueData').valueAsDate = new Date();
-      
-      // Carregar dados de exemplo para demonstração
-      initExemplosData();
-      atualizarSelectLotes();
-      atualizarSelectFiltrosRelatorios();
-    });
-
+    
     function apagarCliente(id) {
       const cliente = currentData.clientes.find(c => c.__backendId === id);
       if (cliente) {
