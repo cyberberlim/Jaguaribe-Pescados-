@@ -1428,40 +1428,37 @@ function onDataChanged(data) {
     }
 
    function navigateTo(page) {
-  // 1. Esconde todas as páginas
+  // 1. Esconde TODAS as seções
   document.querySelectorAll('.page-content').forEach(p => {
     p.style.display = 'none';
   });
 
-  // 2. MOSTRAR A PÁGINA (Ajustado para o seu HTML)
-  // Tentamos achar pelo nome direto (ex: 'clientes') ou com o prefixo 'page-'
-  const pageEl = document.getElementById(page) || document.getElementById('page-' + page);
-  
+  // 2. Tenta achar o ID de 3 jeitos (o jeito certo, com '-page' ou com 'page-')
+  const pageEl = document.getElementById(page) || 
+                 document.getElementById(page + '-page') || 
+                 document.getElementById('page-' + page);
+
   if (pageEl) {
     pageEl.style.display = 'block';
+    // Garante que o scroll volte para o topo da página nova
+    window.scrollTo(0, 0); 
   } else {
-    // Se não achar, ele avisa no F12 qual o nome que está faltando
-    console.warn('Página não encontrada no HTML:', page);
+    // Se você estiver no celular, isso vai te mostrar um aviso do que está errado
+    alert('Erro: Não achei a seção "' + page + '" no seu código HTML.');
   }
 
-  // 3. Ativa link da sidebar (corrigido para bater com o seu data-page)
+  // 3. Atualiza o botão da sidebar
   document.querySelectorAll('.sidebar-link').forEach(l => {
     l.classList.toggle('active', l.getAttribute('data-page') === page);
   });
 
-  // 4. Fecha sidebar no mobile
-  if (window.innerWidth < 1024) {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.style.transform = 'translateX(-100%)';
-  }
-
-  // 5. Atualizações específicas
-  if (page === 'estoque' || page === 'estoque-geral') {
-    if (typeof atualizarSelectLotes === 'function') {
-      atualizarSelectLotes();
-    }
+  // 4. Fecha a sidebar no celular
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar && window.innerWidth < 1024) {
+    sidebar.style.transform = 'translateX(-100%)';
   }
     }
+    
     
     // ====== RENDER FUNCTIONS ======
     function renderClientes() {
