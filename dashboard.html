@@ -4722,5 +4722,22 @@ window.addEventListener('DOMContentLoaded', () => {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 });
 </script>
+   <script>
+function navigateTo(pageId) {
+  const pages = document.querySelectorAll('.page-content');
+
+  pages.forEach(page => {
+    page.style.display = 'none';
+  });
+
+  const target = document.getElementById('page-' + pageId);
+
+  if (target) {
+    target.style.display = 'block';
+  } else {
+    alert('Página não encontrada: ' + pageId);
+  }
+}
+   </script>
 </body>
 </html>
