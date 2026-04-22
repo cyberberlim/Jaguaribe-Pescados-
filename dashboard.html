@@ -4703,18 +4703,26 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
    <script>
 function navigateTo(pageId) {
+  // Trocar páginas
   const pages = document.querySelectorAll('.page-content');
-
   pages.forEach(page => {
     page.style.display = 'none';
   });
 
   const target = document.getElementById('page-' + pageId);
-
   if (target) {
     target.style.display = 'block';
   } else {
-    alert('Página não encontrada: ' + pageId);
+    console.warn('Página não encontrada:', pageId);
+  }
+
+  // 🔥 Fechar sidebar
+  const sidebar = document.getElementById('sidebar');
+
+  if (sidebar) {
+    sidebar.style.transform = 'translateX(-100%)';
+    sidebar.classList.remove('open');
+    sidebar.classList.remove('active');
   }
 }
    </script>
