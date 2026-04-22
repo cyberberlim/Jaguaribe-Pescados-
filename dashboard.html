@@ -1784,26 +1784,35 @@ function onDataChanged(data) {
 
     // ====== SAVE FUNCTIONS ======
    async function salvarCliente(e) {
-      e.preventDefault();
-      const nome = document.getElementById('clientNome').value;
-      const telefone = document.getElementById('clientTelefone').value;
-      const historico = document.getElementById('clientHistorico').value;
+  e.preventDefault();
 
-      const novo = {
-        __backendId: Date.now().toString(),
-        nome: nome,
-        telefone: telefone,
-        historico: historico,
-        status: 'ativo'
-      };
+  console.log("Salvando cliente...");
 
-      currentData.clientes.push(novo);
-      saveAll(); // Salva no computador
-      renderClientes(); // Atualiza a lista na tela
-      closeModal(null, 'addClientModal');
-      e.target.reset();
-      showToast('✓ Cliente salvo no sistema!');
-    }
+  const nome = document.getElementById('clientNome').value;
+  const telefone = document.getElementById('clientTelefone').value;
+  const historico = document.getElementById('clientHistorico').value;
+
+  if (!currentData) currentData = {};
+  if (!currentData.clientes) currentData.clientes = [];
+
+  const novo = {
+    __backendId: Date.now().toString(),
+    nome,
+    telefone,
+    historico,
+    status: 'ativo'
+  };
+
+  currentData.clientes.push(novo);
+
+  if (typeof saveAll === 'function') saveAll();
+  if (typeof renderClientes === 'function') renderClientes();
+  if (typeof closeModal === 'function') closeModal(null, 'addClientModal');
+  if (typeof showToast === 'function') showToast('✓ Cliente salvo no sistema!');
+
+  const form = document.querySelector('#addClientModal form');
+  if (form) form.reset();
+}
     async function salvarFuncionario(e) {
   e.preventDefault();
 
