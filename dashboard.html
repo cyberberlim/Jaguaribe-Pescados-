@@ -1405,8 +1405,19 @@ function onDataChanged(data) {
     }
 
     async function initDataSdk() {
-      const result = await window.dataSdk.init(onDataChanged);
-      if (!result.isOk) console.error('Data SDK init failed');
+  if (!window.dataSdk) {
+    console.warn('DataSdk não encontrado, pulando inicialização');
+    return;
+  }
+
+  try {
+    const result = await window.dataSdk.init(onDataChanged);
+    if (!result.isOk) {
+      console.error('Data SDK init failed');
+    }
+  } catch (e) {
+    console.error('Erro ao iniciar DataSdk:', e);
+  }
     }
 
     function openModal(id) {
