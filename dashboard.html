@@ -1445,33 +1445,7 @@ function onDataChanged(data) {
 
    
     // ====== RENDER FUNCTIONS ======
-    function renderClientes() {
-      const container = document.getElementById('clientesList');
-      if (currentData.clientes.length === 0) {
-        container.innerHTML = '';
-        document.getElementById('clientesEmpty').style.display = 'block';
-        return;
-      }
-      document.getElementById('clientesEmpty').style.display = 'none';
-      container.innerHTML = currentData.clientes.map(c => `
-        <div class="glass rounded-xl p-5 flex flex-col">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex-1">
-              <h3 class="font-heading font-semibold" style="font-size:16px">${c.nome}</h3>
-              <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:2px">${c.telefone}</p>
-            </div>
-            <span class="status-badge badge-ativo" style="font-size:11px">${c.status || 'Ativo'}</span>
-          </div>
-          <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:4px;line-height:1.4">${c.historico || 'Sem histórico'}</p>
-          <div class="flex gap-2 mt-auto">
-            <button class="flex-1 btn-danger py-2 text-xs flex items-center justify-center gap-1.5" onclick="deleteData('${c.__backendId}')">
-              <i data-lucide="trash-2" style="width:14px;height:14px"></i>Excluir
-            </button>
-          </div>
-        </div>
-      `).join('');
-      lucide.createIcons();
-    }
+
 
     function renderFuncionarios() {
   const container = document.getElementById('funcionariosList');
@@ -3390,7 +3364,7 @@ async function salvarProducao(e) {
       </div>
     `;
   }).join('');
-
+}
   if (window.lucide) lucide.createIcons();
                            }
     function renderFuncionarios() {
