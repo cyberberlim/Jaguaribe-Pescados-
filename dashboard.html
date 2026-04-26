@@ -1,0 +1,2588 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jaguaribe Pescados - Sistema de Gestão</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Poppins:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+
+
+    * { box-sizing: border-box; }
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 100%);
+      color: #fff; 
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body { 
+      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a2644 100%);
+      position: relative;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(0, 230, 200, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    #appContainer { position: relative; z-index: 1; }
+    
+    .glass { 
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 230, 200, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .glass-hover:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(0, 230, 200, 0.2);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #00e6c8 0%, #00d4ff 100%);
+      color: #0a1628;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 230, 200, 0.25);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .btn-danger {
+      background: rgba(255, 107, 107, 0.1);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    
+    .btn-danger:hover {
+      background: rgba(255, 107, 107, 0.2);
+    }
+    
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+      position: relative;
+    }
+    
+    .sidebar-link:hover {
+      background: rgba(0, 230, 200, 0.08);
+      color: #00e6c8;
+    }
+    
+    .sidebar-link.active {
+      background: rgba(0, 230, 200, 0.12);
+      color: #00e6c8;
+      border-left: 3px solid #00e6c8;
+      padding-left: 13px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="file"],
+    select,
+    textarea {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #00e6c8;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(0, 230, 200, 0.1);
+    }
+    
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 230, 200, 0.2);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 230, 200, 0.3);
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+    }
+    
+    .modal-overlay.hidden {
+      display: none;
+    }
+    
+    .table-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+      backdrop-filter: blur(12px);
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .badge-ativo {
+      background: rgba(0, 230, 200, 0.2);
+      color: #00e6c8;
+    }
+    
+    .badge-inativo {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+    }
+    
+    .badge-pendente {
+      background: rgba(255, 200, 55, 0.2);
+      color: #ffc837;
+    }
+    
+    .badge-pago {
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+    }
+    
+    .badge-pendente {
+      background: rgba(255, 200, 55, 0.2);
+      color: #ffc837;
+    }
+    
+    .card-stat {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 230, 200, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+    
+    .card-stat:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(0, 230, 200, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .shrimp-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(0, 230, 200, 0.2), rgba(0, 212, 255, 0.1));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <div id="appContainer" class="h-full flex">
+   <!-- SIDEBAR -->
+   <aside id="sidebar" class="h-full flex-shrink-0 flex flex-col glass" style="width:260px; border-right:1px solid rgba(0,230,200,0.1); transition:transform 0.3s; position: relative;">
+    <!-- Logo Header -->
+    <div class="p-6 flex items-center gap-3 border-b" style="border-color:rgba(0,230,200,0.1)">
+     <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#00e6c8,#00d4ff)">
+      <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M2 16s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path> <path d="M2 12s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path> <path d="M2 20s4-4 8-1c3 2 5-1 7-3s5-2 5-2"></path>
+      </svg>
+     </div>
+     <div>
+      <div class="font-bold text-sm leading-tight" id="sidebarCompany" style="font-size:15px;">
+       Jaguaribe
+      </div>
+      <div class="text-xs" style="color:rgba(0,230,200,0.6);">
+       Pescados
+      </div>
+     </div>
+    </div>
+    <nav class="flex-1 p-4 space-y-1 overflow-auto">
+     <div class="sidebar-link active" data-page="dashboard" onclick="navigateTo('dashboard')"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i><span>Dashboard</span>
+     </div>
+     <div class="sidebar-link" data-page="clientes" onclick="navigateTo('clientes')"><i data-lucide="users" style="width:18px;height:18px"></i><span>Clientes</span>
+     </div>
+     <div class="sidebar-link" data-page="funcionarios" onclick="navigateTo('funcionarios')"><i data-lucide="hard-hat" style="width:18px;height:18px"></i><span>Funcionários</span>
+     </div>
+     <div class="sidebar-link" data-page="financeiro" onclick="navigateTo('financeiro')"><i data-lucide="wallet" style="width:18px;height:18px"></i><span>Financeiro</span>
+     </div>
+     <div class="sidebar-link" data-page="estoque" onclick="navigateTo('estoque')"><i data-lucide="package-2" style="width:18px;height:18px"></i><span>Estoque</span>
+     </div>
+     <div class="sidebar-link" data-page="estoque-geral" onclick="navigateTo('estoque-geral')"><i data-lucide="warehouse" style="width:18px;height:18px"></i><span>Estoque Geral</span>
+     </div>
+     <div class="sidebar-link" data-page="producao" onclick="navigateTo('producao')"><i data-lucide="zap" style="width:18px;height:18px"></i><span>Produção</span>
+     </div>
+     <div class="sidebar-link" data-page="relatorios" onclick="navigateTo('relatorios')"><i data-lucide="bar-chart-3" style="width:18px;height:18px"></i><span>Relatórios</span>
+     </div>
+     <div class="sidebar-link" data-page="configuracoes" onclick="navigateTo('configuracoes')"><i data-lucide="settings" style="width:18px;height:18px"></i><span>Configurações</span>
+     </div>
+    </nav>
+    <div class="p-4 border-t" style="border-color:rgba(0,230,200,0.1)">
+     <div class="sidebar-link" onclick="logout()"><i data-lucide="log-out" style="width:18px;height:18px"></i><span>Sair</span>
+     </div>
+    </div>
+   </aside><!-- MAIN CONTENT -->
+   <div class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- TOPBAR -->
+    <header class="flex items-center justify-between px-8 py-5 flex-shrink-0 glass" style="border-bottom:1px solid rgba(0,230,200,0.1)">
+     <div class="flex items-center gap-4">
+      <button id="menuToggle" class="lg:hidden p-2 rounded-lg" style="color:rgba(255,255,255,0.5)" onclick="toggleSidebar()"> <i data-lucide="menu" style="width:20px;height:20px"></i> </button>
+      <div>
+       <h1 class="font-bold text-lg" id="pageTitle" style="font-size:18px;">Dashboard</h1>
+       <p class="text-xs" style="color:rgba(255,255,255,0.5);" id="companyNameTopbar">Jaguaribe Pescados — Parajuru</p>
+      </div>
+     </div>
+     <div class="flex items-center gap-6">
+      <button class="relative p-2 rounded-lg hover:bg-white/5" style="color:rgba(255,255,255,0.5)"> <i data-lucide="bell" style="width:20px;height:20px"></i> <span class="absolute top-1 right-1 w-2 h-2 rounded-full" style="background:#00e6c8"></span> </button>
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold" style="background:linear-gradient(135deg,#00e6c8,#00d4ff);color:#0a1628;">
+       JP
+      </div>
+     </div>
+    </header><!-- PAGE CONTENT -->
+    <main id="mainContent" class="flex-1 overflow-auto" style="height:100%;">
+     <div class="p-8">
+      <main id="mainContent" class="flex-1 overflow-auto p-6" style="height:100%"><!-- DASHBOARD PAGE -->
+       <div id="page-dashboard" class="page-content fade-in" style="display:block">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Dashboard</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Visão geral do seu negócio</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            LUCRO
+           </div><i data-lucide="trending-up" style="width:20px;height:20px;color:#00e6c8"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashLucro">
+           R$ 0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Este mês
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            GASTOS
+           </div><i data-lucide="trending-down" style="width:20px;height:20px;color:#ff6b6b"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashGastos">
+           R$ 0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Despesas
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            PRODUÇÃO
+           </div><i data-lucide="factory" style="width:20px;height:20px;color:#00d4ff"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashProducao">
+           0 kg
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Total processado
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div class="flex items-center justify-between mb-3">
+           <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600">
+            CLIENTES
+           </div><i data-lucide="users" style="width:20px;height:20px;color:#ffc837"></i>
+          </div>
+          <div class="font-heading text-3xl font-bold mb-1" id="dashClientes">
+           0
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:12px">
+           Cadastrados
+          </div>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Receitas</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartReceitas"></canvas>
+          </div>
+         </div>
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Despesas</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartDespesas"></canvas>
+          </div>
+         </div>
+         <div class="glass rounded-xl p-4">
+          <div class="mb-4">
+           <h3 class="font-heading font-semibold" style="font-size:14px">Produção</h3>
+          </div>
+          <div style="position:relative;width:100%;height:200px">
+           <canvas id="chartProducao"></canvas>
+          </div>
+         </div>
+        </div>
+        <div class="mt-6">
+         <div class="glass rounded-xl p-6">
+          <div class="mb-6">
+           <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Financeiro</h3>
+          </div>
+          <div class="space-y-4">
+           <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Receitas</span> <span style="font-weight:600" id="dashReceitas">R$ 0</span>
+           </div>
+           <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span style="color:rgba(255,255,255,0.6)">Despesas</span> <span style="font-weight:600;color:#ff6b6b" id="dashDespesas">R$ 0</span>
+           </div>
+           <div style="display:flex;justify-content:space-between;padding:12px 0"><span style="color:rgba(255,255,255,0.6)">Saldo</span> <span style="font-weight:600;color:#00e6c8" id="dashSaldo">R$ 0</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div><!-- CLIENTES PAGE -->
+       <div id="page-clientes" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Clientes</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie seus clientes</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addClientModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
+        </div>
+        <div id="clientesList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="clientesEmpty" class="text-center py-12"><i data-lucide="users" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhum cliente</p>
+        </div>
+       </div><!-- FUNCIONÁRIOS PAGE -->
+       <div id="page-funcionarios" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Funcionários</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerencie sua equipe</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addFuncionarioModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Adicionar </button>
+        </div>
+        <div id="funcionariosList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="funcionariosEmpty" class="text-center py-12"><i data-lucide="briefcase" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhum funcionário</p>
+        </div>
+       </div><!-- FINANCEIRO PAGE -->
+       <div id="page-financeiro" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Financeiro</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Controle de receitas e despesas</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           RECEITAS
+          </div>
+          <div class="font-heading text-2xl font-bold" id="finReceitas">
+           R$ 0
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           DESPESAS
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#ff6b6b" id="finDespesas">
+           R$ 0
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           SALDO
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#00e6c8" id="finSaldo">
+           R$ 0
+          </div>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+         <div>
+          <div class="mb-4 flex items-center justify-between">
+           <h3 class="font-heading text-lg font-semibold">Despesas Fixas</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaFixaModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
+          </div>
+          <div id="despesasFixasList" class="space-y-3"></div>
+          <div id="despesasFixasEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
+           Nenhuma despesa fixa
+          </div>
+         </div>
+         <div>
+          <div class="mb-4 flex items-center justify-between">
+           <h3 class="font-heading text-lg font-semibold">Despesas Variáveis</h3><button class="btn-primary btn-small flex items-center gap-1" onclick="openModal('addDespesaVariavelModal')"><i data-lucide="plus" style="width:16px;height:16px"></i></button>
+          </div>
+          <div id="despesasVariaveisList" class="space-y-3"></div>
+          <div id="despesasVariaveisEmpty" class="text-center py-8 text-sm" style="color:rgba(255,255,255,0.4)">
+           Nenhuma despesa variável
+          </div>
+         </div>
+        </div>
+        <div class="mb-6"><button class="btn-primary flex items-center gap-2 mb-4" onclick="openModal('addTransacaoModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Nova Transação </button>
+         <div class="glass rounded-xl p-6">
+          <div class="overflow-x-auto">
+           <table class="w-full text-sm">
+            <thead>
+             <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Descrição</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Tipo</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Valor</th>
+              <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+              <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
+             </tr>
+            </thead>
+            <tbody id="transacoesList"></tbody>
+           </table>
+          </div>
+          <div id="transacoesEmpty" class="text-center py-12"><i data-lucide="credit-card" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+           <p style="color:rgba(255,255,255,0.4)">Nenhuma transação</p>
+          </div>
+         </div>
+        </div>
+       </div><!-- ESTOQUE PAGE -->
+       <div id="page-estoque" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Estoque de Lotes</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Cadastro de lotes de camarão</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addEstoqueModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Novo Lote </button>
+        </div>
+        <div class="glass rounded-xl p-6">
+         <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+           <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Nome do Lote</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Gramatura</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Peso (kg)</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+             <th class="text-center py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Ações</th>
+            </tr>
+           </thead>
+           <tbody id="estoqueList"></tbody>
+          </table>
+         </div>
+         <div id="estoqueEmpty" class="text-center py-12"><i data-lucide="package" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+          <p style="color:rgba(255,255,255,0.4)">Nenhum lote cadastrado</p>
+         </div>
+        </div>
+       </div><!-- ESTOQUE GERAL PAGE -->
+       <div id="page-estoque-geral" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Estoque Geral</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Gerenciamento de peso e saídas</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           PESO TOTAL
+          </div>
+          <div class="font-heading text-2xl font-bold" id="pesoTotal">
+           0 kg
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           ENTRADAS
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#00e6c8" id="totalEntradas">
+           0 kg
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           SAÍDAS
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#ff6b6b" id="totalSaidas">
+           0 kg
+          </div>
+         </div>
+         <div class="card-stat glow">
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:600;margin-bottom:8px">
+           RENDIMENTO
+          </div>
+          <div class="font-heading text-2xl font-bold" style="color:#00d4ff" id="rendimento">
+           0 %
+          </div>
+         </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+         <button class="glass rounded-xl p-6 flex items-center justify-center gap-3 hover:bg-white/5 transition cursor-pointer" onclick="openModal('addEntradaModal')" style="border:2px solid rgba(0,230,200,0.3)"> <i data-lucide="arrow-down-circle" style="width:32px;height:32px;color:#00e6c8"></i>
+          <div class="text-left">
+           <div class="font-semibold">
+            Entrada de Peso
+           </div>
+           <div style="font-size:12px;color:rgba(255,255,255,0.5)">
+            Registrar entrada
+           </div>
+          </div></button> <button class="glass rounded-xl p-6 flex items-center justify-center gap-3 hover:bg-white/5 transition cursor-pointer" onclick="openModal('addSaidaModal')" style="border:2px solid rgba(255,107,107,0.3)"> <i data-lucide="arrow-up-circle" style="width:32px;height:32px;color:#ff6b6b"></i>
+          <div class="text-left">
+           <div class="font-semibold">
+            Saída de Peso
+           </div>
+           <div style="font-size:12px;color:rgba(255,255,255,0.5)">
+            Registrar saída
+           </div>
+          </div></button>
+        </div>
+        <div class="glass rounded-xl p-6">
+         <div class="mb-4">
+          <h3 class="font-heading font-semibold" style="font-size:16px">Histórico de Movimentos</h3>
+         </div>
+         <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+           <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.06)">
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Lote</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Antes (kg)</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Depois (kg)</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Rendimento</th>
+             <th class="text-left py-3 px-4 font-medium" style="color:rgba(255,255,255,0.5)">Data</th>
+            </tr>
+           </thead>
+           <tbody id="historicoEstoqueList"></tbody>
+          </table>
+         </div>
+         <div id="historicoEstoqueEmpty" class="text-center py-12"><i data-lucide="warehouse" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+          <p style="color:rgba(255,255,255,0.4)">Nenhum movimento</p>
+         </div>
+        </div>
+       </div><!-- PRODUÇÃO PAGE -->
+       <div id="page-producao" class="page-content fade-in hidden">
+        <div class="mb-6 flex items-center justify-between">
+         <div>
+          <h2 class="font-heading text-2xl font-bold">Produção</h2>
+          <p class="text-sm" style="color:rgba(255,255,255,0.4)">Registro de produção por funcionário</p>
+         </div><button class="btn-primary flex items-center gap-2" onclick="openModal('addProducaoModal')"> <i data-lucide="plus" style="width:18px;height:18px"></i>Registrar </button>
+        </div>
+        <div id="producaoList" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        <div id="producaoEmpty" class="text-center py-12"><i data-lucide="factory" style="width:48px;height:48px;margin:0 auto 12px;opacity:0.3"></i>
+         <p style="color:rgba(255,255,255,0.4)">Nenhuma produção registrada</p>
+        </div>
+       </div><!-- RELATÓRIOS PAGE -->
+       <div id="page-relatorios" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Relatórios</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Análise e insights do negócio</p>
+        </div><button class="btn-primary flex items-center gap-2 mb-6" onclick="gerarPDF()"> <i data-lucide="download" style="width:18px;height:18px"></i>Gerar PDF </button>
+        <div class="glass rounded-xl p-6">
+         <div class="mb-6">
+          <h3 class="font-heading font-semibold" style="font-size:16px">Resumo Operacional</h3>
+         </div>
+         <div class="space-y-4">
+          <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Total de Clientes</span> <span id="relClientes" style="font-weight:600">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Funcionários Ativos</span> <span id="relFuncionarios" style="font-weight:600">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span>Total Produzido</span> <span id="relProducao" style="font-weight:600">0 kg</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px 0"><span>Receita Total</span> <span id="relReceita" style="font-weight:600;color:#00e6c8">R$ 0</span>
+          </div>
+         </div>
+        </div>
+       </div><!-- CONFIGURAÇÕES PAGE -->
+       <div id="page-configuracoes" class="page-content fade-in hidden">
+        <div class="mb-6">
+         <h2 class="font-heading text-2xl font-bold">Configurações</h2>
+         <p class="text-sm" style="color:rgba(255,255,255,0.4)">Personalize sua conta</p>
+        </div>
+        <div class="glass rounded-xl p-6 max-w-xl">
+         <form onsubmit="salvarConfiguracoes(event)">
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Empresa</label> <input type="text" id="configNome" placeholder="Nome da empresa">
+          </div>
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">CNPJ</label> <input type="text" id="configCNPJ" placeholder="00.000.000/0000-00">
+          </div>
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="configTelefone" placeholder="(XX) 99999-9999">
+          </div>
+          <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Email</label> <input type="email" id="configEmail" placeholder="contato@empresa.com">
+          </div>
+          <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Endereço</label> <textarea id="configEndereco" placeholder="Rua, número, cidade" rows="3" style="resize:vertical"></textarea>
+          </div><button type="submit" class="btn-primary w-full">Salvar Configurações</button>
+         </form>
+        </div>
+       </div>
+      </main>
+     </div>
+    </main>
+   </div><!-- MODALS --> <!-- ADD CLIENT MODAL -->
+   <div id="addClientModal" class="modal-overlay hidden" onclick="closeModal(event, 'addClientModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Novo Cliente</h3><button onclick="closeModal(null, 'addClientModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarCliente(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome</label> <input type="text" id="clientNome" placeholder="Nome completo" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="clientTelefone" placeholder="(XX) 99999-9999" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Histórico</label> <textarea id="clientHistorico" placeholder="Notas" rows="3" style="resize:vertical"></textarea>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addClientModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD FUNCIONÁRIO MODAL -->
+   <div id="addFuncionarioModal" class="modal-overlay hidden" onclick="closeModal(event, 'addFuncionarioModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Novo Funcionário</h3><button onclick="closeModal(null, 'addFuncionarioModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarFuncionario(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome</label> <input type="text" id="funcNome" placeholder="Nome completo" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Cargo</label> <select id="funcCargo" required> <option value="">Selecione o cargo</option> <option value="fixo">Funcionário Fixo</option> <option value="produtor">Produtor</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Telefone</label> <input type="tel" id="funcTelefone" placeholder="(XX) 99999-9999" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Chave PIX</label> <input type="text" id="funcPix" placeholder="Chave PIX">
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addFuncionarioModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD TRANSAÇÃO MODAL -->
+   <div id="addTransacaoModal" class="modal-overlay hidden" onclick="closeModal(event, 'addTransacaoModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Nova Transação</h3><button onclick="closeModal(null, 'addTransacaoModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarTransacao(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Descrição</label> <input type="text" id="transDescricao" placeholder="Descrição" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Tipo</label> <select id="transType" required> <option value="">Selecione o tipo</option> <option value="entrada">Receita</option> <option value="saida">Despesa</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="transValor" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="transData" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addTransacaoModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD ESTOQUE MODAL -->
+   <div id="addEstoqueModal" class="modal-overlay hidden" onclick="closeModal(event, 'addEstoqueModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Novo Lote</h3><button onclick="closeModal(null, 'addEstoqueModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarEstoque(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome do Lote</label> <input type="text" id="estoqueLote" placeholder="Ex: Lote A, Lote Premium" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Gramatura</label> <input type="text" id="estoqueGramatura" placeholder="Ex: 10/20, 20/30" required>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="estoquePeso" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="estoqueData" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addEstoqueModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Salvar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD ENTRADA ESTOQUE GERAL MODAL -->
+   <div id="addEntradaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addEntradaModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Entrada de Peso</h3><button onclick="closeModal(null, 'addEntradaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarEntrada(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Lote</label> <select id="entradaLoteId" required> <option value="">Selecione um lote</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="entradaPeso" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="entradaData" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addEntradaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD SAÍDA ESTOQUE GERAL MODAL -->
+   <div id="addSaidaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addSaidaModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Saída de Peso</h3><button onclick="closeModal(null, 'addSaidaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarSaida(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Lote</label> <select id="saidaLoteId" required onchange="carregarPesoAntes()"> <option value="">Selecione um lote</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso Antes (kg)</label> <input type="number" id="saidaPesoAntes" placeholder="0.00" step="0.01" disabled style="background:rgba(255,255,255,0.02)">
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso Depois (kg)</label> <input type="number" id="saidaPeso" placeholder="0.00" step="0.01" required onchange="calcularRendimento()">
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Data</label> <input type="date" id="saidaData" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addSaidaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD PRODUÇÃO MODAL -->
+   <div id="addProducaoModal" class="modal-overlay hidden" onclick="closeModal(event, 'addProducaoModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Registrar Produção</h3><button onclick="closeModal(null, 'addProducaoModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarProducao(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Funcionário</label> <select id="producFuncionario" required> <option value="">Selecione</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Serviço</label> <select id="producServico" required onchange="atualizarValorProducao()"> <option value="">Selecione</option> <option value="descabeçamento">Descabeçamento (R$ 0.50/kg)</option> <option value="filé">Filé (R$ 2.50/kg)</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Período</label> <select id="producPeriodo" required> <option value="manhã">Manhã</option> <option value="tarde">Tarde</option> <option value="noite">Noite</option> </select>
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Peso (kg)</label> <input type="number" id="producPeso" placeholder="0.00" step="0.01" required onchange="atualizarValorProducao()">
+      </div>
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor Calculado (R$)</label> <input type="text" id="producValor" disabled style="background:rgba(255,255,255,0.02)">
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Código de Pagamento</label> <input type="text" id="producCodigo" placeholder="Digite o código">
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addProducaoModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Registrar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD DESPESA FIXA MODAL -->
+   <div id="addDespesaFixaModal" class="modal-overlay hidden" onclick="closeModal(event, 'addDespesaFixaModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Nova Despesa Fixa</h3><button onclick="closeModal(null, 'addDespesaFixaModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarDespesaFixa(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Despesa</label> <input type="text" id="nomeDespesaFixa" placeholder="Ex: Aluguel, Salários" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="valorDespesaFixa" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addDespesaFixaModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Adicionar</button>
+      </div>
+     </form>
+    </div>
+   </div><!-- ADD DESPESA VARIÁVEL MODAL -->
+   <div id="addDespesaVariavelModal" class="modal-overlay hidden" onclick="closeModal(event, 'addDespesaVariavelModal')">
+    <div class="glass rounded-xl p-8 max-w-md w-full mx-4 fade-in" onclick="event.stopPropagation()">
+     <div class="flex items-center justify-between mb-6">
+      <h3 class="font-heading text-xl font-bold">Nova Despesa Variável</h3><button onclick="closeModal(null, 'addDespesaVariavelModal')" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer"> <i data-lucide="x" style="width:20px;height:20px"></i> </button>
+     </div>
+     <form onsubmit="salvarDespesaVariavel(event)">
+      <div class="mb-4"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Nome da Despesa</label> <input type="text" id="nomeDespesaVariavel" placeholder="Ex: Gelo, Combustível" required>
+      </div>
+      <div class="mb-6"><label style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-bottom:6px">Valor (R$)</label> <input type="number" id="valorDespesaVariavel" placeholder="0.00" step="0.01" required>
+      </div>
+      <div class="flex gap-3"><button type="button" class="btn-secondary flex-1" onclick="closeModal(null, 'addDespesaVariavelModal')">Cancelar</button> <button type="submit" class="btn-primary flex-1">Adicionar</button>
+      </div>
+     </form>
+    </div>
+   </div>
+   <div id="toastContainer"></div>
+   <script>
+
+    // ====== POCKETBASE INITIALIZATION ======
+    const pb = new PocketBase('https://pocketbase-production-bb88.up.railway.app');
+    const MAINTENANCE_MODE = false;
+
+    // ====== SISTEMA DE DADOS GLOBAL ======
+    let currentData = {
+      clientes: [],
+      funcionarios: [],
+      transacoes: [],
+      estoque: [],
+      historicoEstoque: [],
+      producao: [],
+      despesasFixas: [],
+      despesasVariaveis: [],
+      configuracoes: {}
+    };
+
+    let chartReceitas = null;
+    let chartDespesas = null;
+    let chartProducao = null;
+
+    const defaultConfig = {
+      company_name: 'Jaguaribe Pescados',
+      company_subtitle: 'Parajuru'
+    };
+
+    // ====== POCKETBASE FUNCTIONS ======
+    // ...existing code...
+async function loadAll() {
+  async function carregar(colecao) {
+    try {
+      return await pb.collection(colecao).getFullList({ sort: '-created' });
+    } catch (e) {
+      console.warn('⚠️ Erro ao carregar ' + colecao + ':', e.message);
+      return [];
+    }
+  }
+
+  currentData.clientes          = await carregar('clientes');
+  currentData.funcionarios      = await carregar('funcionarios');
+  currentData.transacoes        = await carregar('transacoes');
+  currentData.estoque           = await carregar('estoque');
+  currentData.producao          = await carregar('producao');
+  currentData.despesasFixas     = await carregar('despesasFixas');
+  currentData.despesasVariaveis = await carregar('despesasVariaveis');
+  currentData.historicoEstoque  = await carregar('historicoEstoque');
+
+  console.log('✅ Dados carregados!', {
+    clientes: currentData.clientes.length,
+    funcionarios: currentData.funcionarios.length,
+    transacoes: currentData.transacoes.length,
+    estoque: currentData.estoque.length,
+    producao: currentData.producao.length
+  });
+
+  setupRealtime();
+}
+
+    function getDefaultData() {
+      return {
+        clientes: [],
+        funcionarios: [],
+        transacoes: [],
+        estoque: [],
+        historicoEstoque: [],
+        producao: [],
+        despesasFixas: [],
+        despesasVariaveis: [],
+        configuracoes: {}
+      };
+    }
+
+    function renderAll() {
+      renderClientes();
+      renderFuncionarios();
+      renderTransacoes();
+      renderEstoque();
+      renderHistoricoEstoque();
+      renderDespesasFixas();
+      renderDespesasVariaveis();
+      renderProducao();
+      atualizarSelectFuncionarios();
+      updateDashboard();
+      initCharts();
+    }
+
+    let realtimeSetup = false;
+
+    function setupRealtime() {
+      if (realtimeSetup) return; // Evitar múltiplas subscrições
+      realtimeSetup = true;
+
+      // Clientes
+      pb.collection('clientes').subscribe('*', function (e) {
+        console.log('Realtime clientes:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.clientes.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.clientes.findIndex(c => c.id === e.record.id);
+          if (idx !== -1) currentData.clientes[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.clientes = currentData.clientes.filter(c => c.id !== e.record.id);
+        }
+        renderClientes();
+      });
+
+      // Funcionários
+      pb.collection('funcionarios').subscribe('*', function (e) {
+        console.log('Realtime funcionarios:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.funcionarios.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.funcionarios.findIndex(f => f.id === e.record.id);
+          if (idx !== -1) currentData.funcionarios[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.funcionarios = currentData.funcionarios.filter(f => f.id !== e.record.id);
+        }
+        renderFuncionarios();
+        atualizarSelectFuncionarios();
+      });
+
+      // Transações
+      pb.collection('transacoes').subscribe('*', function (e) {
+        console.log('Realtime transacoes:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.transacoes.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.transacoes.findIndex(t => t.id === e.record.id);
+          if (idx !== -1) currentData.transacoes[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.transacoes = currentData.transacoes.filter(t => t.id !== e.record.id);
+        }
+        renderTransacoes();
+        updateDashboard();
+        initCharts();
+      });
+
+      // Estoque
+      pb.collection('estoque').subscribe('*', function (e) {
+        console.log('Realtime estoque:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.estoque.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.estoque.findIndex(est => est.id === e.record.id);
+          if (idx !== -1) currentData.estoque[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.estoque = currentData.estoque.filter(est => est.id !== e.record.id);
+        }
+        renderEstoque();
+        atualizarSelectLotes();
+      });
+
+      // Produção
+      pb.collection('producao').subscribe('*', function (e) {
+        console.log('Realtime producao:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.producao.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.producao.findIndex(p => p.id === e.record.id);
+          if (idx !== -1) currentData.producao[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.producao = currentData.producao.filter(p => p.id !== e.record.id);
+        }
+        renderProducao();
+        updateDashboard();
+        initCharts();
+      });
+
+      // Despesas Fixas
+      pb.collection('despesasFixas').subscribe('*', function (e) {
+        console.log('Realtime despesasFixas:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.despesasFixas.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.despesasFixas.findIndex(d => d.id === e.record.id);
+          if (idx !== -1) currentData.despesasFixas[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.despesasFixas = currentData.despesasFixas.filter(d => d.id !== e.record.id);
+        }
+        renderDespesasFixas();
+        updateDashboard();
+      });
+
+      // Despesas Variáveis
+      pb.collection('despesasVariaveis').subscribe('*', function (e) {
+        console.log('Realtime despesasVariaveis:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.despesasVariaveis.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.despesasVariaveis.findIndex(d => d.id === e.record.id);
+          if (idx !== -1) currentData.despesasVariaveis[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.despesasVariaveis = currentData.despesasVariaveis.filter(d => d.id !== e.record.id);
+        }
+        renderDespesasVariaveis();
+        updateDashboard();
+      });
+
+      // Histórico Estoque
+      pb.collection('historicoEstoque').subscribe('*', function (e) {
+        console.log('Realtime historicoEstoque:', e.action, e.record);
+        if (e.action === 'create') {
+          currentData.historicoEstoque.push(e.record);
+        } else if (e.action === 'update') {
+          const idx = currentData.historicoEstoque.findIndex(h => h.id === e.record.id);
+          if (idx !== -1) currentData.historicoEstoque[idx] = e.record;
+        } else if (e.action === 'delete') {
+          currentData.historicoEstoque = currentData.historicoEstoque.filter(h => h.id !== e.record.id);
+        }
+        renderHistoricoEstoque();
+      });
+    }
+
+    function renderHistoricoEstoque() {
+      const container = document.getElementById('historicoEstoqueList');
+      
+      if (!currentData.historicoEstoque || currentData.historicoEstoque.length === 0) {
+        if (container) container.innerHTML = '';
+        const empty = document.getElementById('historicoEstoqueEmpty');
+        if (empty) empty.style.display = 'block';
+        return;
+      }
+      
+      const empty = document.getElementById('historicoEstoqueEmpty');
+      if (empty) empty.style.display = 'none';
+      
+      if (!container) return;
+      
+      container.innerHTML = currentData.historicoEstoque.map(hist => {
+        const lote = currentData.estoque.find(e => e.id === hist.lote_id) || {};
+        const pesoAntes = hist.peso_antes || 0;
+        const pesoDepois = hist.peso_depois || 0;
+        const diferenca = pesoDepois - pesoAntes;
+        const percentual = pesoAntes > 0 ? ((pesoDepois / pesoAntes) * 100 - 100).toFixed(1) : 0;
+        
+        const status = pesoDepois === 0 ? 'Pendente' : 'Processado';
+        
+        return `
+          <tr class="table-row">
+            <td class="py-3 px-4">${lote.tipo_lote || '-'}</td>
+            <td class="py-3 px-4" style="color:#00e6c8;font-weight:600">${pesoAntes} kg</td>
+            <td class="py-3 px-4" style="color:#00d4ff;font-weight:600">${pesoDepois > 0 ? pesoDepois : '-'} kg</td>
+            <td class="py-3 px-4" style="color:${pesoDepois > 0 ? '#00e6c8' : 'rgba(255,255,255,0.4)'};font-weight:600">${pesoDepois > 0 ? percentual + '%' : '-'}</td>
+            <td class="py-3 px-4" style="color:rgba(255,255,255,0.6)">${new Date(hist.data_processamento).toLocaleDateString('pt-BR')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ====== ELEMENT SDK ======
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (c) => {
+          document.getElementById('sidebarCompany').textContent = (c.company_name || defaultConfig.company_name).split(' ')[0];
+          document.getElementById('companyNameTopbar').textContent = `${c.company_name || defaultConfig.company_name} — ${c.company_subtitle || defaultConfig.company_subtitle}`;
+        },
+        mapToCapabilities: (c) => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (c) => new Map([
+          ['company_name', c.company_name || defaultConfig.company_name],
+          ['company_subtitle', c.company_subtitle || defaultConfig.company_subtitle]
+        ])
+      });
+    }
+
+   
+    // ====== HELPERS ======
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(e, id) {
+      if (e && e.target !== document.getElementById(id)) return;
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function showToast(msg, color = '#00e6c8') {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.style.cssText = `background:${color}15;border:1px solid ${color}40;color:${color}`;
+      toast.textContent = msg;
+      document.getElementById('toastContainer').appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+      function toggleSidebar() {
+      const s = document.getElementById('sidebar');
+      s.style.transform = s.style.transform === 'translateX(-100%)' ? 'translateX(0)' : 'translateX(-100%)';
+    }
+
+    // ====== RENDER FUNCTIONS ======
+    function renderClientes() {
+  const container = document.getElementById('clientesList');
+  const empty = document.getElementById('clientesEmpty');
+
+  if (!container) {
+    console.error('clientesList não encontrado');
+    return;
+  }
+
+  if (!currentData.clientes || currentData.clientes.length === 0) {
+    container.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+
+  if (empty) empty.style.display = 'none';
+
+  container.innerHTML = currentData.clientes.map(c => {
+    const id = c.id || c.__backendId || '';
+
+    return `
+      <div class="glass rounded-xl p-5 flex flex-col">
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex-1">
+            <h3 class="font-heading font-semibold" style="font-size:16px">
+              ${escapeHTML(c.nome || '')}
+            </h3>
+            <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-top:2px">
+              ${escapeHTML(c.telefone || '')}
+            </p>
+          </div>
+          <span class="status-badge badge-ativo" style="font-size:11px">
+            ${escapeHTML(c.status || 'Ativo')}
+          </span>
+        </div>
+
+        <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-bottom:4px;line-height:1.4">
+          ${escapeHTML(c.historico || 'Sem histórico')}
+        </p>
+
+        <div class="flex gap-2 mt-auto">
+          <button class="flex-1 btn-secondary py-2 text-xs"
+            onclick="editarCliente(\`${id}\`)">
+            Editar
+          </button>
+
+          <button class="flex-1 btn-danger py-2 text-xs"
+            onclick="apagarCliente(\`${id}\`)">
+            Excluir
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+                           }
+    function renderFuncionarios() {
+      const container = document.getElementById('funcionariosList');
+      const funcionarios = currentData.funcionarios;
+      if (funcionarios.length === 0) {
+        container.innerHTML = '';
+        document.getElementById('funcionariosEmpty').style.display = 'block';
+        return;
+      }
+      document.getElementById('funcionariosEmpty').style.display = 'none';
+      container.innerHTML = funcionarios.map(f => `
+        <div class="glass rounded-xl p-5 flex flex-col">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+              <h3 class="font-heading font-semibold" style="font-size:16px">${f.nome}</h3>
+              <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px">${f.cargo === 'fixo' ? 'Funcionário Fixo' : 'Produtor'}</p>
+            </div>
+            <span class="status-badge badge-ativo" style="font-size:11px">Ativo</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.02);border-radius:8px;padding:10px;margin-bottom:4px;font-size:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="color:rgba(255,255,255,0.5)">Telefone:</span>
+              <span>${f.telefone}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span style="color:rgba(255,255,255,0.5)">PIX:</span>
+              <span style="font-family:monospace">${f.pix || '-'}</span>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-auto">
+            <button class="flex-1 btn-secondary py-2 text-xs flex items-center justify-center gap-1.5" onclick="editarFuncionario('${f.id}')">
+              <i data-lucide="edit-2" style="width:14px;height:14px"></i>Editar
+            </button>
+            <button class="flex-1 btn-danger py-2 text-xs flex items-center justify-center gap-1.5" onclick="apagarFuncionario('${f.id}')">
+              <i data-lucide="trash-2" style="width:14px;height:14px"></i>Excluir
+            </button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderTransacoes() {
+      const tbody = document.getElementById('transacoesList');
+      if (currentData.transacoes.length === 0) {
+        tbody.innerHTML = '';
+        document.getElementById('transacoesEmpty').style.display = 'block';
+        return;
+      }
+      document.getElementById('transacoesEmpty').style.display = 'none';
+      tbody.innerHTML = currentData.transacoes.map(t => `
+        <tr class="table-row">
+          <td class="py-3 px-4">${t.descricao}</td>
+          <td class="py-3 px-4"><span class="status-badge ${t.tipo_transacao === 'entrada' ? 'badge-ativo' : 'badge-inativo'}">${t.tipo_transacao === 'entrada' ? 'Receita' : 'Despesa'}</span></td>
+          <td class="py-3 px-4" style="font-weight:600;color:${t.tipo_transacao === 'entrada' ? '#00e6c8' : '#ff6b6b'}">R$ ${t.valor_transacao.toFixed(2)}</td>
+          <td class="py-3 px-4" style="color:rgba(255,255,255,0.6)">${new Date(t.data_transacao).toLocaleDateString('pt-BR')}</td>
+          <td class="py-3 px-4"><div class="flex justify-center"><button class="btn-danger py-1 px-2 text-xs" onclick="deleteData('${t.id}', 'transacoes')">Excluir</button></div></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderEstoque() {
+      const tbody = document.getElementById('estoqueList');
+      if (currentData.estoque.length === 0) {
+        tbody.innerHTML = '';
+        document.getElementById('estoqueEmpty').style.display = 'block';
+        return;
+      }
+      document.getElementById('estoqueEmpty').style.display = 'none';
+      tbody.innerHTML = currentData.estoque.map(e => `
+        <tr class="table-row">
+          <td class="py-3 px-4">${e.tipo_lote || '-'}</td>
+          <td class="py-3 px-4">${e.gramatura || '-'}</td>
+          <td class="py-3 px-4" style="color:#00e6c8;font-weight:600">${e.peso || 0} kg</td>
+          <td class="py-3 px-4" style="color:rgba(255,255,255,0.6)">${e.data_lote ? new Date(e.data_lote).toLocaleDateString('pt-BR') : '-'}</td>
+          <td class="py-3 px-4"><div class="flex justify-center"><button class="btn-danger py-1 px-2 text-xs" onclick="apagarEstoque('${e.id}')">Excluir</button></div></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderProducao() {
+      const container = document.getElementById('producaoList');
+      if (!container) return;
+      
+      if (!currentData.producao || currentData.producao.length === 0) {
+        container.innerHTML = '';
+        const empty = document.getElementById('producaoEmpty');
+        if (empty) empty.style.display = 'block';
+        return;
+      }
+      
+      const empty = document.getElementById('producaoEmpty');
+      if (empty) empty.style.display = 'none';
+      
+      container.innerHTML = currentData.producao.map(p => {
+        const func = currentData.funcionarios.find(f => f.id === p.funcionario_id);
+        const statusPago = p.codigo_pagamento ? 'Pago' : 'Pendente';
+        const badgeClass = p.codigo_pagamento ? 'badge-pago' : 'badge-pendente';
+        
+        return `
+          <div class="glass rounded-xl p-5 flex flex-col">
+            <div class="flex items-start justify-between mb-4 pb-4" style="border-bottom:1px solid rgba(255,255,255,0.08)">
+              <div class="flex-1">
+                <h3 class="font-heading font-semibold" style="font-size:15px">${func ? func.nome : 'N/A'}</h3>
+                <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px">${func ? (func.cargo === 'fixo' ? 'Funcionário Fixo' : 'Produtor') : 'N/A'}</p>
+              </div>
+              <span class="status-badge ${badgeClass}" style="font-size:11px">${statusPago}</span>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.02);border-radius:8px;padding:12px;margin-bottom:12px;space-y:3">
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+                <span style="color:rgba(255,255,255,0.6);font-size:12px">Serviço</span>
+                <span style="font-weight:600;font-size:13px">${p.servico === 'descabeçamento' ? '🔪 Descabeçamento' : '🍤 Filé'}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+                <span style="color:rgba(255,255,255,0.6);font-size:12px">Turno</span>
+                <span style="font-weight:600;font-size:13px">${p.periodo.charAt(0).toUpperCase() + p.periodo.slice(1)}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+                <span style="color:rgba(255,255,255,0.6);font-size:12px">Quantidade</span>
+                <span style="color:#00e6c8;font-weight:600;font-size:13px">${p.peso} kg</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0">
+                <span style="color:rgba(255,255,255,0.6);font-size:12px">Data</span>
+                <span style="font-size:12px;color:rgba(255,255,255,0.7)">${new Date(p.data_producao).toLocaleDateString('pt-BR')}</span>
+              </div>
+            </div>
+
+            <div style="background:linear-gradient(135deg,rgba(0,230,200,0.15),rgba(0,212,255,0.1));border:1px solid rgba(0,230,200,0.3);border-radius:8px;padding:12px;text-align:center;margin-bottom:12px">
+              <div style="color:rgba(255,255,255,0.5);font-size:11px;margin-bottom:4px;font-weight:500">VALOR CALCULADO</div>
+              <div style="font-size:20px;font-weight:700;color:#00e6c8">R$ ${p.valor.toFixed(2)}</div>
+            </div>
+
+            ${!p.codigo_pagamento ? `
+              <button class="btn-primary w-full" onclick="abrirModalPagamento('${p.id}')">
+                💳 Realizar Pagamento
+              </button>
+            ` : `
+              <div style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:10px;text-align:center">
+                <div style="color:rgba(0,212,255,0.8);font-size:12px;font-weight:600">✓ Pagamento Realizado</div>
+                <div style="color:rgba(0,212,255,0.6);font-size:11px;margin-top:2px">Código: ${p.codigo_pagamento}</div>
+              </div>
+            `}
+          </div>
+        `;
+      }).join('');
+      
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function atualizarEstatisticasProducao() {
+      const producao = currentData.producao || [];
+      
+      const totalPeso = producao.reduce((a, b) => a + b.peso, 0);
+      const totalValor = producao.reduce((a, b) => a + b.valor, 0);
+      const valorPago = producao.filter(p => p.codigo_pagamento).reduce((a, b) => a + b.valor, 0);
+      const valorPendente = totalValor - valorPago;
+      
+      document.getElementById('statProdTotal').textContent = totalPeso.toFixed(2) + ' kg';
+      document.getElementById('statValorTotal').textContent = 'R$ ' + totalValor.toFixed(2);
+      document.getElementById('statPago').textContent = 'R$ ' + valorPago.toFixed(2);
+      document.getElementById('statPendente').textContent = 'R$ ' + valorPendente.toFixed(2);
+    }
+
+    function calcularValorProducao() {
+      const servico = document.getElementById('prodServicoSelect').value;
+      const quantidade = parseFloat(document.getElementById('prodQuantidadeInput').value) || 0;
+      const taxa = servico === 'descabeçamento' ? 0.50 : servico === 'filé' ? 2.50 : 0;
+      const valor = quantidade * taxa;
+      
+      document.getElementById('prodValorDisplay').textContent = valor.toFixed(2);
+    }
+
+    async function registrarProducao(e) {
+      e.preventDefault();
+      
+      const funcId = document.getElementById('prodFuncionarioSelect').value;
+      const turno = document.getElementById('prodTurnoSelect').value;
+      const servico = document.getElementById('prodServicoSelect').value;
+      const quantidade = parseFloat(document.getElementById('prodQuantidadeInput').value);
+      
+      if (!funcId || !turno || !servico || !quantidade) {
+        showToast('Preencha todos os campos!', '#ff6b6b');
+        return;
+      }
+      
+      const taxa = servico === 'descabeçamento' ? 0.50 : 2.50;
+      const valor = quantidade * taxa;
+      
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = '⏳ Registrando...';
+      
+      const result = await window.dataSdk.create({
+        funcionario_id: funcId,
+        servico: servico,
+        periodo: turno,
+        peso: quantidade,
+        valor: valor,
+        codigo_pagamento: '',
+        data_producao: new Date().toISOString()
+      });
+      
+      if (result.isOk) {
+        showToast('✓ Produção registrada com sucesso!');
+        e.target.reset();
+        document.getElementById('prodValorDisplay').textContent = '0,00';
+        renderProducao();
+      } else {
+        showToast('Erro: ' + result.error.message, '#ff6b6b');
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Registrar';
+    }
+
+    function abrirModalPagamento(prodId) {
+      const producao = currentData.producao.find(p => p.id === prodId);
+      if (!producao) return;
+      
+      const func = currentData.funcionarios.find(f => f.id === producao.funcionario_id);
+      if (!func) return;
+      
+      document.getElementById('pagFuncNome').textContent = func.nome;
+      document.getElementById('pagFuncPix').value = func.pix || 'PIX não cadastrada';
+      document.getElementById('pagValor').textContent = 'R$ ' + producao.valor.toFixed(2);
+      document.getElementById('pagCodigoInput').value = '';
+      document.getElementById('pagCodigoInput').dataset.prodId = prodId;
+      
+      openModal('pagamentoModal');
+    }
+
+    function copiarPix() {
+      const pix = document.getElementById('pagFuncPix').value;
+      if (pix && pix !== 'PIX não cadastrada') {
+        navigator.clipboard.writeText(pix);
+        showToast('✓ PIX copiado!');
+      } else {
+        showToast('PIX não cadastrada para este funcionário', '#ffc837');
+      }
+    }
+
+    async function confirmarPagamento(e) {
+      e.preventDefault();
+      
+      const codigo = document.getElementById('pagCodigoInput').value;
+      const prodId = document.getElementById('pagCodigoInput').dataset.prodId;
+      
+      if (!codigo) {
+        showToast('Digite o código de pagamento!', '#ff6b6b');
+        return;
+      }
+      
+      const producao = currentData.producao.find(p => p.id === prodId);
+      if (!producao) {
+        showToast('Produção não encontrada!', '#ff6b6b');
+        return;
+      }
+      
+      try {
+        await pb.collection('producao').update(prodId, { codigo_pagamento: codigo });
+        // Atualizar item local
+        const producaoIndex = currentData.producao.findIndex(p => p.id === prodId);
+        if (producaoIndex !== -1) {
+          currentData.producao[producaoIndex].codigo_pagamento = codigo;
+        }
+        showToast('✓ Pagamento confirmado!');
+        closeModal(null, 'pagamentoModal');
+        renderProducao();
+      } catch (error) {
+        console.error('Erro ao confirmar pagamento:', error);
+        showToast('Erro ao confirmar pagamento!', '#ff6b6b');
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Confirmar Pagamento';
+    }
+
+    function updateDashboard() {
+      const receitas = currentData.transacoes.filter(t => t.tipo_transacao === 'entrada').reduce((a, b) => a + b.valor_transacao, 0);
+      const despesas = currentData.transacoes.filter(t => t.tipo_transacao === 'saida').reduce((a, b) => a + b.valor_transacao, 0);
+      const despesasFixas = currentData.despesasFixas.reduce((a, b) => a + b.valor_despesa_fixa, 0);
+      const despesasVariaveis = currentData.despesasVariaveis.reduce((a, b) => a + b.valor_despesa_fixa, 0);
+      const despesasTotal = despesas + despesasFixas + despesasVariaveis;
+      const lucro = receitas - despesasTotal;
+      const producaoTotal = currentData.producao.reduce((a, b) => a + b.peso, 0);
+      
+      document.getElementById('dashLucro').textContent = 'R$ ' + Math.max(0, lucro).toFixed(2);
+      document.getElementById('dashGastos').textContent = 'R$ ' + despesasTotal.toFixed(2);
+      document.getElementById('dashClientes').textContent = currentData.clientes.length;
+      document.getElementById('dashProducao').textContent = producaoTotal.toFixed(1) + ' kg';
+      document.getElementById('dashReceitas').textContent = 'R$ ' + receitas.toFixed(2);
+      document.getElementById('dashDespesas').textContent = 'R$ ' + despesasTotal.toFixed(2);
+      document.getElementById('dashSaldo').textContent = 'R$ ' + Math.max(0, lucro).toFixed(2);
+      
+      document.getElementById('finReceitas').textContent = 'R$ ' + receitas.toFixed(2);
+      document.getElementById('finDespesas').textContent = 'R$ ' + despesasTotal.toFixed(2);
+      document.getElementById('finSaldo').textContent = 'R$ ' + Math.max(0, lucro).toFixed(2);
+      
+      // Estoque Geral
+      const historicoEstoque = currentData.historicoEstoque || [];
+      const totalEntrada = historicoEstoque.reduce((a, b) => a + (b.peso_antes || 0), 0);
+      const totalSaida = historicoEstoque.reduce((a, b) => a + (b.peso_depois || 0), 0);
+      const pesoAtual = totalEntrada - totalSaida;
+      const rendimentoAtual = totalEntrada > 0 ? ((totalSaida / totalEntrada) * 100).toFixed(1) : 0;
+      
+      const pesoTotalEl = document.getElementById('pesoTotal');
+      if (pesoTotalEl) pesoTotalEl.textContent = pesoAtual.toFixed(2) + ' kg';
+      
+      const totalEntradasEl = document.getElementById('totalEntradas');
+      if (totalEntradasEl) totalEntradasEl.textContent = totalEntrada.toFixed(2) + ' kg';
+      
+      const totalSaidasEl = document.getElementById('totalSaidas');
+      if (totalSaidasEl) totalSaidasEl.textContent = totalSaida.toFixed(2) + ' kg';
+      
+      const rendimentoEl = document.getElementById('rendimento');
+      if (rendimentoEl) rendimentoEl.textContent = rendimentoAtual + ' %';
+      
+      document.getElementById('relClientes').textContent = currentData.clientes.length;
+      document.getElementById('relFuncionarios').textContent = currentData.funcionarios.filter(f => f.status === 'ativo').length;
+      document.getElementById('relProducao').textContent = producaoTotal.toFixed(1) + ' kg';
+      document.getElementById('relReceita').textContent = 'R$ ' + receitas.toFixed(2);
+    }
+
+    function initCharts() {
+      const receitas = currentData.transacoes.filter(t => t.tipo_transacao === 'entrada');
+      const despesas = currentData.transacoes.filter(t => t.tipo_transacao === 'saida');
+      
+      const ctxReceitas = document.getElementById('chartReceitas');
+      const ctxDespesas = document.getElementById('chartDespesas');
+      const ctxProducao = document.getElementById('chartProducao');
+      
+      if (!ctxReceitas || !ctxDespesas || !ctxProducao) return;
+      
+      if (chartReceitas) chartReceitas.destroy();
+      if (chartDespesas) chartDespesas.destroy();
+      if (chartProducao) chartProducao.destroy();
+      
+      // Gráfico de Receitas
+      chartReceitas = new Chart(ctxReceitas, {
+        type: 'doughnut',
+        data: {
+          labels: receitas.map(r => r.descricao),
+          datasets: [{
+            data: receitas.map(r => r.valor_transacao),
+            backgroundColor: ['#00e6c8', '#00d4ff', '#1ae7dc', '#0fb9d1'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+      
+      // Gráfico de Despesas
+      chartDespesas = new Chart(ctxDespesas, {
+        type: 'doughnut',
+        data: {
+          labels: despesas.map(d => d.descricao),
+          datasets: [{
+            data: despesas.map(d => d.valor_transacao),
+            backgroundColor: ['#ff6b6b', '#ff8787', '#fa5252', '#f06595'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+      
+      // Gráfico de Produção
+      const producaoDescabecamento = currentData.producao.filter(p => p.servico === 'descabeçamento').reduce((a, b) => a + b.peso, 0);
+      const producaoFile = currentData.producao.filter(p => p.servico === 'filé').reduce((a, b) => a + b.peso, 0);
+      
+      chartProducao = new Chart(ctxProducao, {
+        type: 'pie',
+        data: {
+          labels: ['Descabeçamento', 'Filé'],
+          datasets: [{
+            data: [producaoDescabecamento, producaoFile],
+            backgroundColor: ['#00e6c8', '#00d4ff'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+    }
+
+    // ====== SAVE FUNCTIONS ======
+   async function salvarCliente(e) {
+  e.preventDefault();
+  
+  const nome = document.getElementById('clientNome').value;
+  const telefone = document.getElementById('clientTelefone').value;
+  const historico = document.getElementById('clientHistorico').value;
+  
+  if (!nome || !telefone) {
+    showToast('Preencha os campos obrigatórios!', '#ff6b6b');
+    return;
+  }
+  
+  const novoCliente = {
+    nome: nome,
+    telefone: telefone,
+    historico: historico,
+    status: 'ativo',
+    data_criacao: new Date().toISOString()
+  };
+  
+  try {
+    const novoItem = await pb.collection('clientes').create(novoCliente);
+    currentData.clientes.push(novoItem);
+    renderClientes();
+    updateDashboard();
+    closeModal(null, 'addClientModal');
+    e.target.reset();
+    showToast('✓ Cliente cadastrado!');
+  } catch (error) {
+    console.error('Erro ao salvar cliente:', error);
+    showToast('Erro ao salvar cliente!', '#ff6b6b');
+  }
+}   async function salvarFuncionario(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById('funcNome').value;
+      const cargo = document.getElementById('funcCargo').value;
+      const telefone = document.getElementById('funcTelefone').value;
+      const pix = document.getElementById('funcPix').value;
+
+      if (!nome || !cargo || !telefone) {
+        showToast('Preencha os campos obrigatórios!', '#ff6b6b');
+        return;
+      }
+
+      const novoFuncionario = {
+        nome: nome,
+        cargo: cargo,
+        telefone: telefone,
+        pix: pix,
+        data_criacao: new Date().toISOString(),
+        status: 'ativo'
+      };
+
+      try {
+        const novoItem = await pb.collection('funcionarios').create(novoFuncionario);
+        currentData.funcionarios.push(novoItem);
+        renderFuncionarios();
+        atualizarSelectFuncionarios();
+        closeModal(null, 'addFuncionarioModal');
+        document.querySelector('#addFuncionarioModal form').reset();
+        showToast('✓ Funcionário cadastrado!');
+      } catch (error) {
+        console.error('Erro ao salvar funcionário:', error);
+        showToast('Erro ao salvar funcionário!', '#ff6b6b');
+      }
+    }
+   async function salvarTransacao(e) {
+      e.preventDefault();
+      
+      const descricao = document.getElementById('transDescricao').value;
+      const tipo = document.getElementById('transType').value;
+      const valor = parseFloat(document.getElementById('transValor').value);
+      const data = document.getElementById('transData').value;
+      
+      if (!descricao || !tipo || !valor || !data) {
+        showToast('Preencha todos os campos!', '#ff6b6b');
+        return;
+      }
+      
+      const nova = {
+        descricao: descricao,
+        tipo_transacao: tipo,
+        valor_transacao: valor,
+        data_transacao: data
+      };
+
+      try {
+        const novoItem = await pb.collection('transacoes').create(nova);
+        currentData.transacoes.push(novoItem);
+        renderTransacoes();
+        updateDashboard();
+        initCharts();
+        closeModal(null, 'addTransacaoModal');
+        e.target.reset();
+        showToast('✓ Transação registrada!');
+      } catch (error) {
+        console.error('Erro ao salvar transação:', error);
+        showToast('Erro ao salvar transação!', '#ff6b6b');
+      }
+    }
+
+   async function salvarEstoque(e) {
+      e.preventDefault();
+      
+      const nome = document.getElementById('estoqueLote').value;
+      const gramatura = document.getElementById('estoqueGramatura').value;
+      const peso = parseFloat(document.getElementById('estoquePeso').value);
+      const data = document.getElementById('estoqueData').value;
+      
+      if (!nome || !gramatura || !peso || !data) {
+        showToast('Preencha todos os campos!', '#ff6b6b');
+        return;
+      }
+      
+      const novo = {
+        tipo_lote: nome,
+        gramatura: gramatura,
+        peso: peso,
+        data_lote: data,
+        status: 'ativo'
+      };
+
+      try {
+        const novoItem = await pb.collection('estoque').create(novo);
+        currentData.estoque.push(novoItem);
+        renderEstoque();
+        atualizarSelectLotes();
+        closeModal(null, 'addEstoqueModal');
+        e.target.reset();
+        showToast('✓ Lote cadastrado!');
+      } catch (error) {
+        console.error('Erro ao salvar estoque:', error);
+        showToast('Erro ao salvar lote!', '#ff6b6b');
+      }
+    }
+
+    async function salvarEntrada(e) {
+      e.preventDefault();
+      
+      const loteId = document.getElementById('entradaLoteId').value;
+      const peso = parseFloat(document.getElementById('entradaPeso').value);
+      const data = document.getElementById('entradaData').value;
+      
+      if (!loteId) {
+        showToast('Selecione um lote!', '#ff6b6b');
+        return;
+      }
+      
+      if (!peso || peso <= 0) {
+        showToast('Digite um peso válido!', '#ff6b6b');
+        return;
+      }
+      
+      const novaEntrada = {
+        lote_id: loteId,
+        peso_antes: peso,
+        peso_depois: 0,
+        data_processamento: data
+      };
+      
+      try {
+        const novoItem = await pb.collection('historicoEstoque').create(novaEntrada);
+        currentData.historicoEstoque.push(novoItem);
+        renderHistoricoEstoque();
+        closeModal(null, 'addEntradaModal');
+        e.target.reset();
+        showToast('✓ Entrada registrada!');
+      } catch (error) {
+        console.error('Erro ao salvar entrada:', error);
+        showToast('Erro ao salvar entrada!', '#ff6b6b');
+      }
+    }
+
+    async function salvarSaida(e) {
+      e.preventDefault();
+      
+      const loteId = document.getElementById('saidaLoteId').value;
+      const pesoAntes = parseFloat(document.getElementById('saidaPesoAntes').value);
+      const pesoDepois = parseFloat(document.getElementById('saidaPeso').value);
+      const data = document.getElementById('saidaData').value;
+      
+      if (!loteId) {
+        showToast('Selecione um lote!', '#ff6b6b');
+        return;
+      }
+      
+      if (isNaN(pesoDepois) || pesoDepois < 0) {
+        showToast('Digite um peso válido!', '#ff6b6b');
+        return;
+      }
+      
+      const novaSaida = {
+        lote_id: loteId,
+        peso_antes: pesoAntes,
+        peso_depois: pesoDepois,
+        data_processamento: data
+      };
+      
+      try {
+        const novoItem = await pb.collection('historicoEstoque').create(novaSaida);
+        currentData.historicoEstoque.push(novoItem);
+        renderHistoricoEstoque();
+        closeModal(null, 'addSaidaModal');
+        e.target.reset();
+        showToast('✓ Saída registrada!');
+      } catch (error) {
+        console.error('Erro ao salvar saída:', error);
+        showToast('Erro ao salvar saída!', '#ff6b6b');
+      }
+    }
+
+    function calcularValorProducao() {
+      const servico = document.getElementById('producServico').value;
+      const quantidade = parseFloat(document.getElementById('producPeso').value) || 0;
+      const taxa = servico === 'descabeçamento' ? 0.50 : servico === 'filé' ? 2.50 : 0;
+      const valor = quantidade * taxa;
+      
+      document.getElementById('producValor').value = valor.toFixed(2);
+    }
+
+    function atualizarValorProducao() {
+      calcularValorProducao();
+    }
+
+   async function salvarProducao(e) {
+      e.preventDefault();
+      
+      const funcionario = document.getElementById('producFuncionario').value;
+      const turno = document.getElementById('producPeriodo').value;
+      const servico = document.getElementById('producServico').value;
+      const quantidade = parseFloat(document.getElementById('producPeso').value);
+      
+      if (!funcionario || !turno || !servico || isNaN(quantidade) || quantidade <= 0) {
+        showToast('Preencha os dados corretamente!', '#ff6b6b');
+        return;
+      }
+      
+      const taxa = servico === 'descabeçamento' ? 0.50 : 2.50;
+      const valor = quantidade * taxa;
+      
+      const novo = {
+        funcionario_id: funcionario,
+        servico: servico,
+        periodo: turno,
+        peso: quantidade,
+        valor: valor,
+        codigo_pagamento: '',
+        data_producao: new Date().toISOString()
+      };
+
+      try {
+        const novoItem = await pb.collection('producao').create(novo);
+        currentData.producao.push(novoItem);
+        showToast('✓ Produção registrada com sucesso!');
+        e.target.reset();
+        document.getElementById('producValor').value = '0.00';
+        closeModal(null, 'addProducaoModal');
+        renderProducao();
+        updateDashboard();
+        initCharts();
+      } catch (error) {
+        console.error('Erro ao salvar produção:', error);
+        showToast('Erro ao salvar produção!', '#ff6b6b');
+      }
+    }
+    function abrirModalPagamento(prodId) {
+      const producao = currentData.producao.find(p => p.id === prodId);
+      if (!producao) return;
+      
+      const func = currentData.funcionarios.find(f => f.id === producao.funcionario_id);
+      if (!func) return;
+      
+      showToast('Pagamento de ' + func.nome + ' (R$ ' + producao.valor.toFixed(2) + ')', '#00d4ff');
+    }
+
+   async function salvarDespesaFixa(e) {
+      e.preventDefault();
+      
+      const nome = document.getElementById('nomeDespesaFixa').value;
+      const valor = parseFloat(document.getElementById('valorDespesaFixa').value);
+      
+      if (!nome || !valor) {
+        showToast('Preencha todos os campos!', '#ff6b6b');
+        return;
+      }
+      
+      const nova = {
+        nome_despesa_fixa: nome,
+        valor_despesa_fixa: valor
+      };
+      
+      try {
+        const novoItem = await pb.collection('despesasFixas').create(nova);
+        currentData.despesasFixas.push(novoItem);
+        renderDespesasFixas();
+        updateDashboard();
+        closeModal(null, 'addDespesaFixaModal');
+        e.target.reset();
+        showToast('✓ Despesa fixa adicionada!');
+      } catch (error) {
+        console.error('Erro ao salvar despesa fixa:', error);
+        showToast('Erro ao salvar despesa fixa!', '#ff6b6b');
+      }
+    }
+
+   async function salvarDespesaVariavel(e) {
+      e.preventDefault();
+      
+      const nome = document.getElementById('nomeDespesaVariavel').value;
+      const valor = parseFloat(document.getElementById('valorDespesaVariavel').value);
+      
+      if (!nome || !valor) {
+        showToast('Preencha todos os campos!', '#ff6b6b');
+        return;
+      }
+      
+      const nova = {
+        nome_despesa_fixa: nome,
+        valor_despesa_fixa: valor
+      };
+
+      try {
+        const novoItem = await pb.collection('despesasVariaveis').create(nova);
+        currentData.despesasVariaveis.push(novoItem);
+        renderDespesasVariaveis();
+        updateDashboard();
+        closeModal(null, 'addDespesaVariavelModal');
+        e.target.reset();
+        showToast('✓ Despesa variável adicionada!');
+      } catch (error) {
+        console.error('Erro ao salvar despesa variável:', error);
+        showToast('Erro ao salvar despesa variável!', '#ff6b6b');
+      }
+    }
+
+    function salvarConfiguracoes(e) {
+      e.preventDefault();
+      showToast('✓ Configurações salvas!');
+    }
+
+    function escapeHTML(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    async function deleteData(id, collection) {
+      try {
+        await pb.collection(collection).delete(id);
+        // Remover item local
+        const index = currentData[collection].findIndex(item => item.id === id);
+        if (index !== -1) {
+          currentData[collection].splice(index, 1);
+        }
+        renderAll();
+        showToast('✓ Deletado com sucesso!');
+      } catch (error) {
+        console.error('Erro ao deletar:', error);
+        showToast('Erro ao deletar!', '#ff6b6b');
+      }
+    }
+    function atualizarSelectFuncionarios() {
+      const select = document.getElementById('producFuncionario');
+      if (!select) return;
+      
+      const funcionarios = currentData.funcionarios || [];
+      
+      select.innerHTML = '<option value="">Selecione um funcionário</option>' + 
+        funcionarios.map(f => {
+          const cargoTexto = f.cargo === 'fixo' ? 'Funcionário Fixo' : 'Produtor';
+          return `<option value="${f.id}">${f.nome} - ${cargoTexto}</option>`;
+        }).join('');
+    }
+
+    function atualizarSelectLotes() {
+      const selectEntrada = document.getElementById('entradaLoteId');
+      const selectSaida = document.getElementById('saidaLoteId');
+      
+      if (!selectEntrada || !selectSaida) return;
+      
+      // Garantir que estoque tem dados
+      const lotes = currentData.estoque || [];
+      
+      const loteOptions = '<option value="">Selecione um lote</option>' + lotes.map(e => {
+        const label = `${e.tipo_lote} ${e.gramatura} - ${e.peso}kg`;
+        return `<option value="${e.id}">${label}</option>`;
+      }).join('');
+      
+      selectEntrada.innerHTML = loteOptions;
+      selectSaida.innerHTML = loteOptions;
+    }
+
+    // ====== RELATÓRIOS ======
+    let chartsRelatorios = {
+      financeiro: null,
+      funcionarios: null,
+      servicos: null,
+      timeline: null
+    };
+
+    function obterQuinzenaData(data) {
+      const dia = new Date(data).getDate();
+      return dia <= 15 ? '1' : '2';
+    }
+
+    function aplicarFiltrosRelatorios() {
+      const dataInicial = document.getElementById('relDataInicial').value;
+      const dataFinal = document.getElementById('relDataFinal').value;
+      const funcFilter = document.getElementById('relFuncionarioFilter').value;
+      const servicoFilter = document.getElementById('relServicoFilter').value;
+      const quinzenaFilter = document.getElementById('relQuinzenaFilter').value;
+
+      // Filtrar produção
+      let producaoFiltrada = currentData.producao || [];
+
+      if (dataInicial) {
+        producaoFiltrada = producaoFiltrada.filter(p => 
+          new Date(p.data_producao) >= new Date(dataInicial)
+        );
+      }
+
+      if (dataFinal) {
+        producaoFiltrada = producaoFiltrada.filter(p => 
+          new Date(p.data_producao) <= new Date(dataFinal + 'T23:59:59')
+        );
+      }
+
+      if (funcFilter) {
+        producaoFiltrada = producaoFiltrada.filter(p => p.funcionario_id === funcFilter);
+      }
+
+      if (servicoFilter) {
+        producaoFiltrada = producaoFiltrada.filter(p => p.servico === servicoFilter);
+      }
+
+      if (quinzenaFilter) {
+        producaoFiltrada = producaoFiltrada.filter(p => 
+          obterQuinzenaData(p.data_producao) === quinzenaFilter
+        );
+      }
+
+      // Calcular métricas
+      const totalProduzido = producaoFiltrada.reduce((a, b) => a + b.peso, 0);
+      const totalValor = producaoFiltrada.reduce((a, b) => a + b.valor, 0);
+      const totalPago = producaoFiltrada.filter(p => p.codigo_pagamento).reduce((a, b) => a + b.valor, 0);
+
+      const receitas = (currentData.transacoes || []).filter(t => t.tipo_transacao === 'entrada').reduce((a, b) => a + b.valor_transacao, 0);
+      const despesas = (currentData.transacoes || []).filter(t => t.tipo_transacao === 'saida').reduce((a, b) => a + b.valor_transacao, 0);
+      const lucro = receitas - despesas;
+
+      // Atualizar cards
+      document.getElementById('relTotalFaturado').textContent = 'R$ ' + receitas.toFixed(2);
+      document.getElementById('relTotalPago').textContent = 'R$ ' + totalPago.toFixed(2);
+      document.getElementById('relLucroLiquido').textContent = 'R$ ' + lucro.toFixed(2);
+      document.getElementById('relProducaoTotal').textContent = totalProduzido.toFixed(2) + ' kg';
+
+      // Renderizar tabela
+      renderRelatorioTabela(producaoFiltrada);
+
+      // Atualizar gráficos
+      atualizarGraficosRelatorios(producaoFiltrada, receitas, despesas);
+    }
+
+    function renderRelatorioTabela(producao) {
+      const tbody = document.getElementById('relTabelaProducao');
+      const empty = document.getElementById('relTabelaEmpty');
+
+      if (!producao || producao.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      tbody.innerHTML = producao.sort((a, b) => new Date(b.data_producao) - new Date(a.data_producao)).map(p => {
+        const func = currentData.funcionarios.find(f => f.id === p.funcionario_id);
+        const servicoNome = p.servico === 'descabeçamento' ? 'Descabeçamento' : 'Filé';
+        const statusPago = p.codigo_pagamento ? 'Pago' : 'Pendente';
+        const badgeClass = p.codigo_pagamento ? 'badge-pago' : 'badge-pendente';
+
+        return `
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.06);hover:background rgba(255,255,255,0.02);">
+            <td class="py-3 px-4" style="color:rgba(255,255,255,0.7)">${new Date(p.data_producao).toLocaleDateString('pt-BR')}</td>
+            <td class="py-3 px-4">${func ? func.nome : 'N/A'}</td>
+            <td class="py-3 px-4">${servicoNome}</td>
+            <td class="py-3 px-4 text-center" style="color:#00e6c8;font-weight:600">${p.peso} kg</td>
+            <td class="py-3 px-4 text-right" style="font-weight:600">R$ ${p.valor.toFixed(2)}</td>
+            <td class="py-3 px-4 text-center"><span class="status-badge ${badgeClass}" style="font-size:11px">${statusPago}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function atualizarGraficosRelatorios(producao, receitas, despesas) {
+      // Destruir gráficos anteriores
+      if (chartsRelatorios.financeiro) chartsRelatorios.financeiro.destroy();
+      if (chartsRelatorios.funcionarios) chartsRelatorios.funcionarios.destroy();
+      if (chartsRelatorios.servicos) chartsRelatorios.servicos.destroy();
+      if (chartsRelatorios.timeline) chartsRelatorios.timeline.destroy();
+
+      // 1. GRÁFICO FINANCEIRO
+      const ctxFinanceiro = document.getElementById('chartRelatorioFinanceiro');
+      chartsRelatorios.financeiro = new Chart(ctxFinanceiro, {
+        type: 'bar',
+        data: {
+          labels: ['Receitas', 'Despesas'],
+          datasets: [{
+            label: 'Valores (R$)',
+            data: [receitas, despesas],
+            backgroundColor: ['rgba(0,230,200,0.3)', 'rgba(255,107,107,0.3)'],
+            borderColor: ['#00e6c8', '#ff6b6b'],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'x',
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { color: 'rgba(255,255,255,0.6)' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            x: {
+              ticks: { color: 'rgba(255,255,255,0.6)' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+          }
+        }
+      });
+
+      // 2. GRÁFICO PRODUÇÃO POR FUNCIONÁRIO
+      const producaoPorFunc = {};
+      producao.forEach(p => {
+        if (!producaoPorFunc[p.funcionario_id]) {
+          producaoPorFunc[p.funcionario_id] = 0;
+        }
+        producaoPorFunc[p.funcionario_id] += p.peso;
+      });
+
+      const funcNomes = Object.keys(producaoPorFunc).map(id => {
+        const func = currentData.funcionarios.find(f => f.id === id);
+        return func ? func.nome : 'Desconhecido';
+      });
+
+      const funcPesos = Object.values(producaoPorFunc);
+
+      const ctxFuncionarios = document.getElementById('chartRelatorioFuncionarios');
+      chartsRelatorios.funcionarios = new Chart(ctxFuncionarios, {
+        type: 'bar',
+        data: {
+          labels: funcNomes,
+          datasets: [{
+            label: 'Kg Processados',
+            data: funcPesos,
+            backgroundColor: 'rgba(0,230,200,0.3)',
+            borderColor: '#00e6c8',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { color: 'rgba(255,255,255,0.6)' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+              ticks: { color: 'rgba(255,255,255,0.6)' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+          }
+        }
+      });
+
+      // 3. GRÁFICO POR TIPO DE SERVIÇO
+      const descabecamento = producao.filter(p => p.servico === 'descabeçamento').reduce((a, b) => a + b.peso, 0);
+      const file = producao.filter(p => p.servico === 'filé').reduce((a, b) => a + b.peso, 0);
+
+      const ctxServicos = document.getElementById('chartRelatorioServicos');
+      chartsRelatorios.servicos = new Chart(ctxServicos, {
+        type: 'doughnut',
+        data: {
+          labels: ['Descabeçamento', 'Filé'],
+          datasets: [{
+            data: [descabecamento, file],
+            backgroundColor: ['rgba(0,230,200,0.4)', 'rgba(0,212,255,0.4)'],
+            borderColor: ['#00e6c8', '#00d4ff'],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)' } }
+          }
+        }
+      });
+
+      // 4. GRÁFICO TIMELINE
+      const producaoPorDia = {};
+      producao.forEach(p => {
+        const data = new Date(p.data_producao).toLocaleDateString('pt-BR');
+        if (!producaoPorDia[data]) {
+          producaoPorDia[data] = 0;
+        }
+        producaoPorDia[data] += p.peso;
+      });
+
+      const diasOrdenados = Object.keys(producaoPorDia).sort();
+      const pesosDia = diasOrdenados.map(d => producaoPorDia[d]);
+
+      const ctxTimeline = document.getElementById('chartRelatorioTimeline');
+      chartsRelatorios.timeline = new Chart(ctxTimeline, {
+        type: 'line',
+        data: {
+          labels: diasOrdenados,
+          datasets: [{
+            label: 'Kg Processados',
+            data: pesosDia,
+            borderColor: '#00e6c8',
+            backgroundColor: 'rgba(0,230,200,0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#00e6c8',
+            pointBorderColor: '#00e6c8',
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { color: 'rgba(255,255,255,0.6)' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            x: {
+              ticks: { color: 'rgba(255,255,255,0.6)' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+          }
+        }
+      });
+    }
+
+    function atualizarSelectFiltrosRelatorios() {
+      const selectFunc = document.getElementById('relFuncionarioFilter');
+      if (!selectFunc) return;
+
+      const funcionarios = currentData.funcionarios || [];
+      selectFunc.innerHTML = '<option value="">Todos os Funcionários</option>' + 
+        funcionarios.map(f => `<option value="${f.id}">${f.nome}</option>`).join('');
+
+      // Definir período padrão (últimos 30 dias)
+      const hoje = new Date();
+      const trinta = new Date(hoje.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+      document.getElementById('relDataInicial').valueAsDate = trinta;
+      document.getElementById('relDataFinal').valueAsDate = hoje;
+
+      // Aplicar filtros iniciais
+      aplicarFiltrosRelatorios();
+    }
+
+    function abrirExportarPDF() {
+      showToast('PDF exportado com sucesso!');
+    }
+
+    function gerarPDF() {
+      showToast('PDF gerado com sucesso!');
+    }
+
+    function logout() {
+      showToast('Logout realizado!', '#ffc837');
+    }
+
+    // ====== RESPONSIVE ======
+    (function() {
+      const sb = document.getElementById('sidebar');
+      function check() {
+        if (window.innerWidth < 1024) {
+          sb.style.position = 'fixed';
+          sb.style.zIndex = '100';
+          sb.style.transform = 'translateX(-100%)';
+        } else {
+          sb.style.position = 'relative';
+          sb.style.transform = 'translateX(0)';
+        }
+      }
+      window.addEventListener('resize', check);
+      check();
+    })();
+
+    // ====== GRÁFICOS ======
+    function initCharts() {
+      const receitas = currentData.transacoes.filter(t => t.tipo_transacao === 'entrada');
+      const despesas = currentData.transacoes.filter(t => t.tipo_transacao === 'saida');
+      
+      const ctxReceitas = document.getElementById('chartReceitas');
+      const ctxDespesas = document.getElementById('chartDespesas');
+      const ctxProducao = document.getElementById('chartProducao');
+      
+      if (chartReceitas) chartReceitas.destroy();
+      if (chartDespesas) chartDespesas.destroy();
+      if (chartProducao) chartProducao.destroy();
+      
+      // Gráfico de Receitas
+      chartReceitas = new Chart(ctxReceitas, {
+        type: 'doughnut',
+        data: {
+          labels: receitas.map(r => r.descricao),
+          datasets: [{
+            data: receitas.map(r => r.valor_transacao),
+            backgroundColor: ['#00e6c8', '#00d4ff', '#1ae7dc', '#0fb9d1'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+      
+      // Gráfico de Despesas
+      chartDespesas = new Chart(ctxDespesas, {
+        type: 'doughnut',
+        data: {
+          labels: despesas.map(d => d.descricao),
+          datasets: [{
+            data: despesas.map(d => d.valor_transacao),
+            backgroundColor: ['#ff6b6b', '#ff8787', '#fa5252', '#f06595'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+      
+      // Gráfico de Produção
+      const producaoDescabecamento = currentData.producao.filter(p => p.servico === 'descabeçamento').reduce((a, b) => a + b.peso, 0);
+      const producaoFile = currentData.producao.filter(p => p.servico === 'filé').reduce((a, b) => a + b.peso, 0);
+      
+      chartProducao = new Chart(ctxProducao, {
+        type: 'pie',
+        data: {
+          labels: ['Descabeçamento', 'Filé'],
+          datasets: [{
+            data: [producaoDescabecamento, producaoFile],
+            backgroundColor: ['#00e6c8', '#00d4ff'],
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: 'rgba(255,255,255,0.7)', font: { size: 12 } } }
+          }
+        }
+      });
+    }
+
+    // ====== INIT ======
+    
+    function apagarCliente(id) {
+      deleteData(id, 'clientes');
+    }
+
+    function apagarFuncionario(id) {
+      deleteData(id, 'funcionarios');
+    }
+
+    function apagarEstoque(id) {
+      deleteData(id, 'estoque');
+    }
+
+    function editarCliente(id) {
+      showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+    }
+
+    function editarFuncionario(id) {
+      showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+    }
+
+    function editarProducao(id) {
+      showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+    }
+
+    function renderDespesasFixas() {
+      const container = document.getElementById('despesasFixasList');
+      if (!container) return;
+      
+      if (!currentData.despesasFixas || currentData.despesasFixas.length === 0) {
+        container.innerHTML = '';
+        const empty = document.getElementById('despesasFixasEmpty');
+        if (empty) empty.style.display = 'block';
+        return;
+      }
+      
+      const empty = document.getElementById('despesasFixasEmpty');
+      if (empty) empty.style.display = 'none';
+      
+      container.innerHTML = currentData.despesasFixas.map(d => `
+        <div class="glass rounded-lg p-3 flex items-center justify-between">
+          <div>
+            <p style="font-size:13px;font-weight:500">${d.nome_despesa_fixa}</p>
+            <p style="font-size:11px;color:rgba(255,255,255,0.4)">Despesa Fixa</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span style="font-weight:600;color:#ff6b6b">R$ ${d.valor_despesa_fixa.toFixed(2)}</span>
+            <button class="btn-danger btn-small py-1" onclick="deleteData('${d.id}', 'despesasFixas')">×</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderDespesasVariaveis() {
+      const container = document.getElementById('despesasVariaveisList');
+      if (!container) return;
+      
+      if (!currentData.despesasVariaveis || currentData.despesasVariaveis.length === 0) {
+        container.innerHTML = '';
+        const empty = document.getElementById('despesasVariaveisEmpty');
+        if (empty) empty.style.display = 'block';
+        return;
+      }
+      
+      const empty = document.getElementById('despesasVariaveisEmpty');
+      if (empty) empty.style.display = 'none';
+      
+      container.innerHTML = currentData.despesasVariaveis.map(d => `
+        <div class="glass rounded-lg p-3 flex items-center justify-between">
+          <div>
+            <p style="font-size:13px;font-weight:500">${d.nome_despesa_fixa}</p>
+            <p style="font-size:11px;color:rgba(255,255,255,0.4)">Despesa Variável</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span style="font-weight:600;color:#ffc837">R$ ${d.valor_despesa_fixa.toFixed(2)}</span>
+            <button class="btn-danger btn-small py-1" onclick="deleteData('${d.id}', 'despesasVariaveis')">×</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    
+function abrirSaidaEstoque(estoqueId) {
+  showToast('Funcionalidade em desenvolvimento', '#00d4ff');
+}
+
+// Inicialização do Sistema
+window.addEventListener('load', () => {
+  if (MAINTENANCE_MODE) {
+    showToast('O sistema está em manutenção. Tente novamente mais tarde.', '#ff9800');
+    return;
+  }
+
+  loadAll().then(() => {
+    // Após carregar dados, renderizar apenas uma vez
+    renderAll();
+    navigateTo('dashboard');
+
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  });
+});
+</script>
+   <script>
+function navigateTo(pageId) {
+  // Trocar páginas
+  const pages = document.querySelectorAll('.page-content');
+  pages.forEach(page => {
+    page.style.display = 'none';
+  });
+
+  const target = document.getElementById('page-' + pageId);
+  if (target) {
+    target.style.display = 'block';
+  } else {
+    console.warn('Página não encontrada:', pageId);
+  }
+
+  // 🔥 Fechar sidebar
+  const sidebar = document.getElementById('sidebar');
+
+  if (sidebar) {
+    sidebar.style.transform = 'translateX(-100%)';
+    sidebar.classList.remove('open');
+    sidebar.classList.remove('active');
+  }
+}
+   </script>
+</body>
+</html>
